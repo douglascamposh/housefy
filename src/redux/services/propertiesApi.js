@@ -1,13 +1,40 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const propertiesApi = createApi({
-    reducerPath: 'propertiesApi',
-    baseQuery: fetchBaseQuery(
-      { baseUrl: 'http://localhost:8072/api/' }),
-    endpoints: (builder) => ({
-      getPosts:builder.query({
-          query:()=>'v1/properties',
+  reducerPath: 'propertiesApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://54.163.17.76:8072/api/v1'
+  }),
+  endpoints: (builder) => ({
+    getProperties: builder.query({
+      query: () => '/properties',
+    }),
+    createProperties: builder.mutation({
+      query: (newProperties) => ({
+        method: 'POST',
+        url: '/properties', 
+        body: newProperties,
       }),
     }),
-  });
-export const { useGetPostsQuery} = propertiesApi;
+    updateProperties: builder.mutation({
+      query: ({ id, updateProperties }) => ({
+        method: 'PUT',
+        url: `/properties/${id}`,
+        body: updateProperties,
+      }),
+    }),
+    deleteProperties: builder.mutation({
+      query: (id) => ({
+        method: 'DELETE',
+        url: `/properties/${id}`,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetPropertiesQuery,
+  useCreatePropertiesMutation,
+  useUpdatePropertiesMutation,
+  useDeletePropertiesMutation,
+} = propertiesApi;
