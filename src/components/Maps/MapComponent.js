@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
-
+import Spinner from '../Spinner';
 const containerStyle = {
   width: '100%',
   height: '350px'
@@ -13,7 +13,7 @@ const initialMarkerPosition = {
 
 const MapComponent = ({ onMarkerPositionChange }) => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyBqVvvt2_MGOrhLeNWCx5D0-D1JZ5ZZM4U"
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   });
 
   const [markerPosition, setMarkerPosition] = useState(initialMarkerPosition);
@@ -28,7 +28,7 @@ const MapComponent = ({ onMarkerPositionChange }) => {
     onMarkerPositionChange(clickedLatLng); 
   };
   if (!isLoaded) {
-    return <div>Cargando...</div>;
+    return <Spinner></Spinner>
   }
 
   return (

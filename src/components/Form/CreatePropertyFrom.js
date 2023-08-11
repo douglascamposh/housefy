@@ -1,22 +1,29 @@
 import React, { useState } from 'react'; 
+
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import Button from './Button';
-import { useCreatePropertiesMutation } from '@/redux/services/propertiesApi';
-import MapComponent from '../Maps/MapComponent';
+
 import { useRouter } from 'next/navigation'
+import { useCreatePropertiesMutation } from '@/redux/services/propertiesApi';
+
+import MapComponent from '../Maps/MapComponent';
+import Button from './Button';
+
+import { Flip, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const categories = [
   { id: '1', name: 'Urbanizaciones' },
   { id: '2', name: 'Departamentos' },
 ];
 const departments = [
-  'Pando', 'Beni', 'Cochabamba', 'La Paz', 'Oruro', 'Potosí', 'Santa Cruz', 'Tarija'
+  'Pando', 'Beni', 'Cochabamba', 'La Paz', 'Oruro', 'Potosí', 'Santa Cruz', 'Tarija','Sucre'
 ];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('El nombre es obligatorio')
   .matches(/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s,.!?:;-]*$/, 'El nombre contiene caracteres no permitidos')
-  .min(5, 'El nombre debe tener al menos 5 caracteres')
+  .min(2, 'El nombre debe tener al menos 2 caracteres')
   .max(50, 'El nombre no debe exceder los 50 caracteres'),
   description: Yup.string()
   .required('La descripción es obligatoria')
@@ -55,26 +62,47 @@ const CreateForm = () => {
   const router = useRouter()
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [createProperty, { isLoading }] = useCreatePropertiesMutation();
+
+
   const handleSubmit = async (values) => {
     values.address.latitude = coordinates.latitude;
     values.address.longitude = coordinates.longitude;    
-    if (values.longitude !== 0) {
+    if (coordinates.longitude!=0 ) {
       try {
         const result = await createProperty(values);
-        router.push('/properties', { scroll: false })
+        router.push('/properties')
+
       } catch (error) {
+        toast.error('Hubo un error al crear la propiedad.')
       }
+    }else{
+      toast.error('Seleccione una ubicación en el mapa')
+
     }
   };
   const handleMarkerPositionChange = (clickedLatLng) => {
     setCoordinates({ latitude: clickedLatLng.lat, longitude: clickedLatLng.lng });
   };
   return (
+    
     <div>
+      <ToastContainer
+        transition={Flip}
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
       {isLoading && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="spinner border-t-4 border-blue-500 border-solid rounded-full h-12 w-12 animate-spin" />
-    </div>
+        <div className="spinner border-t-4 border-blue-500 border-solid rounded-full h-12 w-12 animate-spin" />
+      </div>
           )}
       <Formik
         initialValues={{

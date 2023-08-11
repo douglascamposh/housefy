@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import CreateForm from '@/components/Form/CreateForm';
+import CreateForm from '@/components/Form/CreatePropertyFrom';
 
 const Page = () => {
 
