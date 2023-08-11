@@ -8,6 +8,8 @@ import { useCreatePropertiesMutation } from '@/redux/services/propertiesApi';
 
 import MapComponent from '../Maps/MapComponent';
 import Button from './Button';
+import { FormInput } from '../common/FormInput';
+import { Label } from '../common/Label';
 
 import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -132,173 +134,123 @@ const CreateForm = () => {
 
             <div className="flex flex-col md:flex-row md:space-x-4">
               <div className="w-full md:w-1/2">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Nombre
-                </label>
-                <Field
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="Nombre"
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                    errors?.name && touched?.name ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
-                />
-              </div>
+                <div>
+                  <Label htmlFor="name">Nombre</Label>
+                  <FormInput
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Nombre"
+                    className={`${errors?.name && touched?.name ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  <ErrorMessage name="name" component="div" className="text-red-500" />
+                </div>
               <ErrorMessage name="name" component="div" className="text-red-500" />
 
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Descripcion
-                </label>
-                <Field
+              <Label htmlFor="description">Descripcion</Label>
+                <FormInput
                   name="description"
                   type="text"
-                  autoComplete="description"
                   placeholder="Descripcion"
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                    errors?.description && touched?.description ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                  className={`${errors?.description && touched?.description ? 'border-red-500' : 'border-gray-300'}`}
                 />
-              <ErrorMessage name="description" component="div" className="text-red-500" />
-
+                <ErrorMessage name="description" component="div" className="text-red-500" />
               </div>
               <div className="flex space-x-4">
               <div className="w-1/2">
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-                  Departamento
-                </label>
-                <Field
+                <Label htmlFor="address.state">Departamento</Label>
+                <FormInput
                   as="select"
                   name="address.state"
-                  className={`block w-full py-2 px-3 border ${
-                    errors.address?.state && touched.address?.state ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md shadow-sm focus:ring-blue-300 focus:border-blue-300 sm:text-sm`}
+                  className={`${errors?.address?.state && touched?.address?.state ? 'border-red-500' : 'border-gray-300'}`}
                 >
                   <option value="" label="Selecciona un departamento" />
                   {departments.map(department => (
                   <option key={department} value={department} label={department} />
                   ))}
-                </Field>
+                </FormInput>
                 <ErrorMessage name="address.state" component="div" className="text-red-500" />
               </div>
-
                   <div className="w-1/2">
-                    <label htmlFor="address.city" className="block text-sm font-medium text-gray-700">
-                      Nombre de Ciudad
-                    </label>
-                    <Field
+                    <Label htmlFor="address.city">Nombre de Ciudad</Label>
+                    <FormInput
                       name="address.city"
                       type="text"
                       autoComplete="address.city"
                       placeholder="Ej: El Alto"
-                      className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                        errors.address?.city && touched.address?.city
-                          ? 'border-red-500'
-                          : 'border-gray-300'
-                      } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                      className={`${errors?.address?.city && touched?.address?.city ? 'border-red-500' : 'border-gray-300'}`}
                     />
                     <ErrorMessage name="address.city" component="div" className="text-red-500" />
                   </div>
                 </div>
               <div>
-                <label htmlFor="address.street" className="block text-sm font-medium text-gray-700">
-                  Calle
-                </label>
-                <Field
+                <Label htmlFor="address.street">Calle</Label>
+                <FormInput
                   name="address.street"
                   type="text"
                   autoComplete="address.street"
                   placeholder="Ej: Av. Principal"
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                    errors.address?.street && touched.address?.street ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                  className={`${errors?.address?.street && touched?.address?.street ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                <ErrorMessage name="address.street" component="div" className="text-red-500" />
               </div>
-              <ErrorMessage name="address.street" component="div" className="text-red-500" />
-
               <div>
-                <label htmlFor="address.reference" className="block text-sm font-medium text-gray-700">
-                  Referencia
-                </label>
-                <Field
+                <Label htmlFor="address.reference">Referencia</Label>
+                <FormInput
                   name="address.reference"
                   type="text"
                   autoComplete="address.reference"
                   placeholder="Ej: Frente al parque central"
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                    errors.address?.reference && touched.address?.reference ? 'border-red-500' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                  className={`${errors?.address?.reference && touched?.address?.reference ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                <ErrorMessage name="address.reference" component="div" className="text-red-500" />
               </div>
-              <ErrorMessage name="address.reference" component="div" className="text-red-500" />
               <div>
-                <label htmlFor="address.streetNumber" className="block text-sm font-medium text-gray-700">
-                  Número de Calle
-                </label>
-                <Field
+                <Label htmlFor="address.streetNumber">Número de Calle</Label>
+                <FormInput
                   name="address.streetNumber"
                   type="text"
                   autoComplete="address.streetNumber"
                   placeholder="Ej: 123"
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                    errors.address?.streetNumber && touched.address?.streetNumber
-                      ? 'border-red-500'
-                      : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                  className={`${errors?.address?.streetNumber && touched?.address?.streetNumber ? 'border-red-500' : 'border-gray-300'}`}
                 />
+                <ErrorMessage name="address.streetNumber" component="div" className="text-red-500" />
               </div>
-              <ErrorMessage name="address.streetNumber" component="div" className="text-red-500" />
               </div>
               <div className="w-full md:w-1/2 mt-4 md:mt-0">
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                  Categoría
-                </label>
-                <Field
+                <Label htmlFor="category">Categoría</Label>
+                <FormInput
                   as="select"
                   name="category"
-                  className={`block w-full py-2 px-3 border ${
-                    errors.category && touched.category ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md shadow-sm focus:ring-blue-300 focus:border-blue-300 sm:text-sm`}
+                  className={`${errors?.category && touched?.category ? 'border-red-500' : 'border-gray-300'}`}
                 >
                   <option value="" label="Selecciona una categoría" />
                   {categories.map(category => (
                     <option key={category.id} value={category.id} label={category.name} />
                   ))}
-                </Field>
+                </FormInput>
+                <ErrorMessage name="category" component="div" className="text-red-500" />
               </div>
-              <ErrorMessage name="category" component="div" className="text-red-500" />
               <div className="flex space-x-4">
                 <div className="w-1/2">
-                  <label htmlFor="totalProperties" className="block text-sm font-medium text-gray-700">
-                    Total de Propiedades
-                  </label>
-                  <Field
+                  <Label htmlFor="totalProperties">Total de Propiedades</Label>
+                  <FormInput
                     name="totalProperties"
                     type="number"
                     placeholder="Total de Propiedades"
-                    className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                      errors.totalProperties && touched.totalProperties ? 'border-red-500' : 'border-gray-300'
-                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                    className={`${errors?.totalProperties && touched?.totalProperties ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   <ErrorMessage name="totalProperties" component="div" className="text-red-500" />
-
                 </div>
                 <div className="w-1/2">
-                  <label htmlFor="propertiesAvailable" className="block text-sm font-medium text-gray-700">
-                    Propiedades Disponibles
-                  </label>
-                  <Field
+                  <Label htmlFor="propertiesAvailable">Propiedades Disponibles</Label>
+                  <FormInput
                     name="propertiesAvailable"
                     type="number"
                     placeholder="Propiedades Disponibles"
-                    className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                      errors.propertiesAvailable && touched.propertiesAvailable
-                        ? 'border-red-500'
-                        : 'border-gray-300'
-                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-300 focus:border-blue-300 focus:z-10 sm:text-sm`}
+                    className={`${errors?.propertiesAvailable && touched?.propertiesAvailable ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   <ErrorMessage name="propertiesAvailable" component="div" className="text-red-500" />
 
