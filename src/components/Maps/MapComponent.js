@@ -11,10 +11,14 @@ const initialMarkerPosition = {
   lng: -64.1755917
 };
 
-const MapComponent = ({ onMarkerPositionChange }) => {
+const MapComponent = ({ onMarkerPositionChange,zoom,lat,lng,marker }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   });
+  if (lat){
+    initialMarkerPosition.lat=lat
+    initialMarkerPosition.lng=lng
+  }
 
   const [markerPosition, setMarkerPosition] = useState(initialMarkerPosition);
 
@@ -24,8 +28,10 @@ const MapComponent = ({ onMarkerPositionChange }) => {
       lat: e.latLng.lat(),
       lng: e.latLng.lng()
     };
-    setMarkerPosition(clickedLatLng);
-    onMarkerPositionChange(clickedLatLng); 
+    if (marker){
+      setMarkerPosition(clickedLatLng);
+      onMarkerPositionChange(clickedLatLng); 
+    }
   };
   if (!isLoaded) {
     return <Spinner></Spinner>
@@ -35,7 +41,7 @@ const MapComponent = ({ onMarkerPositionChange }) => {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={initialMarkerPosition}
-      zoom={5}
+      zoom={zoom}
       onClick={handleMarkerClick}
     >
       <Marker position={markerPosition} />
