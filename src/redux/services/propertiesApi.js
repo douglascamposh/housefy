@@ -9,6 +9,9 @@ export const propertiesApi = createApi({
     getProperties: builder.query({
       query: () => '/properties',
     }),
+    getPropertiesById: builder.query({
+      query: (id) => `/properties/${id}`,
+    }),
     createProperties: builder.mutation({
       query: (newProperties) => ({
         method: 'POST',
@@ -51,6 +54,7 @@ export const propertiesApi = createApi({
 
 export const {
   useGetPropertiesQuery,
+  useGetPropertiesByIdQuery,
   useCreatePropertiesMutation,
   useUpdatePropertiesMutation,
   useDeletePropertiesMutation,
