@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const propertiesApi = createApi({
   reducerPath: 'propertiesApi',
   baseQuery: fetchBaseQuery({
+    //ToDo move the base path url to the env variables
     baseUrl: 'http://54.163.17.76:8072/api/v1'
   }),
   endpoints: (builder) => ({
