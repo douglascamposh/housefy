@@ -1,123 +1,180 @@
 import React, { useState } from 'react';
 import { useUploadImagePropertiesMutation } from '@/redux/services/propertiesApi';
 import { toast } from 'react-toastify';
+import { MdOutlineAddPhotoAlternate, MdClose } from 'react-icons/md';
 import Button from './Form/Button';
 import Image from 'next/image';
 import Spinner from './Spinner';
-import { MdOutlineAddPhotoAlternate, MdClose } from 'react-icons/md';
 
-const UploadImages = ({ entityId }) => {
-  const [files, setFiles] = useState([]);
-  const [previewImages, setPreviewImages] = useState([]);
-  const [urlImages, setUrlImages] = useState([]);
+const SUPPORTED_IMAGE_TYPES = ['image/jpeg'];
+const VALID_IMAGE_EXTENSION = '.jpg';
+
+const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
+  const [imageData, setImageData] = useState({
+    files: [],
+    previewImages: [],
+    urlImages: [],
+  });
+  const [previewImagesSave, setPreviewImagesSave] = useState(ImagesSave);
   const [uploadImageMutation, { isLoading }] = useUploadImagePropertiesMutation();
-  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const validateImage = (file) => {
+    return (
+      SUPPORTED_IMAGE_TYPES.includes(file.type) && file.name.endsWith(VALID_IMAGE_EXTENSION)
+    );
+  };
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
 
-    const validFiles = selectedFiles.filter(
-      (file) => file.type.startsWith('image/') && file.name.endsWith('.jpg')
-    );
+    const validFiles = selectedFiles.filter(validateImage);
 
     if (validFiles.length > 0) {
-      setFiles((prevFiles) => [...prevFiles, ...validFiles]);
-      setPreviewImages((prevImages) => [
-        ...prevImages,
-        ...validFiles.map((file) => URL.createObjectURL(file)),
-      ]);
+      setImageData((prevState) => ({
+        ...prevState,
+        files: [...prevState.files, ...validFiles],
+        previewImages: [
+          ...prevState.previewImages,
+          ...validFiles.map((file) => URL.createObjectURL(file)),
+        ],
+      }));
     } else {
       toast.error('Por favor selecciona archivos de imagen JPG');
     }
   };
-
-  const handleRemoveImage = (index) => {
-    const newFiles = [...files];
-    newFiles.splice(index, 1);
-    setFiles(newFiles);
-
-    const newPreviewImages = [...previewImages];
-    newPreviewImages.splice(index, 1);
-    setPreviewImages(newPreviewImages);
+  const handleRemoveImage = (index, isPreviewSave) => {
+    const newImages = isPreviewSave
+      ? [...previewImagesSave]
+      : [...imageData.previewImages];
+    newImages.splice(index, 1);
+  
+    if (isPreviewSave) {
+      setPreviewImagesSave(newImages);
+    } else {
+      setImageData((prevState) => ({
+        ...prevState,
+        files: prevState.files.filter((file, i) => i !== index), 
+        previewImages: newImages,
+      }));
+    }
   };
+  
 
   const handleUpload = async () => {
-    if (files.length>0){
-        try {
-            const promises = files.map(async (file) => {
-              const response = await uploadImageMutation({
-                file,
-                entityId: entityId,
-              });
-              return response.data ? response.data.url : null;
-            });
-      
-            const uploadedUrls = await Promise.all(promises);
-            setUrlImages((prevUrls) => [...prevUrls, ...uploadedUrls]);
-            toast.success('Imágenes subidas exitosamente');
-            console.log(uploadedUrls)
+    if (imageData.files.length + previewImagesSave.length > 0) {
+      try {
+        const promises = imageData.files.map(async (file) => {
+          try {
+            const response = await uploadImageMutation({ file });
+            if (response.data) {
+              return {
+                id: response.data.imageId,
+                url: response.data.url,
+              };
+            }
+            return null;
           } catch (error) {
-            toast.error('Error en la carga de imágenes');
-          }    
-    }else{
-        toast.error('Seleccione al menos una imagen');
+            return null;
+          }
+        });
 
+        const uploadResults = await Promise.allSettled(promises);
+        const combinedImages = [
+          ...previewImagesSave,
+          ...uploadResults
+            .filter((result) => result.status === 'fulfilled')
+            .map((result) => result.value),
+        ];
+
+        setImageData((prevState) => ({
+          ...prevState,
+          urlImages: [...prevState.urlImages, ...combinedImages],
+        }));
+        ModalImages(false)
+        toast.success('Imagenes subidas exitosamente');
+        ImagesUploaded(combinedImages);
+      } catch (error) {
+        toast.error('Error en la carga de imágenes');
+      }
+    } else {
+      toast.error('Seleccione al menos una imagen');
     }
-    
   };
 
-  const showUploadButton = files.length < 6;
-
+  const showUploadButton = imageData.files.length + previewImagesSave.length < 6;
+  
   return (
-    <div className="bg-gray-50 p-6 rounded-lg shadow-lg w-full">
-      {isLoading ? (
-        <div className="h-60 flex items-center justify-center">
-          <Spinner />
-          <label className="text-blue-500 ml-3"> Subiendo imagenes</label>
-        </div>
-      ) : (
-        <div>
-          {files.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {previewImages.map((previewImage, index) => (
-                <div key={index} className="mb-2 flex justify-center items-center relative shadow-lg bg-white">
-                  <Image src={previewImage} alt="Vista previa de la imagen" width={100} height={100} className="m-auto" />
-                  <button onClick={() => handleRemoveImage(index)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
-                    <MdClose />
-                  </button>
-                </div>
-              ))}
-              {showUploadButton && (
-                <div onClick={() => document.getElementById('fileInput').click()} className="flex flex-col hover:bg-gray-100 items-center justify-center h-48 border-2 border-dashed border-gray-300 bg-white cursor-pointer">
-                  <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
-                    <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div onClick={() => document.getElementById('fileInput').click()} className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 bg-white cursor-pointer">
-              <div className="text-lg text-center mb-2">Selecciona archivos JPG para subir</div>
-              <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
-                <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
-              </div>
-              <div className="text-sm text-gray-400 mt-2">Elegir archivos</div>
-            </div>
-          )}
-
-          <input id="fileInput" type="file" accept=".jpg" multiple onChange={handleFileChange} disabled={isLoading || !showUploadButton} className="sr-only" />
-          <div className="flex items-center justify-between mt-4">
-            {files.length >= 6 && (
-              <label className="text-red-500 text-xs">
-                Has alcanzado el límite máximo de imágenes seleccionadas.
-              </label>
-            )}
-            <Button onClick={handleUpload} disabled={isLoading} label="Subir imágenes" />
+    <div className='fixed inset-0 z-50 flex p-5 items-center justify-center bg-gray-700 bg-opacity-50'>
+      <div className="bg-white pl-6 pr-6 flex flex-col rounded-lg shadow-lg w-full md:h-full md:w-3/4 lg:w-1/2">
+        <div className='flex items-center border-b-[1px] border-gray-600 p-4 mb-4'>
+        <button type="button" onClick={()=>{ModalImages(false)}} className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200">
+          <MdClose className="text-gray-600 w-4 h-4 " />
+        </button>
+          <div className='flex-1'>
+            <p className='text-center'>Selecciona imágenes</p>
           </div>
         </div>
-      )}
+  
+        {isLoading ? (
+          <div className="h-60  items-center justify-center">
+            <Spinner />
+            <label className="text-green-500 ml-3"> Subiendo imagenes</label>
+          </div>
+        ) : (
+          <div className='flex-1'>
+            {imageData.files.length + previewImagesSave.length > 0 ? (
+              <div className="grid grid-cols-2 grid-rows-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                {previewImagesSave.map((previewImage, index) => (
+                  <div key={index} className="mb-2 flex justify-center items-center  relative shadow-lg bg-white">
+                    <Image src={previewImage.url} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
+                    <button type='button' onClick={() => handleRemoveImage(index, true)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
+                      <MdClose />
+                    </button>
+                  </div>
+                ))}
+                {imageData.previewImages.map((previewImage, index) => (
+                  <div key={index} className="mb-2 flex h-100 justify-center items-center relative shadow-lg bg-white">
+                    <Image src={previewImage} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
+                    <button type='button' onClick={() => handleRemoveImage(index, false)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
+                      <MdClose />
+                    </button>
+                  </div>
+                ))}
+                {showUploadButton && (
+                  <div onClick={() => document.getElementById('fileInput').click()} className="h-[80px] md:h-[200px] flex flex-col hover:bg-gray-100 items-center justify-center  border-2 border-dashed border-gray-300 bg-white cursor-pointer">
+                    <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
+                      <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div onClick={() => document.getElementById('fileInput').click()} className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 bg-white cursor-pointer">
+                <div className="text-lg text-center mb-2">Selecciona archivos JPG para subir</div>
+                <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
+                  <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+                </div>
+                <div className="text-sm text-gray-400 mt-2">Elegir archivos</div>
+              </div>
+            )}
+            <input id="fileInput" type="file" accept=".jpg" multiple onChange={handleFileChange} disabled={isLoading || !showUploadButton} className="sr-only" />
+          </div>
+        )}
+  
+        <div className="flex items-center justify-between m-4">
+          {imageData.files.length + previewImagesSave.length >= 6 ? (
+            <label className="text-red-500 text-xs">
+              Has alcanzado el límite máximo de imágenes seleccionadas.
+            </label>
+          ) : (
+            <div />
+          )}
+          <Button onClick={handleUpload} type="button" disabled={isLoading} label="Subir imágenes" />
+        </div>
+      </div>
     </div>
   );
+  
 };
 
 export default UploadImages;

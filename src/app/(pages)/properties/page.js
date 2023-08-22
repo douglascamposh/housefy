@@ -13,9 +13,12 @@ const Page = () => {
   if (isLoading) {
     return (
       <div>
-        <Link href='/properties/create'>
-          <Button label='Nuevo'/>
-        </Link>
+        <div className='flex justify-between m-2'>
+          <div></div>
+          <Link href='/properties/create'>
+            <Button label='Nuevo'/>
+          </Link>
+        </div>
         <ShimmerCard />
       </div>
     );
@@ -27,9 +30,13 @@ const Page = () => {
 
   return (
     <div>
-      <Link href='/properties/create'>
-        <Button label='Nuevo'/>
-      </Link>
+      <div className='flex justify-between m-2'>
+        <div></div>
+        <Link href='/properties/create'>
+          <Button label='Nuevo'/>
+        </Link>
+      </div>
+
       <CardView data={data} />
     </div>
   );

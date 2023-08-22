@@ -33,16 +33,13 @@ export const propertiesApi = createApi({
       }),
     }),
     uploadImageProperties: builder.mutation({
-      query: ({ file, entityId }) => {
+      query: ({ file }) => {
         const formData = new FormData();
         formData.append('image', file);
         formData.append('filename', file.name);
-        formData.append('entityType', 'property');
-        formData.append('entityId', entityId);
-    
         return {
           method: 'POST',
-          url: `/properties/${entityId}/upload`, 
+          url: `/properties/upload`, 
           body: formData,
         };
       },

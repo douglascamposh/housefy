@@ -3,7 +3,7 @@ import CardProperty from "./CardProperty";
 
 const CardView = ({ data }) => {
   return (
-    <div className="grid gap-2 lg:grid-cols-4">
+    <div className="grid gap-2 lg:grid-cols-4 md:grid-cols-3 grid-cols-1">
       {data.map((item, key) => (
         (item.name && item.address?.street) ? (
           <CardProperty
