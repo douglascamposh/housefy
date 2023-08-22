@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ label, onClick,className }) => {
+const Button = ({ label, onClick, className, ...restProps }) => {
   return (
     <button
-      className={`${ButtonStyles.button} ${className}`}
+      className={`bg-white border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-2 px-4 rounded ${className}`}
       onClick={onClick}
+      {...restProps}
     >
       {label}
     </button>
@@ -17,11 +18,5 @@ Button.propTypes = {
   onClick: PropTypes.func,
   className: PropTypes.string,
 };
-const ButtonStyles = {
-  button: "bg-white border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white py-2 px-4 rounded",
-};
-
-
-
 
 export default Button;

@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react'; 
+import React, { useState } from 'react'; 
 
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form } from 'formik';
 
 import { useRouter } from 'next/navigation'
 import { useCreatePropertiesMutation,useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
@@ -11,6 +11,8 @@ import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FormInputLabel } from '../common/FormInputLabel';
 import { categories,propertyScheme,departments } from '@/app/constants/data';
+import UploadImages from '../UploadImages';
+import ImageGallery from '../ImageGallery';
 
 
 
@@ -19,8 +21,8 @@ const PropertyForm = ({action,data}) => {
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [createProperty, { isLoading }] = useCreatePropertiesMutation();
   const [updateProperty, { isLoading2 }] = useUpdatePropertiesMutation();
-
-
+  const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
+  const [modalImages,setModalImages]=useState(false);
 
   if (data){
 
@@ -31,15 +33,23 @@ const PropertyForm = ({action,data}) => {
     delete data.type;
   }else{
     data={...propertyScheme}
-    console.log(data)
-    console.log(propertyScheme)
 
+  }
+
+  const toggleModal=(status)=>{
+
+    setModalImages(status)
+  }
+  const handleImagesUploaded = (uploaded) => {
+      setUploadedImages((prevUploaded) => [ ...uploaded]);
   }
   const handleNavigation = () => {
     router.push('/properties');
   };
 
   const registerProperty=async(payload)=>{
+
+
     try {
       await createProperty(payload);
       handleNavigation();
@@ -60,30 +70,38 @@ const PropertyForm = ({action,data}) => {
     }
   }
   const handleSubmit =  (values) => {
-    const newValues = { ...values }; 
-    if (coordinates.latitude!=0){
-          newValues.address = {
-      ...newValues.address, 
-      latitude: coordinates.latitude,
-      longitude: coordinates.longitude,
-    };
-    }
-    if (newValues.address.latitude !== 0) {
-      const payload = {
-        ...newValues,
-        type: newValues.category,
+    const newValues = { ...values };
+    newValues.images=uploadedImages
+
+    if (newValues.images!=0){
+      if (coordinates.latitude!=0){
+            newValues.address = {
+        ...newValues.address, 
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
       };
-
-      delete payload.category;
-
-      if (action === 'register') {
-        registerProperty(payload);
-      } else if (action === 'update') {
-        updateProperties(payload);
       }
-    } else {
-      toast.error('Seleccione una ubicación en el mapa');
+      if (newValues.address.latitude !== 0) {
+        const payload = {
+          ...newValues,
+          type: newValues.category,
+        };
+  
+        delete payload.category;
+  
+        if (action === 'register') {
+          registerProperty(payload);
+        } else if (action === 'update') {
+          updateProperties(payload);
+        }
+      } else {
+        toast.error('Seleccione una ubicación en el mapa');
+      }
+    }else{
+      toast.error('Seleccione al menos una imagen');
+
     }
+
 
   };
   const handleMarkerPositionChange = (clickedLatLng) => {
@@ -120,6 +138,27 @@ const PropertyForm = ({action,data}) => {
 
             <div className="flex flex-col md:flex-row md:space-x-4">
               <div className="w-full md:w-1/2">
+                {uploadedImages.length!=0?
+                <div>
+
+                  <ImageGallery images={uploadedImages} toggleModal={toggleModal}></ImageGallery>
+
+                </div>
+                :
+                <div className='text-center'>
+                  <h2 className='mb-2'>Ninguna imagenen seleccionada</h2>
+                <Button  type="button" label='Selecciona imagenes' onClick={()=>toggleModal(true)}></Button>
+
+                </div>
+              }
+                  {modalImages ?
+                  <UploadImages ImagesUploaded={handleImagesUploaded} ImagesSave={uploadedImages} ModalImages={toggleModal}></UploadImages>
+                  
+                  :null
+
+                }
+
+
                 <FormInputLabel
                     label="Nombre"
                     name="name"
@@ -142,8 +181,54 @@ const PropertyForm = ({action,data}) => {
                     value={values.description}
 
                 />
-                
+                                <FormInputLabel
+                    label="Categoria"
+                    as="select"
+                    name="category"
+                    touched={touched}
+                    errors={errors}
+                  value={values.category}
 
+                >
+                    <option value="" label="Selecciona una categoría" />
+                  {categories.map(type => (
+                    <option key={type.id} value={type.id} label={type.name} />
+                  ))}
+                </FormInputLabel>
+                <div className="flex space-x-4">
+                <div className="w-1/2">
+                    <FormInputLabel
+                        label="Total de propiedades"
+                        name="totalProperties"
+                        type="number"
+                        placeholder="Total de Propiedades"
+                        touched={touched}
+                        errors={errors}
+                  value={values.totalProperties}
+
+                    /> 
+                </div>
+                <div className="w-1/2">
+
+                    <FormInputLabel
+                    label="Propiedades Disponibles"
+                    name="propertiesAvailable"
+                    type="number"
+                    placeholder="Propiedades Disponibles"
+                    touched={touched}
+                    errors={errors}
+                  value={values.propertiesAvailable}
+
+                    />
+
+                </div>
+              </div>
+
+              
+              </div>
+              <div className="w-full md:w-1/2 mt-4 md:mt-0">
+              <div>
+                
               <div className="flex space-x-4">
               <div className="w-1/2">
                 <FormInputLabel
@@ -227,52 +312,9 @@ const PropertyForm = ({action,data}) => {
                 </FormInputLabel>
              
               </div>
+
               </div>
-              <div className="w-full md:w-1/2 mt-4 md:mt-0">
-              <div>
-                <FormInputLabel
-                    label="Categoria"
-                    as="select"
-                    name="category"
-                    touched={touched}
-                    errors={errors}
-                  value={values.category}
-
-                >
-                    <option value="" label="Selecciona una categoría" />
-                  {categories.map(type => (
-                    <option key={type.id} value={type.id} label={type.name} />
-                  ))}
-                </FormInputLabel>
-              </div>
-              <div className="flex space-x-4">
-                <div className="w-1/2">
-                    <FormInputLabel
-                        label="Total de propiedades"
-                        name="totalProperties"
-                        type="number"
-                        placeholder="Total de Propiedades"
-                        touched={touched}
-                        errors={errors}
-                  value={values.totalProperties}
-
-                    /> 
-                </div>
-                <div className="w-1/2">
-
-                    <FormInputLabel
-                    label="Propiedades Disponibles"
-                    name="propertiesAvailable"
-                    type="number"
-                    placeholder="Propiedades Disponibles"
-                    touched={touched}
-                    errors={errors}
-                  value={values.propertiesAvailable}
-
-                    />
-
-                </div>
-              </div>
+              
 
               <div>
                 {coordinates.latitude !== 0 && coordinates.longitude !== 0 ? (

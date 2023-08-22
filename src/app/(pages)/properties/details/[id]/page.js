@@ -41,10 +41,12 @@ const Page = ({ params }) => {
                 </span>
             </div>
             
-            {data.images.length !== 0 && <Carousel images={images} />}
             
             <div className="flex flex-col md:flex-row">
-                <div className="md:w-2/3 ">
+
+                <div className="md:w-2/3  pt-4 ">
+            {data.images.length !== 0 && <Carousel images={data.images} />}
+
                     <div className="grid grid-cols-4  bg-primary rounded-md">
                         <div className="flex flex-col items-center bg-primary p-4 rounded-lg">
                             <FaCheckCircle className="text-white text-2xl mb-2 md:text-3    xl" />
@@ -74,7 +76,7 @@ const Page = ({ params }) => {
                     <div className="bg-white shadow-md p-6 rounded-lg mt-4">
                         <div className="space-y-6">
                             <div className="flex items-start space-x-4">
-                                <MdOutlineInfo className="text-4xl text-primary" />
+                                <MdOutlineInfo className="text-2xl text-primary" />
                                 <div className="flex flex-col">
                                     <h2 className="text-lg font-semibold text-gray-800">Descripción:</h2>
                                     <p className="text-gray-600">
@@ -83,7 +85,7 @@ const Page = ({ params }) => {
                                 </div>
                             </div>
                             <div className="flex items-start space-x-4">
-                                <MdOutlineLocationOn className="text-4xl text-primary" />
+                                <MdOutlineLocationOn className="text-2xl text-primary" />
                                 <div className="flex flex-col">
                                     <h2 className="text-lg font-semibold text-gray-800">Ubicación:</h2>
                                     <p className="text-gray-600">
