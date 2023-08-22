@@ -10,7 +10,7 @@ const FormInputLabel = (props) => {
             <FormInput
             {...props}
 
-            className={`${props.errors?.name && props.touched?.name ? style.errorBorder :style.border}`}
+            className={`${props.errors?.name && props.touched?.name ? style.errorBorder :style.border} pl-4`}
             />
             <ErrorMessage name={props.name} component="div" className={style.errorBorder+" "+style.color} />
         </div>
