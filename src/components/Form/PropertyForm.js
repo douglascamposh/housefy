@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useCreatePropertiesMutation,useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
 import MapComponent from '../Maps/MapComponent';
 import Button from './Button';
-import validationSchema from './SchemaValidation';
+import { validationPropertySchema } from '@/app/constants/SchemaValidation';
 import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FormInputLabel } from '../common/FormInputLabel';
@@ -130,7 +130,7 @@ const PropertyForm = ({action,data}) => {
           )}
       <Formik
         initialValues={data}
-        validationSchema={validationSchema}
+        validationSchema={validationPropertySchema}
         onSubmit={handleSubmit}
       >
         {({ errors, touched,values }) => (

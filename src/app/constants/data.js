@@ -27,5 +27,14 @@ export const propertyScheme = {
     category: '',
     totalProperties: 0,
     propertiesAvailable: 0,
-  };
+};
+
+export const userCreateScheme={ 
+  email:"",
+  password: "",
+  confirmPassword: '', 
+  firstName:"", 
+  lastName:"",
+  phoneNumber:""
+}
   
