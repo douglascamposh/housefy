@@ -1,13 +1,13 @@
-const DEBUG_MODE = process.env.DEBUG_MODE
+const NEXT_PUBLIC_DEBUG_MODE = process.env.NEXT_PUBLIC_DEBUG_MODE
 
 const info = (key, value = '') => {
-  if (DEBUG_MODE) {
+  if (NEXT_PUBLIC_DEBUG_MODE) {
     console.info(key, value);
   }
 };
 
 const log = (key, value = '') => {
-  if (DEBUG_MODE) {
+  if (NEXT_PUBLIC_DEBUG_MODE) {
     console.log(key, value);
   }
 };

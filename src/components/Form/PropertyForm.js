@@ -13,6 +13,7 @@ import { FormInputLabel } from '../common/FormInputLabel';
 import { categories,propertyScheme,departments } from '@/app/constants/data';
 import UploadImages from '../UploadImages';
 import ImageGallery from '../ImageGallery';
+import UploadSvg from '../Svg/UploadSvg';
 
 
 
@@ -24,7 +25,11 @@ const PropertyForm = ({action,data}) => {
     fixedCacheKey: 'shared-update-post',
   });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
+  const [uploadedSvg, setUploadedSvg] = useState(data ? data.svg : []);
+
   const [modalImages,setModalImages]=useState(false);
+  const [modalSvg,setModalSvg]=useState(false);
+
 
   if (data){
 
@@ -38,13 +43,20 @@ const PropertyForm = ({action,data}) => {
 
   }
 
-  const toggleModal=(status)=>{
+  const toggleModalSvg=(status)=>{
+
+    setModalSvg(status)
+  }
+  const toggleModalImages=(status)=>{
 
     setModalImages(status)
   }
   const handleImagesUploaded = (uploaded) => {
       setUploadedImages((prevUploaded) => [ ...uploaded]);
   }
+  const handleSvgUploaded = (uploaded) => {
+    setUploadedSvg((prevUploaded) => [ ...uploaded]);
+}
   const handleNavigation = () => {
     router.push('/properties');
   };
@@ -139,22 +151,22 @@ const PropertyForm = ({action,data}) => {
           <Form className="mt-8 space-y-6">
 
             <div className="flex flex-col md:flex-row md:space-x-4">
+
               <div className="w-full md:w-1/2">
                 {uploadedImages.length!=0?
                 <div>
-
-                  <ImageGallery images={uploadedImages} toggleModal={toggleModal}></ImageGallery>
+                  <ImageGallery images={uploadedImages} toggleModal={toggleModalImages}></ImageGallery>
 
                 </div>
                 :
                 <div className='text-center'>
                   <h2 className='mb-2'>Ninguna imagenen seleccionada</h2>
-                <Button  type="button" label='Selecciona imagenes' onClick={()=>toggleModal(true)}></Button>
+                <Button  type="button" label='Selecciona imagenes' onClick={()=>toggleModalImages(true)}></Button>
 
                 </div>
               }
                   {modalImages ?
-                  <UploadImages ImagesUploaded={handleImagesUploaded} ImagesSave={uploadedImages} ModalImages={toggleModal}></UploadImages>
+                  <UploadImages ImagesUploaded={handleImagesUploaded} ImagesSave={uploadedImages} ModalImages={toggleModalImages}></UploadImages>
                   
                   :null
 
@@ -222,7 +234,11 @@ const PropertyForm = ({action,data}) => {
 
                 </div>
               </div>
-
+              <Button type="Button" label="Subir SVG" onClick={()=>toggleModalSvg(true)}></Button>
+              {modalSvg?
+              <UploadSvg SvgUploaded={handleSvgUploaded} SvgSave={uploadedSvg} ModalSvg={toggleModalSvg}></UploadSvg>:null
+              
+            }
               
               </div>
               <div className="w-full md:w-1/2 mt-4 md:mt-0">
