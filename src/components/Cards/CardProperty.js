@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Carousel from "../Carrousel";
 
 const Card = ({ name, images, address, description, id, propertiesAvailable }) => {
+
   const router = useRouter();
 
   const handleCardClick = () => {

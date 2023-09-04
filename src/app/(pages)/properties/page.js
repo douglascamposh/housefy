@@ -1,6 +1,7 @@
-"use client"
+"use client";
+
 import React from 'react';
-import { useGetPropertiesQuery } from '@/redux/services/propertiesApi';
+import { useGetPropertiesQuery, useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
 import ServerErrorComponent from '@/components/ServerError';
 import CardView from '@/components/Cards/CardPropertyView';
 import ShimmerCard from '@/components/Shimmers/ShimmerCard';

@@ -20,7 +20,9 @@ const PropertyForm = ({action,data}) => {
   const router = useRouter()
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [createProperty, { isLoading }] = useCreatePropertiesMutation();
-  const [updateProperty, { isLoading2 }] = useUpdatePropertiesMutation();
+  const [updateProperty, { isLoading2 }] = useUpdatePropertiesMutation({
+    fixedCacheKey: 'shared-update-post',
+  });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
   const [modalImages,setModalImages]=useState(false);
 
@@ -69,7 +71,8 @@ const PropertyForm = ({action,data}) => {
       toast.error('Hubo un error al actualizar la propiedad.')
     }
   }
-  const handleSubmit =  (values) => {
+
+  const handleSubmit = (values) => {
     const newValues = { ...values };
     newValues.images=uploadedImages
 
@@ -99,7 +102,6 @@ const PropertyForm = ({action,data}) => {
       }
     }else{
       toast.error('Seleccione al menos una imagen');
-
     }
 
 
@@ -168,11 +170,9 @@ const PropertyForm = ({action,data}) => {
                     touched={touched}
                     errors={errors}
                     value={values.name}
-
                 />
                 <FormInputLabel
                     label="Descripcion"
-
                     name="description"
                     type="text"
                     placeholder="Descripcion"
@@ -181,14 +181,13 @@ const PropertyForm = ({action,data}) => {
                     value={values.description}
 
                 />
-                                <FormInputLabel
-                    label="Categoria"
-                    as="select"
-                    name="category"
-                    touched={touched}
-                    errors={errors}
+                <FormInputLabel
+                  label="Categoria"
+                  as="select"
+                  name="category"
+                  touched={touched}
+                  errors={errors}
                   value={values.category}
-
                 >
                     <option value="" label="Selecciona una categoría" />
                   {categories.map(type => (
