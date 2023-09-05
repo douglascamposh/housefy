@@ -4,9 +4,6 @@ import { ErrorMessage } from "formik";
 import { Label } from "./Label";
 import { colors } from "@/app/constants/colors";
 const FormInputLabel = (props) => {
-  console.log(props.errors, "errors");
-  console.log(props.touched, "touched");
-  //console.log(props.name, "nameee xd");
 
   const {name} = props
   return(

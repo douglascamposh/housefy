@@ -11,14 +11,17 @@ export const propertiesApi = createApi({
   tagTypes: ["Properties"],
 
   endpoints: (builder) => ({
+    
     getProperties: builder.query({
       query: () => '/properties',
       providesTags: ["Properties"],
     }),
+
     getPropertiesById: builder.query({
       query: (id) => `/properties/${id}`,
       providesTags: ["Properties"],
     }),
+
     createProperties: builder.mutation({
       query: (newProperties) => ({
         method: 'POST',
@@ -26,6 +29,7 @@ export const propertiesApi = createApi({
         body: newProperties,
       }),
     }),
+
     updateProperties: builder.mutation({
       query: ({ id, updateProperties }) => ({
         method: 'PUT',
@@ -34,12 +38,14 @@ export const propertiesApi = createApi({
       }),
       invalidatesTags: ["Properties"],
     }),
+
     deleteProperties: builder.mutation({
       query: (id) => ({
         method: 'DELETE',
         url: `/properties/${id}`,
       }),
     }),
+
     uploadImageProperties: builder.mutation({
       query: ({ file }) => {
         const formData = new FormData();
@@ -52,8 +58,6 @@ export const propertiesApi = createApi({
         };
       },
     }),
-    
-  
   }),
 });
 
