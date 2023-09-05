@@ -7,12 +7,17 @@ export const propertiesApi = createApi({
     //ToDo move the base path url to the env variables
     baseUrl: NEXT_PUBLIC_BASE_URL + '/api/v1'
   }),
+
+  tagTypes: ["Properties"],
+
   endpoints: (builder) => ({
     getProperties: builder.query({
       query: () => '/properties',
+      providesTags: ["Properties"],
     }),
     getPropertiesById: builder.query({
       query: (id) => `/properties/${id}`,
+      providesTags: ["Properties"],
     }),
     createProperties: builder.mutation({
       query: (newProperties) => ({
@@ -27,6 +32,7 @@ export const propertiesApi = createApi({
         url: `/properties/${id}`,
         body: updateProperties,
       }),
+      invalidatesTags: ["Properties"],
     }),
     deleteProperties: builder.mutation({
       query: (id) => ({

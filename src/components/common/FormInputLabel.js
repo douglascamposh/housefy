@@ -4,17 +4,10 @@ import { ErrorMessage } from "formik";
 import { Label } from "./Label";
 import { colors } from "@/app/constants/colors";
 const FormInputLabel = (props) => {
-  // label="Nombre"
-  //                   name="name"
-  //                   type="text"
-  //                   autoComplete="name"
-  //                   placeholder="Nombre"
-  //                   touched={touched}
-  //                   errors={errors}
-  //                   value={values.name}
   console.log(props.errors, "errors");
   console.log(props.touched, "touched");
-  
+  //console.log(props.name, "nameee xd");
+
   const {name} = props
   return(
         <div>
@@ -22,7 +15,7 @@ const FormInputLabel = (props) => {
             <FormInput
             {...props}
 
-            className={`${props.errors?.[name] && props.touched?.[name] ? style.errorBorder :style.border} pl-4`}
+            className={`${(props.errors?.[name] && props.touched?.[name]) || (props.errors?.address?.[name.split(".")[1]] && props.touched?.address?.[name.split(".")[1]]) ? style.errorBorder :style.border} pl-4`}
             />
             <ErrorMessage name={props.name} component="div" className={style.errorBorder+" "+style.color} />
         </div>
