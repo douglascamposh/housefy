@@ -9,12 +9,29 @@ import Carousel from '@/components/Carrousel';
 import ServerErrorComponent from '@/components/ServerError';
 import ShimmerDetails from '@/components/Shimmers/ShimmerDetails';
 import { categories } from '@/app/constants/data';
+import Button from '@/components/Form/Button';
+import UploadSvg from '@/components/Svg/UploadSvg';
+import SvgView from '@/components/Svg/SvgView';
 const Page = ({ params }) => {
     const id = params.id;
+
+    const [modalSvg,setModalSvg]=useState(false);
+
+
     const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
 
     const { data, error, isLoading } = useGetPropertiesByIdQuery(String(id));
-    
+    const [uploadedSvg, setUploadedSvg] = useState(data ? data.svg : []);
+
+    const handleSvgUploaded = (uploaded) => {
+        console.log(uploaded)
+        setUploadedSvg((prevUploaded) => [ ...uploaded]);
+    }
+    const toggleModalSvg=(status)=>{
+
+    setModalSvg(status)
+    }
+        
     const handleMarkerPositionChange = (clickedLatLng) => {
         setCoordinates({ latitude: clickedLatLng.lat, longitude: clickedLatLng.lng });
     };
@@ -45,7 +62,21 @@ const Page = ({ params }) => {
             <div className="flex flex-col md:flex-row">
 
                 <div className="md:w-2/3  pt-4 ">
-            {data.images.length !== 0 && <Carousel images={data.images} />}
+                    <div className='bg-gray-200'>
+                        {data.images.length !== 0 && <Carousel images={data.images} w="auto" h="[300px]" />}
+
+                    </div>
+                    <Button type="Button" label="Subir SVG" onClick={()=>toggleModalSvg(true)}></Button>
+                    {modalSvg?
+                        <UploadSvg SvgUploaded={handleSvgUploaded} SvgSave={uploadedSvg} ModalSvg={toggleModalSvg}></UploadSvg>:null
+              
+                    }
+                    {
+                        uploadedSvg?
+                        <SvgView svg={uploadedSvg}></SvgView>:
+                        null
+
+                    }
 
                     <div className="grid grid-cols-4  bg-primary rounded-md">
                         <div className="flex flex-col items-center bg-primary p-4 rounded-lg">
