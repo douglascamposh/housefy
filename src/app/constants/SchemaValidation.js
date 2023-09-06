@@ -2,7 +2,8 @@ import * as Yup from 'yup';
 
 
 export const validationPropertySchema = Yup.object().shape({
-    name: Yup.string().required('El nombre es obligatorio')
+    name: Yup.string()
+    .required('El nombre es obligatorio')
     .matches(/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s,.!?:;-]*$/, 'El nombre contiene caracteres no permitidos')
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(50, 'El nombre no debe exceder los 50 caracteres'),

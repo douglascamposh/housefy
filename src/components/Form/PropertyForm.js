@@ -13,7 +13,6 @@ import { FormInputLabel } from '../common/FormInputLabel';
 import { categories,propertyScheme,departments } from '@/app/constants/data';
 import UploadImages from '../UploadImages';
 import ImageGallery from '../ImageGallery';
-import UploadSvg from '../Svg/UploadSvg';
 
 
 
@@ -21,13 +20,11 @@ const PropertyForm = ({action,data}) => {
   const router = useRouter()
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [createProperty, { isLoading }] = useCreatePropertiesMutation();
-  const [updateProperty, { isLoading2 }] = useUpdatePropertiesMutation();
+  const [updateProperty, { isLoading2 }] = useUpdatePropertiesMutation({
+    fixedCacheKey: 'shared-update-post',
+  });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
-  const [uploadedSvg, setUploadedSvg] = useState(data ? data.svg : []);
-
   const [modalImages,setModalImages]=useState(false);
-  const [modalSvg,setModalSvg]=useState(false);
-
 
   if (data){
 
@@ -41,20 +38,13 @@ const PropertyForm = ({action,data}) => {
 
   }
 
-  const toggleModalSvg=(status)=>{
-
-    setModalSvg(status)
-  }
-  const toggleModalImages=(status)=>{
+  const toggleModal=(status)=>{
 
     setModalImages(status)
   }
   const handleImagesUploaded = (uploaded) => {
       setUploadedImages((prevUploaded) => [ ...uploaded]);
   }
-  const handleSvgUploaded = (uploaded) => {
-    setUploadedSvg((prevUploaded) => [ ...uploaded]);
-}
   const handleNavigation = () => {
     router.push('/properties');
   };
@@ -81,7 +71,8 @@ const PropertyForm = ({action,data}) => {
       toast.error('Hubo un error al actualizar la propiedad.')
     }
   }
-  const handleSubmit =  (values) => {
+
+  const handleSubmit = (values) => {
     const newValues = { ...values };
     newValues.images=uploadedImages
 
@@ -111,7 +102,6 @@ const PropertyForm = ({action,data}) => {
       }
     }else{
       toast.error('Seleccione al menos una imagen');
-
     }
 
 
@@ -149,22 +139,22 @@ const PropertyForm = ({action,data}) => {
           <Form className="mt-8 space-y-6">
 
             <div className="flex flex-col md:flex-row md:space-x-4">
-
               <div className="w-full md:w-1/2">
                 {uploadedImages.length!=0?
                 <div>
-                  <ImageGallery images={uploadedImages} toggleModal={toggleModalImages}></ImageGallery>
+
+                  <ImageGallery images={uploadedImages} toggleModal={toggleModal}></ImageGallery>
 
                 </div>
                 :
                 <div className='text-center'>
                   <h2 className='mb-2'>Ninguna imagenen seleccionada</h2>
-                <Button  type="button" label='Selecciona imagenes' onClick={()=>toggleModalImages(true)}></Button>
+                <Button  type="button" label='Selecciona imagenes' onClick={()=>toggleModal(true)}></Button>
 
                 </div>
               }
                   {modalImages ?
-                  <UploadImages ImagesUploaded={handleImagesUploaded} ImagesSave={uploadedImages} ModalImages={toggleModalImages}></UploadImages>
+                  <UploadImages ImagesUploaded={handleImagesUploaded} ImagesSave={uploadedImages} ModalImages={toggleModal}></UploadImages>
                   
                   :null
 
@@ -180,11 +170,9 @@ const PropertyForm = ({action,data}) => {
                     touched={touched}
                     errors={errors}
                     value={values.name}
-
                 />
                 <FormInputLabel
                     label="Descripcion"
-
                     name="description"
                     type="text"
                     placeholder="Descripcion"
@@ -193,14 +181,13 @@ const PropertyForm = ({action,data}) => {
                     value={values.description}
 
                 />
-                                <FormInputLabel
-                    label="Categoria"
-                    as="select"
-                    name="category"
-                    touched={touched}
-                    errors={errors}
+                <FormInputLabel
+                  label="Categoria"
+                  as="select"
+                  name="category"
+                  touched={touched}
+                  errors={errors}
                   value={values.category}
-
                 >
                     <option value="" label="Selecciona una categoría" />
                   {categories.map(type => (
@@ -235,11 +222,7 @@ const PropertyForm = ({action,data}) => {
 
                 </div>
               </div>
-              <Button type="Button" label="Subir SVG" onClick={()=>toggleModalSvg(true)}></Button>
-              {modalSvg?
-              <UploadSvg SvgUploaded={handleSvgUploaded} SvgSave={uploadedSvg} ModalSvg={toggleModalSvg}></UploadSvg>:null
-              
-            }
+
               
               </div>
               <div className="w-full md:w-1/2 mt-4 md:mt-0">
@@ -269,15 +252,13 @@ const PropertyForm = ({action,data}) => {
 
                     <FormInputLabel
                       label="Ciudad"
-
                       name="address.city"
                       type="text"
                       autoComplete="address.city"
                       placeholder="Ej: El Alto"
                       touched={touched}
                       errors={errors}
-                        value={values.address.city}
-
+                      value={values.address.city}
                     >
 
                     </FormInputLabel>
