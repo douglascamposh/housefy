@@ -1,14 +1,20 @@
 "use client"
 
-import React, { useState } from 'react';
-import PropertyForm from '@/components/Form/PropertyForm'
+import React from 'react';
 import { useGetPropertiesByIdQuery } from '@/redux/services/propertiesApi';
 import ServerErrorComponent from '@/components/ServerError';
 import ShimmerUpdate from '@/components/Shimmers/ShimmerUpdate';
+import PropertyCreateUpdate from '@/components/properties/PropertyCreateUpdate';
+import {useUpdatePropertiesMutation} from '@/redux/services/propertiesApi';
 
 const Page = ({params}) => {
     const id = params.id
     const { data, error, isLoading } = useGetPropertiesByIdQuery(String(id));
+
+    const [updateProperty, { isLoading: updateLoading }] = useUpdatePropertiesMutation({
+      fixedCacheKey: 'shared-update-post',
+    });
+
     const property = {...data};
     property.category = property.type;
     delete property.type;
@@ -24,7 +30,7 @@ const Page = ({params}) => {
       <h1 className="text-center text-2xl md:text-4xl font-semibold mb-4 text-primary">
         Actualizar Propiedades
       </h1>
-      <PropertyForm data={...property} action="update"></PropertyForm>
+      <PropertyCreateUpdate data={...property} saveProperty={updateProperty} isLoading={updateLoading} />
     </div>
   )
 }

@@ -1,17 +1,19 @@
 "use client"
 
 import React from 'react';
-import PropertyForm from '@/components/Form/PropertyForm';
+import PropertyCreateUpdate from '@/components/properties/PropertyCreateUpdate';
 import {propertyScheme} from '@/app/utils/schema/propertySchema';
+import {useCreatePropertiesMutation} from '@/redux/services/propertiesApi';
 
 const Page = () => {
+  const [createProperty, { isLoading }] = useCreatePropertiesMutation();  
 
   return (
     <div className={Styles.container}>
       <h1 className={Styles.pageTitle}>
         Registro de Propiedades
       </h1>
-      <PropertyForm data={...propertyScheme} action="register"></PropertyForm>
+      <PropertyCreateUpdate data={...propertyScheme} saveProperty={createProperty} isLoading={isLoading}/>
     </div>
   );
 }
