@@ -2,11 +2,11 @@
 
 import React from "react";
 import { Formik, Form } from "formik";
-import { RiUser3Line, RiLockLine,RiMailLine,RiPhoneLine } from "react-icons/ri";
+import { RiUser3Line, RiLockLine, RiMailLine, RiPhoneLine } from "react-icons/ri";
 import FormInputIcon from "@/components/common/FormInputIcon";
 import Link from "next/link";
-import { validationRegisterSchema } from "@/app/constants/SchemaValidation";
-import { userCreateScheme } from "@/app/constants/data";
+import { validationRegisterSchema } from "@/app/utils/validations/schemaValidation";
+import { userCreateScheme } from "@/app/utils/schema/propertySchema";
 const Register  = () => {
   const handleSubmit = (values) => {
     

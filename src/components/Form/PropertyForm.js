@@ -6,17 +6,15 @@ import { useRouter } from 'next/navigation'
 import { useCreatePropertiesMutation,useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
 import MapComponent from '../Maps/MapComponent';
 import Button from './Button';
-import { validationPropertySchema } from '@/app/constants/SchemaValidation';
+import { validationPropertySchema } from '@/app/utils/validations/schemaValidation';
 import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FormInputLabel } from '../common/FormInputLabel';
-import { categories,propertyScheme,departments } from '@/app/constants/data';
+import { categories, departments } from '@/app/utils/schema/propertySchema';
 import UploadImages from '../UploadImages';
 import ImageGallery from '../ImageGallery';
 
-
-
-const PropertyForm = ({action,data}) => {
+const PropertyForm = ({action, data}) => {
   const router = useRouter()
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [createProperty, { isLoading }] = useCreatePropertiesMutation();
@@ -25,18 +23,6 @@ const PropertyForm = ({action,data}) => {
   });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
   const [modalImages,setModalImages]=useState(false);
-
-  if (data){
-
-    data = {
-      ...data,
-      category: data.type
-    };
-    delete data.type;
-  }else{
-    data={...propertyScheme}
-
-  }
 
   const toggleModal=(status)=>{
 
@@ -50,8 +36,6 @@ const PropertyForm = ({action,data}) => {
   };
 
   const registerProperty=async(payload)=>{
-
-
     try {
       await createProperty(payload);
       handleNavigation();
@@ -59,8 +43,8 @@ const PropertyForm = ({action,data}) => {
       toast.error('Hubo un error al crear la propiedad.')
     }
   }
-  const updateProperties=async(payload)=>{
 
+  const updateProperties=async(payload)=>{
     try {
       await updateProperty({
         id:payload.id,
