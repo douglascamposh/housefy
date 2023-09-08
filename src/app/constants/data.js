@@ -25,8 +25,6 @@ export const propertyScheme = {
     },
     images: [],
     category: '',
-    totalProperties: 0,
-    propertiesAvailable: 0,
 };
 
 export const userCreateScheme={ 

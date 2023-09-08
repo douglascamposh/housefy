@@ -181,6 +181,7 @@ const PropertyForm = ({action,data}) => {
                     value={values.description}
 
                 />
+                
                 <FormInputLabel
                   label="Categoria"
                   as="select"
@@ -194,35 +195,6 @@ const PropertyForm = ({action,data}) => {
                     <option key={type.id} value={type.id} label={type.name} />
                   ))}
                 </FormInputLabel>
-                <div className="flex space-x-4">
-                <div className="w-1/2">
-                    <FormInputLabel
-                        label="Total de propiedades"
-                        name="totalProperties"
-                        type="number"
-                        placeholder="Total de Propiedades"
-                        touched={touched}
-                        errors={errors}
-                  value={values.totalProperties}
-
-                    /> 
-                </div>
-                <div className="w-1/2">
-
-                    <FormInputLabel
-                    label="Propiedades Disponibles"
-                    name="propertiesAvailable"
-                    type="number"
-                    placeholder="Propiedades Disponibles"
-                    touched={touched}
-                    errors={errors}
-                  value={values.propertiesAvailable}
-
-                    />
-
-                </div>
-              </div>
-
               
               </div>
               <div className="w-full md:w-1/2 mt-4 md:mt-0">
@@ -231,20 +203,18 @@ const PropertyForm = ({action,data}) => {
               <div className="flex space-x-4">
               <div className="w-1/2">
                 <FormInputLabel
-                    label="Departamento"
-
-                    as="select"
-                    name="address.state"
-                    placeholder="Departamento"
-                    touched={touched}
-                    errors={errors}
+                  label="Departamento"
+                  as="select"
+                  name="address.state"
+                  placeholder="Departamento"
+                  touched={touched}
+                  errors={errors}
                   value={values.address.state}
-
                 >
-                    <option value="" label="Selecciona un departamento" />
-                        {departments.map(department => (
-                    <option key={department} value={department} label={department} />
-                    ))}
+                  <option value="" label="Selecciona un departamento" />
+                    {departments.map(department => (
+                  <option key={department} value={department} label={department} />
+                  ))}
                 </FormInputLabel>
 
               </div>
@@ -260,22 +230,20 @@ const PropertyForm = ({action,data}) => {
                       errors={errors}
                       value={values.address.city}
                     >
-
                     </FormInputLabel>
 
                   </div>
                 </div>
               <div>
                 <FormInputLabel
-                    label="Calle"
-                    name="address.street"
-                    type="text"
-                    autoComplete="address.street"
-                    placeholder="Ej: Av. Principal"
-                    touched={touched}
-                    errors={errors}
-                    value={values.address.street}
-
+                  label="Calle"
+                  name="address.street"
+                  type="text"
+                  autoComplete="address.street"
+                  placeholder="Ej: Av. Principal"
+                  touched={touched}
+                  errors={errors}
+                  value={values.address.street}
                 >
 
                 </FormInputLabel>
@@ -283,13 +251,12 @@ const PropertyForm = ({action,data}) => {
               </div>
               <div>
                 <FormInputLabel
-                    label="Referencia"
+                  label="Referencia"
                   name="address.reference"
                   type="text"
                   autoComplete="address.reference"
                   placeholder="Ej: Frente al parque central"
                   value={values.address.reference}
-
                 >
 
                 </FormInputLabel>

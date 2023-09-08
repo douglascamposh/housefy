@@ -24,19 +24,6 @@ export const validationPropertySchema = Yup.object().shape({
     }),
     category: Yup.string()
     .required('La categoría es obligatoria'),
-    totalProperties: Yup.number()
-    .required('La cantidad de propiedades es obligatoria')
-    .integer('Debe ser un número entero mayor que cero')
-    .min(1, 'Debe ser mayor que cero'),
-    propertiesAvailable: Yup.number()
-    .required('La cantidad disponible es obligatoria')
-    .integer('Debe ser un número entero').test(
-      'properties-available',
-      'Las propiedades disponibles no deben ser mayores que el total de propiedades',
-      function (value) {
-        return value <= this.parent.totalProperties;
-      }
-    ),
     latitude: Yup.number(),
     longitude: Yup.number()
   });

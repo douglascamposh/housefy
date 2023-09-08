@@ -10,6 +10,7 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
   const handleCardClick = () => {
     router.push(`/properties/details/${id}`);
   };
+
   const handleEditClick = (event) => {
     event.stopPropagation(); 
     router.push(`/properties/update/${id}`);

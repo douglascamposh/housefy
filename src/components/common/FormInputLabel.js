@@ -20,7 +20,7 @@ const FormInputLabel = (props) => {
   );
 }
 const style = {
-    errorBorder: colors.borderErrorRed, //border-red-500
+    errorBorder: colors.borderErrorRed,
     color:colors.textErrorRed,
     border: 'border-gray-300'
 };
