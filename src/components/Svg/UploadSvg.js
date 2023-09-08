@@ -1,21 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useUploadImagePropertiesMutation } from "@/redux/services/propertiesApi";
+import { toast } from "react-toastify";
+import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
+import Button from "../Form/Button";
+import { v4 as uuidv4 } from "uuid";
 
-import { useUploadImagePropertiesMutation } from '@/redux/services/propertiesApi';
-import { toast } from 'react-toastify';
-import { MdOutlineAddPhotoAlternate, MdClose } from 'react-icons/md';
-import Button from '../Form/Button';
-import { Logger } from "@/services/Logger";
-const TIPOS_DE_IMAGEN_ADMITIDOS = ['image/svg+xml'];
-const EXTENSION_IMAGEN_VALIDA = '.svg';
+const TIPOS_DE_IMAGEN_ADMITIDOS = ["image/svg+xml"];
+const EXTENSION_IMAGEN_VALIDA = ".svg";
 
 const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
-
+  const [previewImagesSave, setPreviewImagesSave] = useState(SvgSave);
   const [file, setFile] = useState({ content: null });
+  const [modifiedFile, setModifiedFile] = useState({ content: null });
+
   const svgContainerRef = useRef(null);
   const [clickedId, setClickedId] = useState(null);
   const [pathStyleClass, setPathStyleClass] = useState("default-path-style");
+  const [svgIds, setSvgIds] = useState([]);
 
-  
   const [imageData, setImageData] = useState({
     files: [],
     previewImage: null,
@@ -25,13 +27,13 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
 
   const validarImagen = (archivo) => {
     return (
-      TIPOS_DE_IMAGEN_ADMITIDOS.includes(archivo.type) && archivo.name.endsWith(EXTENSION_IMAGEN_VALIDA)
+      TIPOS_DE_IMAGEN_ADMITIDOS.includes(archivo.type) &&
+      archivo.name.endsWith(EXTENSION_IMAGEN_VALIDA)
     );
   };
 
   const handleFileChange = (e) => {
     const archivoSeleccionado = e.target.files[0];
-
     if (validarImagen(archivoSeleccionado)) {
       setImageData({
         files: [archivoSeleccionado],
@@ -43,14 +45,40 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
         const reader = new FileReader();
         reader.onload = (event) => {
           if (event.target) {
-            setFile({ content: event.target.result });
+            const svgContent = event.target.result;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgContent, "image/svg+xml");
+            const svgElement = doc.documentElement;
+
+            const pathElements = svgElement.querySelectorAll("path");
+            const polygonElements = svgElement.querySelectorAll("polygon");
+            const circleElements = svgElement.querySelectorAll("circle");
+
+            const arrayId = [];
+
+            const setIdForElements = (elements) => {
+              elements.forEach((pathElement) => {
+                let idgen = uuidv4();
+                pathElement.setAttribute("id", idgen);
+                arrayId.push(idgen);
+              });
+            };
+
+            setIdForElements(pathElements);
+            setIdForElements(polygonElements);
+            setIdForElements(circleElements);
+
+            setSvgIds(arrayId);
+            const modifiedSvgContent = new XMLSerializer().serializeToString(
+              svgElement
+            );
+            setFile({ content: modifiedSvgContent });
           }
         };
         reader.readAsText(file);
       }
-
     } else {
-      toast.error('Por favor selecciona un archivo SVG válido');
+      toast.error("Por favor selecciona un archivo SVG válido");
     }
   };
 
@@ -63,57 +91,78 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
   };
 
   const handleUpload = async () => {
-    if (imageData.files.length > 0) {
+    if (imageData.files.length + previewImagesSave.length > 0) {
       try {
-        const archivo = imageData.files[0];
-        Logger.warn("Informacion",archivo)
+        console.log("S");
+        const response = await uploadImageMutation({ file: modifiedFile });
 
+        if (response.data) {
+          const uploadedImage = {
+            id: response.data.imageId,
+            url: response.data.url,
+          };
+          setImageData((prevState) => ({
+            ...prevState,
+            urlImages: [...prevState.urlImages, uploadedImage],
+          }));
+
+          ModalSvg(false);
+          toast.success("SVG cargado exitosamente");
+          SvgUploaded([uploadedImage]);
+        } else {
+          toast.error("Error en la carga de la imagen");
+        }
       } catch (error) {
-        toast.error('Error en la carga de la imagen');
+        toast.error("Error en la carga de imágenes");
       }
     } else {
-      toast.error('Seleccione una imagen');
+      toast.error("No se seleccionó ningún archivo SVG");
     }
   };
 
-  
   const handlePathClick = (e) => {
     const target = e.target;
-    if (target.tagName === "path") {
+    if (target.tagName === "path" || target.tagName === "polygon" || target.tagName === "circle") {
       const pathElement = target;
-      pathElement.setAttribute("fill", "yellow");
       const id = pathElement.getAttribute("id");
-      setClickedId(id);
+      setClickedId(id === clickedId ? null : id);
     }
   };
-  
+
   const applyStylesToPaths = () => {
     if (file.content && svgContainerRef.current) {
       const container = document.createElement("div");
       container.innerHTML = file.content;
       const svgSelect = container.querySelector("svg");
-
-
       const svgPolygon = container.querySelectorAll("polygon");
       const svgPaths = container.querySelectorAll("path");
       const svgCircle = container.querySelectorAll("circle");
-
-      svgSelect.style.width = "100%"; 
-      svgSelect.style.height = "100%"; 
-
-
-      svgPaths.forEach((path) => {
-        path.classList.add(pathStyleClass);
-      });
-      svgPolygon.forEach((polygon) => {
-        polygon.classList.add(pathStyleClass);
-      });
-      svgCircle.forEach((circle) => {
-        circle.classList.add(pathStyleClass);
-      });
+      svgSelect.style.width = "100%";
+      svgSelect.style.height = "100%";
+      const setStylesForElements = (elements) => {
+        elements.forEach((element) => {
+          element.removeAttribute("style");
+          element.classList.remove("selected-path");
+          if (element.getAttribute("id") === clickedId) {
+            element.classList.add("selected-path");
+          } else {
+            element.classList.add(pathStyleClass);
+          }
+        });
+      };
+      setStylesForElements(svgPaths);
+      setStylesForElements(svgPolygon);
+      setStylesForElements(svgCircle);
 
       const modifiedSvgContent = container.innerHTML;
       setFile({ content: modifiedSvgContent });
+      const modifiedSvgBlob = new Blob([modifiedSvgContent], {
+        type: "image/svg+xml",
+      });
+      const modifiedSvgFile = new File([modifiedSvgBlob], "modified.svg", {
+        type: "image/svg+xml",
+      });
+      setModifiedFile(modifiedSvgFile);
     }
   };
 
@@ -127,11 +176,11 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
         svgContainerRef.current.removeEventListener("click", handlePathClick);
       }
     };
-  }, [file.content, pathStyleClass]);
+  }, [file.content, pathStyleClass, clickedId]);
 
   const styles = `
     .default-path-style {
-      fill: green;
+      fill: #ccc;
       stroke: black;
       stroke-width: 2;
       transition: fill 0.3s ease, stroke 0.3s ease;
@@ -141,69 +190,72 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
       fill: white;
       stroke: green;
     }
-
+    .selected-path {
+      fill:  #22E61F; 
+    }
   `;
   const mostrarBotonSubir = imageData.files.length === 0;
 
   return (
-    <div className='fixed inset-0 z-50 flex p-5 items-center justify-center bg-gray-700 bg-opacity-50'>
-      <div className="bg-white pl-6 pr-6 flex flex-col rounded-lg shadow-lg w-full md:h-full md:w-3/4 lg:w-1/2">
-        <div className='flex items-center border-b-[1px] border-gray-600 p-4 mb-4'>
-          <button type="button" onClick={()=>{ModalSvg(false)}} className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200">
-            <MdClose className="text-gray-600 w-4 h-4 " />
-          </button>
-          <div className='flex-1'>
-            <p className='text-center'>Selecciona SVG</p>
-          </div>
-        </div>
-        <style>{styles}</style>
-      <label htmlFor="">ID: {clickedId}</label>
-    
-        {!imageData.previewImage ?
-          <label htmlFor="fileInput" className="h-full flex flex-col hover:bg-gray-100 items-center justify-center  border-2 border-dashed border-gray-300 bg-white cursor-pointer">
-            <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
-              <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
-            </div>
-          </label>
-          : null
-        }
-
-        {imageData.previewImage && (
-      <div ref={svgContainerRef} className="svg-container">
-      {file.content && (
-        <div
-          dangerouslySetInnerHTML={{ __html: file.content }}
-          className={`svg-content ${pathStyleClass}`}
-          style={{ width: "100%", height: "420px" }}
-        />
-      )}
-    </div>
-        )}
-        <input
-          id="fileInput"
-          type="file"
-          accept=".svg"
-          onChange={handleFileChange}
-          disabled={isLoading || !mostrarBotonSubir}
-          className="sr-only"
-        />
-        <div className="flex items-center justify-between m-4">
-          {imageData.files.length > 0 ? (
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-700 bg-opacity-50">
+      <div className="bg-white pl-6 pr-6 flex flex-col rounded-lg shadow-lg w-full  md:w-3/4 lg:w-1/2 pb-4">
+        <div className="flex flex-col ">
+          <div className="flex items-center border-b-[1px] border-gray-600 p-4 mb-4">
             <button
-              onClick={handleRemoveImage}
-              className="text-red-500 text-xs cursor-pointer"
+              type="button"
+              onClick={() => {
+                ModalSvg(false);
+              }}
+              className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200"
             >
-              Eliminar imagen
+              <MdClose className="text-gray-600 w-4 h-4 " />
             </button>
-          ) : (
-            <div />
+            <div className="flex-1">
+              <p className="text-center">Selecciona archivos SVG</p>
+            </div>
+          </div>
+          <style>{styles}</style>
+
+          {!imageData.previewImage ? (
+            <label
+              htmlFor="fileInput"
+              className="h-[420px] flex flex-col hover:bg-gray-100 items-center justify-center border-2 border-dashed border-gray-300 bg-white cursor-pointer"
+            >
+              <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
+                <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+              </div>
+            </label>
+          ) : null}
+          {imageData.previewImage && (
+            <div ref={svgContainerRef} className="svg-container">
+              {file.content && (
+                <div
+                  dangerouslySetInnerHTML={{ __html: file.content }}
+                  className={`svg-content ${pathStyleClass}`}
+                  style={{ width: "100%", height: "420px" }}
+                />
+              )}
+            </div>
           )}
-          <Button
-            onClick={handleUpload}
-            type="button"
-            disabled={isLoading || mostrarBotonSubir}
-            label="Subir imagenes"
+          <input
+            id="fileInput"
+            type="file"
+            accept=".svg"
+            onChange={handleFileChange}
+            disabled={isLoading || !mostrarBotonSubir}
+            className="sr-only"
           />
+          <div className="flex items-center justify-between m-4">
+            {imageData.files.length > 0 ? (
+              <button
+                onClick={handleRemoveImage}
+                className="text-red-500 text-xs cursor-pointer"
+              >
+                Eliminar imagen
+              </button>
+            ) : null}
+          </div>
+          <Button onClick={handleUpload} type="button" label="Subir" />
         </div>
       </div>
     </div>
