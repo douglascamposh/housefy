@@ -4,7 +4,6 @@ const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 export const propertiesApi = createApi({
   reducerPath: 'propertiesApi',
   baseQuery: fetchBaseQuery({
-    //ToDo move the base path url to the env variables
     baseUrl: NEXT_PUBLIC_BASE_URL + '/api/v1'
   }),
 

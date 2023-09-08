@@ -8,7 +8,7 @@ import { FaHome, FaCheckCircle, FaBuilding, FaCalendarAlt } from 'react-icons/fa
 import Carousel from '@/components/Carrousel';
 import ServerErrorComponent from '@/components/ServerError';
 import ShimmerDetails from '@/components/Shimmers/ShimmerDetails';
-import { categories } from '@/app/constants/data';
+import { categories } from '@/app/utils/schema/propertySchema';
 const Page = ({ params }) => {
     const id = params.id;
     const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });

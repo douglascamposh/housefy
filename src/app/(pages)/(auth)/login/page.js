@@ -5,7 +5,7 @@ import { Formik, Form } from "formik";
 import { RiMailLine, RiLockLine } from "react-icons/ri";
 import FormInputIcon from "@/components/common/FormInputIcon";
 import Link from "next/link";
-import { validationLoginSchema } from "@/app/constants/SchemaValidation";
+import { validationLoginSchema } from "@/app/utils/validations/schemaValidation";
 const Login = () => {
 
 
