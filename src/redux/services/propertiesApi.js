@@ -43,6 +43,7 @@ export const propertiesApi = createApi({
         method: 'DELETE',
         url: `/properties/${id}`,
       }),
+      invalidatesTags: ["Properties"],
     }),
 
     uploadImageProperties: builder.mutation({

@@ -2,10 +2,13 @@ import React from "react";
 import { MdLocationOn, MdOutlineHouse ,MdOutlineModeEditOutline,MdDeleteOutline} from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Carousel from "../Carrousel";
+import { useDeletePropertiesMutation } from "@/redux/services/propertiesApi";
 
 const Card = ({ name, images, address, description, id, propertiesAvailable }) => {
 
   const router = useRouter();
+
+  const [deleteProperty] = useDeletePropertiesMutation();
 
   const handleCardClick = () => {
     router.push(`/properties/details/${id}`);
@@ -14,6 +17,15 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
     event.stopPropagation(); 
     router.push(`/properties/update/${id}`);
   };
+
+  const handleDeleteCLick = async (event) => {
+    event.stopPropagation(); 
+    try {
+      await deleteProperty(id);
+    }catch(error){
+      console.log("Error");
+    }
+  }
 
   return (
     <div className="relative ml-1 rounded-lg shadow-xl overflow-hidden bg-white cursor-pointer" onClick={handleCardClick}>
@@ -33,7 +45,7 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
             <MdOutlineModeEditOutline className="text-gray-600 text-lg" />
           </button>
           <button
-            onClick={handleEditClick}
+            onClick={handleDeleteCLick}
             className="flex items-center justify-center w-8 h-8 rounded-full bg-white hover:bg-gray-300 shadow-md"
           >
             <MdDeleteOutline className="text-gray-600 text-lg" />
