@@ -11,10 +11,10 @@ const ShimmerDetails = () => {
             </div>
             
 
+            <div className='bg-gray-300 h-[300px] w-full  mb-2'/>
             
             <div className="flex flex-col mt-5 md:flex-row">
                 <div className="md:w-2/3 ">
-                    <div className='bg-gray-300 h-[200px] w-full  mb-2'/>
 
                     <div className="bg-gray-300 h-10 w-200">
                     </div>

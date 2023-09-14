@@ -10,7 +10,7 @@ export const validationPropertySchema = Yup.object().shape({
     description: Yup.string()
     .required('La descripción es obligatoria')
     .matches(/^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s,.!?:;-]*$/, 'La descripción contiene caracteres no permitidos')
-    .max(200, 'La descripción no debe exceder los 200 caracteres'),
+    .max(400, 'La descripción no debe exceder los 400 caracteres'),
     address: Yup.object().shape({
       street: Yup.string().required('La calle es obligatoria'),
       reference: Yup.string()
@@ -24,19 +24,6 @@ export const validationPropertySchema = Yup.object().shape({
     }),
     category: Yup.string()
     .required('La categoría es obligatoria'),
-    totalProperties: Yup.number()
-    .required('La cantidad de propiedades es obligatoria')
-    .integer('Debe ser un número entero mayor que cero')
-    .min(1, 'Debe ser mayor que cero'),
-    propertiesAvailable: Yup.number()
-    .required('La cantidad disponible es obligatoria')
-    .integer('Debe ser un número entero').test(
-      'properties-available',
-      'Las propiedades disponibles no deben ser mayores que el total de propiedades',
-      function (value) {
-        return value <= this.parent.totalProperties;
-      }
-    ),
     latitude: Yup.number(),
     longitude: Yup.number()
   });
@@ -90,3 +77,30 @@ export const validationRegisterSchema = Yup.object().shape({
       "Ingresa un número de teléfono válido"
     ),
 });
+
+export const validationSubPropertySchema = Yup.object().shape({
+  code: Yup.string().required('El código es obligatorio'),
+  size: Yup.number()
+    .required('El tamaño es obligatorio')
+    .moreThan(0, 'El tamaño debe ser mayor que cero'),
+  price: Yup.number()
+    .required('El precio es obligatorio')
+    .moreThan(0, 'El precio debe ser mayor que cero'),
+  isAvailable: Yup.boolean().required('El estado es obligatorio'),
+});
+
+export const validationSubPropertySaleScheme = (price) => {
+  return Yup.object().shape({
+    onAccount: Yup.number()
+      .positive('Debe ser un número positivo')
+      .max(price, `El anticipo no puede ser mayor que el precio (${price})`)
+      .required('El anticipo es requerido'),
+    customer: Yup.object().shape({
+      name: Yup.string().required('El nombre es requerido'),
+      lastName: Yup.string().required('El apellido es requerido'),
+      email: Yup.string().email('Debe ser un correo electrónico válido').required('El correo electronico es requerido'),
+      phoneNumber: Yup.string().required('El numero de telefono es requerido'),
+      birthDate: Yup.date().nullable().required('La fecha de nacimiento es requerida'),
+    }),
+  });
+};
