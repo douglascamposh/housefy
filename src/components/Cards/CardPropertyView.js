@@ -1,7 +1,5 @@
 import React from "react";
 import CardProperty from "./CardProperty";
-//import { useUpdatePropertiesMutation } from "@/redux/services/propertiesApi";
-
 
 const CardView = ({ data }) => {
   return (
@@ -15,7 +13,7 @@ const CardView = ({ data }) => {
             images={item.images}
             description={item.description}
             address={item.address.street}
-            propertiesAvailable={item.propertiesAvailable}
+            propertiesAvailable={item.subProperties.length}
           />
         ) : null
       ))}

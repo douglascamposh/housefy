@@ -4,9 +4,7 @@ import { useRouter } from "next/navigation";
 import Carousel from "../Carrousel";
 
 const Card = ({ name, images, address, description, id, propertiesAvailable }) => {
-
   const router = useRouter();
-
   const handleCardClick = () => {
     router.push(`/properties/details/${id}`);
   };
@@ -20,7 +18,7 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
 
       <div className="relative h-48 md:h-58 lg:h-62">
         {images && images.length > 0 ? (
-          <Carousel images={images} ></Carousel>
+          <Carousel images={images} h="200px" ></Carousel>
         ) : (
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-10"></div>
         )}
@@ -51,11 +49,10 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
           <MdLocationOn className="text-xl flex-shrink-0" />
           <p className="ml-2 truncate text-sm ">{address}</p>
         </div>
-        <div className="flex mt-2">
+        <div className="flex mt-2 space-x-2">
           <MdOutlineHouse></MdOutlineHouse>
-          <p className="text-xs">{propertiesAvailable} disponibles</p>
+          <p className="text-xs"> {propertiesAvailable} propiedades</p>
         </div>
-
       </div>
     </div>
   );

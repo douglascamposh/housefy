@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import Image from 'next/image';
 
-const Carousel = ({ images }) => {
+const Carousel = ({ images,h }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -31,11 +31,11 @@ const Carousel = ({ images }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex items-center justify-center">
+      <div className={`flex items-center justify-center h-[${h}]`}>
         <Image
           width={1500}
           height={1500}
-          style={{ width: '100%', height: "200px" }}
+          style={{ width: '100%' }}
           src={images[currentIndex]['url']}
           alt={`Slide ${currentIndex}`}
         />
