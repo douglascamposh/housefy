@@ -8,6 +8,7 @@ import Button from '@/components/Form/Button';
 import NoDataMessage from '@/components/NoDataMsg';
 import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
+import { Logger } from '@/services/Logger';
 
 const Page = () => {
   const { data, error, isLoading } = useGetPropertiesQuery();
@@ -28,6 +29,7 @@ const Page = () => {
   }
 
   if (error) {
+    Logger.error("error at get the properties: " + error);
     return <ServerErrorComponent />;
   }
 
