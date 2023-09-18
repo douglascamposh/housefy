@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
 import Button from "../Form/Button";
 import { v4 as uuidv4 } from "uuid";
-
+import { stylesSvg } from "@/app/constants/stylesSvg";
 const TIPOS_DE_IMAGEN_ADMITIDOS = ["image/svg+xml"];
 const EXTENSION_IMAGEN_VALIDA = ".svg";
 
@@ -83,23 +83,23 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
   };
 
   const handleRemoveImage = () => {
+    setFile({content:null});
     setImageData({
       files: [],
-      previewImage: null,
+      previewImage: [],
       urlImages: [],
     });
   };
 
   const handleUpload = async () => {
-    if (imageData.files.length + previewImagesSave.length > 0) {
       try {
-        console.log("S");
         const response = await uploadImageMutation({ file: modifiedFile });
 
         if (response.data) {
           const uploadedImage = {
             id: response.data.imageId,
             url: response.data.url,
+            weight:0
           };
           setImageData((prevState) => ({
             ...prevState,
@@ -115,9 +115,6 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
       } catch (error) {
         toast.error("Error en la carga de imágenes");
       }
-    } else {
-      toast.error("No se seleccionó ningún archivo SVG");
-    }
   };
 
   const handlePathClick = (e) => {
@@ -178,22 +175,6 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
     };
   }, [file.content, pathStyleClass, clickedId]);
 
-  const styles = `
-    .default-path-style {
-      fill: #ccc;
-      stroke: black;
-      stroke-width: 2;
-      transition: fill 0.3s ease, stroke 0.3s ease;
-    }
-
-    .default-path-style:hover {
-      fill: white;
-      stroke: green;
-    }
-    .selected-path {
-      fill:  #22E61F; 
-    }
-  `;
   const mostrarBotonSubir = imageData.files.length === 0;
 
   return (
@@ -214,9 +195,9 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
               <p className="text-center">Selecciona archivos SVG</p>
             </div>
           </div>
-          <style>{styles}</style>
+          <style>{stylesSvg}</style>
 
-          {!imageData.previewImage ? (
+          {!file.content  ? (
             <label
               htmlFor="fileInput"
               className="h-[420px] flex flex-col hover:bg-gray-100 items-center justify-center border-2 border-dashed border-gray-300 bg-white cursor-pointer"
@@ -226,7 +207,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
               </div>
             </label>
           ) : null}
-          {imageData.previewImage && (
+          {imageData.previewImage  && (
             <div ref={svgContainerRef} className="svg-container">
               {file.content && (
                 <div
@@ -251,7 +232,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
                 onClick={handleRemoveImage}
                 className="text-red-500 text-xs cursor-pointer"
               >
-                Eliminar imagen
+                Eliminar Svg
               </button>
             ) : null}
           </div>

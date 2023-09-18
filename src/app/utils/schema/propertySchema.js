@@ -24,9 +24,7 @@ export const propertyScheme = {
       state: '',
     },
     images: [],
-    category: '',
-    totalProperties: 0,
-    propertiesAvailable: 0,
+    category: ''
 };
 
 export const userCreateScheme={ 
@@ -37,4 +35,22 @@ export const userCreateScheme={
   lastName:"",
   phoneNumber:""
 }
-  
+export const subPropertiesScheme={
+  code: "",
+  size: 0,
+  price: 0,
+  isAvailable: true
+};
+export const subPropertySaleScheme={
+    onAccount: 0,
+    total: 0,
+    subPropertyId: "",
+    propertyId: "",
+    customer: {
+      name: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      birthDate: ""
+    }
+}

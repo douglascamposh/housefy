@@ -7,7 +7,7 @@ export const propertiesApi = createApi({
     baseUrl: NEXT_PUBLIC_BASE_URL + '/api/v1'
   }),
 
-  tagTypes: ["Properties"],
+  tagTypes: ["Properties", "SubProperties"],
 
   endpoints: (builder) => ({
     
@@ -45,6 +45,19 @@ export const propertiesApi = createApi({
       }),
     }),
 
+    createSubProperties: builder.mutation({
+      query: ({id,newSubProperties}) => ({
+        method: 'POST',
+        url: `/properties/${id}/subproperties`,
+        body: newSubProperties,
+      }),
+    }),
+    getSubProperties: builder.query({
+      query: (id) => `/properties/${id}/subproperties`,
+      providesTags: ['SubProperties'],
+
+    }),
+
     uploadImageProperties: builder.mutation({
       query: ({ file }) => {
         const formData = new FormData();
@@ -57,6 +70,16 @@ export const propertiesApi = createApi({
         };
       },
     }),
+
+    createSaleProperty: builder.mutation({
+      query: (newSaleProperty) => ({
+        method: 'POST',
+        url: '/sales',
+        body: newSaleProperty,
+      }),
+      invalidatesTags: ['SubProperties'],
+    }),
+
   }),
 });
 
@@ -66,5 +89,8 @@ export const {
   useCreatePropertiesMutation,
   useUpdatePropertiesMutation,
   useDeletePropertiesMutation,
-  useUploadImagePropertiesMutation
+  useCreateSubPropertiesMutation,
+  useGetSubPropertiesQuery,
+  useUploadImagePropertiesMutation,
+  useCreateSalePropertyMutation,
 } = propertiesApi;

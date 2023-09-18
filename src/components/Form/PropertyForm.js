@@ -1,11 +1,9 @@
 import React, { useState } from 'react'; 
-
 import { Formik, Form } from 'formik';
-
 import MapComponent from '../Maps/MapComponent';
 import Button from './Button';
 import { validationPropertySchema } from '@/app/utils/validations/schemaValidation';
-import { Flip, ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FormInputLabel } from '../common/FormInputLabel';
 import { categories, departments } from '@/app/utils/schema/propertySchema';
@@ -16,19 +14,15 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
   const [modalImages,setModalImages]=useState(false);
-
   const toggleModal=(status)=>{
     setModalImages(status)
   }
-
   const handleImagesUploaded = (uploaded) => {
       setUploadedImages((prevUploaded) => [ ...uploaded]);
   }
-
   const handleSubmit = (values) => {
     const newValues = { ...values };
     newValues.images=uploadedImages
-
     if (newValues.images!=0) {
       if (coordinates.latitude!=0) {
         newValues.address = {
@@ -43,7 +37,6 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
           type: newValues.category,
         };
         delete payload.category;
-
         onSubmit(payload);
       } else {
         toast.error('Seleccione una ubicación en el mapa');
@@ -52,26 +45,11 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
       toast.error('Seleccione al menos una imagen');
     }
   };
-
   const handleMarkerPositionChange = (clickedLatLng) => {
     setCoordinates({ latitude: clickedLatLng.lat, longitude: clickedLatLng.lng });
   };
-
   return (  
     <div>
-      <ToastContainer
-        transition={Flip}
-        position="bottom-left"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        />
       {isLoading && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div className="spinner border-t-4 border-blue-500 border-solid rounded-full h-12 w-12 animate-spin" />
@@ -114,6 +92,8 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                     label="Descripcion"
                     name="description"
                     type="text"
+                    maxLength={401}
+                    as="textarea"
                     placeholder="Descripcion"
                     touched={touched}
                     errors={errors}
@@ -132,30 +112,6 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                     <option key={type.id} value={type.id} label={type.name} />
                   ))}
                 </FormInputLabel>
-              <div className="flex space-x-4">
-                <div className="w-1/2">
-                  <FormInputLabel
-                    label="Total de propiedades"
-                    name="totalProperties"
-                    type="number"
-                    placeholder="Total de Propiedades"
-                    touched={touched}
-                    errors={errors}
-                    value={values.totalProperties}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <FormInputLabel
-                    label="Propiedades Disponibles"
-                    name="propertiesAvailable"
-                    type="number"
-                    placeholder="Propiedades Disponibles"
-                    touched={touched}
-                    errors={errors}
-                    value={values.propertiesAvailable}
-                  />
-                </div>
-              </div>
             </div>
             <div className="w-full md:w-1/2 mt-4 md:mt-0">
               <div>
@@ -239,15 +195,15 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
             <div>
               <div className='flex'> 
                 <Button
-                  label="Guardar"
-                  type="submit"
-                  className="w-full m-2"
-                  disabled={isLoading}
-                />
-                <Button
                   label="Cancelar"
                   className="w-full m-2"
                   onClick={onCancel}
+                  disabled={isLoading}
+                />
+                <Button
+                  label="Guardar"
+                  type="submit"
+                  className="w-full m-2"
                   disabled={isLoading}
                 />
               </div>
