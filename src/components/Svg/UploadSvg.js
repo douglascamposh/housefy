@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
 import Button from "../Form/Button";
 import { v4 as uuidv4 } from "uuid";
+import { stylesSvg } from "@/app/constants/stylesSvg";
 const TIPOS_DE_IMAGEN_ADMITIDOS = ["image/svg+xml"];
 const EXTENSION_IMAGEN_VALIDA = ".svg";
 
@@ -174,22 +175,6 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
     };
   }, [file.content, pathStyleClass, clickedId]);
 
-  const styles = `
-    .default-path-style {
-      fill: #ccc;
-      stroke: black;
-      stroke-width: 2;
-      transition: fill 0.3s ease, stroke 0.3s ease;
-    }
-
-    .default-path-style:hover {
-      fill: white;
-      stroke: green;
-    }
-    .selected-path {
-      fill:  #22E61F; 
-    }
-  `;
   const mostrarBotonSubir = imageData.files.length === 0;
 
   return (
@@ -210,7 +195,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
               <p className="text-center">Selecciona archivos SVG</p>
             </div>
           </div>
-          <style>{styles}</style>
+          <style>{stylesSvg}</style>
 
           {!file.content  ? (
             <label

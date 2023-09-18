@@ -1,7 +1,7 @@
 import { Logger } from "@/services/Logger";
 import React, { useState, useRef, useEffect } from "react";
 import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
-
+import { stylesSvg } from "@/app/constants/stylesSvg";
 const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
   const [fileContent, setFileContent] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -132,36 +132,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
     };
   }, [fileContent, pathStyleClass, clickedId]);
 
-  const styles = `
-    .default-path-style {
-      fill: #313231;
-      stroke: white;
-      transition: fill 0.3s ease, stroke 0.3s ease;
-    }
 
-    .default-path-style:hover {
-      cursor: pointer;
-      fill: #535550;
-    }
-    .selected-path {
-      fill: #2d0df1;
-    }
-    .selected-path:hover {
-      fill: #2d0df1;
-    }
-    .not-available-path {
-      fill: #e90107;
-    }
-    .not-available-path:hover {
-      fill: #e90107;
-    }
-    .available-path {
-      fill: #2db303;
-    }
-    .available-path:hover {
-      fill: #2db303;
-    }
-  `;
 
   useEffect(() => {
     if (svg.length > 0) {
@@ -200,7 +171,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
 
   return (
     <div className="svg-container p-4 md:p-8 w-full">
-      <style>{styles}</style>
+      <style>{stylesSvg}</style>
 
       <div className="flex flex-wrap justify-center w-full mb-4">
         <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">

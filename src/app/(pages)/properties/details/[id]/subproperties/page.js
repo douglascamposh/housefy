@@ -19,6 +19,7 @@ import {
 } from 'react-icons/md';
 import NoDataMessage from '@/components/NoDataMsg';
 import ShimmerSubProperty from '@/components/Shimmers/ShimmerSupProperty';
+import { Logger } from '@/services/Logger';
 
 const Page = ({ params }) => {
   const { id } = params;
@@ -81,7 +82,7 @@ const Page = ({ params }) => {
         updateProperties: payload,
       });
     } catch (error) {
-      toast.error('Hubo un error al actualizar la propiedad.');
+      Logger.error(error);
     }
   };
 

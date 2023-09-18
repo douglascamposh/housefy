@@ -22,9 +22,9 @@ const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySav
           id: idProperty,
           newSubProperties: newSubPropertiesData,
         });
-        const c=response.data.subProperties.length
-        const dataNew=response.data.subProperties[c-1] 
-        const dataNewCopy = { ...dataNew }; // Clonar el objeto
+        const subPropertiesSize=response.data.subProperties.length
+        const dataNew=response.data.subProperties[subPropertiesSize-1] 
+        const dataNewCopy = { ...dataNew };
         dataNewCopy.isAvailable = true;
 
         newSubproperty(dataNewCopy);

@@ -6,16 +6,10 @@ import { validationSubPropertySaleScheme } from '@/app/utils/validations/schemaV
 import { useCreateSalePropertyMutation } from '@/redux/services/propertiesApi';
 import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { convertFormatDate } from '@/app/utils/formatUtils';
+import { Logger } from '@/services/Logger';
 const FormSale=(params)=>{
     const [createSale, { isLoading }] = useCreateSalePropertyMutation();
-    const convertFormatDate=(date)=> {
-        const parts = date.split('-');
-        const year = parts[0];
-        const month = parts[1];
-        const day = parts[2];
-        const dateFormatNew = `${day}-${month}-${year}`;
-        return dateFormatNew;
-      }
     const handleSubmit=async(values,{resetForm})=>{
         const modifiedValues = { ...values };
         modifiedValues.propertyId = params.idProperty
@@ -34,7 +28,7 @@ const FormSale=(params)=>{
             toast.error("No se puedo realizar la venta de la propiedad")
           }
         } catch (error) {
-          toast.error("Error al realizar la venta")
+          Logger(error)
         }
       };
     return (
