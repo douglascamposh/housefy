@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCreateSubPropertiesMutation } from '@/redux/services/propertiesApi';
 import Button from './Button';
+import { Logger } from '@/services/Logger';
 const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySave}) => {
     const [createSubProperties] = useCreateSubPropertiesMutation();
     
@@ -22,17 +23,17 @@ const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySav
           id: idProperty,
           newSubProperties: newSubPropertiesData,
         });
-        const subPropertiesSize=response.data.subProperties.length
-        const dataNew=response.data.subProperties[subPropertiesSize-1] 
-        const dataNewCopy = { ...dataNew };
-        dataNewCopy.isAvailable = true;
+        if (response.data){
+          const dataNew={...response.data}
+          dataNew.isAvailable = true;
+          newSubproperty(dataNew);
+          onClose()
+          toast.success("Se registro la nueva propiedad")        
+          resetForm();
+        }else{
+          toast.error(response.error.data.message)
+        }
 
-        newSubproperty(dataNewCopy);
-
-        onClose()
-        toast.success("Se registro la nueva propiedad")        
-      
-      resetForm();
 
   
       } catch (error) {
