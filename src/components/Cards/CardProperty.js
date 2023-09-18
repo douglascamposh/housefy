@@ -18,7 +18,7 @@ const Card = ({ name, images, address, description, id, propertiesAvailable }) =
 
       <div className="relative h-48 md:h-58 lg:h-62">
         {images && images.length > 0 ? (
-          <Carousel images={images} h="200px" ></Carousel>
+          <Carousel images={images} height="200px" ></Carousel>
         ) : (
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-10"></div>
         )}
