@@ -44,6 +44,12 @@ export const propertiesApi = createApi({
         url: `/properties/${id}`,
       }),
     }),
+    deleteImages: builder.mutation({
+      query: (imageId) => ({
+        method: 'DELETE',
+        url: `/properties/delete/${imageId}`,
+      }),
+    }),
 
     createSubProperties: builder.mutation({
       query: ({id,newSubProperties}) => ({
@@ -89,6 +95,7 @@ export const {
   useCreatePropertiesMutation,
   useUpdatePropertiesMutation,
   useDeletePropertiesMutation,
+  useDeleteImagesMutation,
   useCreateSubPropertiesMutation,
   useGetSubPropertiesQuery,
   useUploadImagePropertiesMutation,

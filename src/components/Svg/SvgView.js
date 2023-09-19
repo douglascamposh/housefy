@@ -1,14 +1,15 @@
 import { Logger } from "@/services/Logger";
 import React, { useState, useRef, useEffect } from "react";
-import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
+import { FaSearchPlus, FaSearchMinus, FaEdit, FaExclamationTriangle } from "react-icons/fa";
 import { stylesSvg } from "@/app/constants/stylesSvg";
-const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
+const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
   const [fileContent, setFileContent] = useState(null);
   const [zoom, setZoom] = useState(1);
   const svgContainerRef = useRef(null);
   const [clickedId, setClickedId] = useState(null);
   const [pathStyleClass, setPathStyleClass] = useState("default-path-style");
   const [svgIds, setSvgIds] = useState([]);
+  const [showModalWarning, setShowModalWarning] = useState(false);
   const svgIdsAvailableTrue = arraySubProperties
     .filter((item) => item.isAvailable === true)
     .map((item) => item.svgId);
@@ -21,6 +22,16 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
   const handleZoomOut = () => {
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
   };
+  const openModalUpdate=()=>{
+    setShowModalWarning(true)
+  }
+  const handleContinue = () => {
+    ModalSvg()
+    setShowModalWarning(false);
+  };
+  const handleCancel = () => {
+    setShowModalWarning(false);
+  };
   const handlePathClick = (e) => {
     const target = e.target;
     if (
@@ -29,7 +40,6 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
       target.tagName === "circle"
     ) {
       const pathElement = target;
-
       const id = pathElement.getAttribute("id");
       if (id === clickedId) {
         onPathSelect(null);
@@ -58,11 +68,9 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
         if (id === clickedId) {
           path.classList.remove("available-path");
           path.classList.remove("not-available-path");
-
           path.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
           path.classList.remove("selected-path");
-
           path.classList.add("available-path");
         } else if (svgIdsAvailableFalse.includes(id)) {
           path.classList.remove("selected-path");
@@ -172,6 +180,29 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
   return (
     <div className="svg-container p-4 md:p-8 w-full">
       <style>{stylesSvg}</style>
+      {showModalWarning && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Fondo oscuro */}
+          <div className="fixed inset-0 bg-black opacity-50"></div>
+
+          <div className="bg-white p-6 max-w-md mx-auto rounded-lg shadow-xl relative z-10">
+            <div className="flex items-center justify-center text-4xl text-yellow-500">
+              <FaExclamationTriangle/>
+            </div>
+            <p className="text-xl text-gray-700 mt-4 mb-6">
+              Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano.
+            </p>
+            <div className="flex justify-center">
+              <button onClick={handleCancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mr-2 rounded">
+                Cancelar
+              </button>
+              <button onClick={handleContinue} className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded ">
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap justify-center w-full mb-4">
         <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
@@ -214,6 +245,12 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect }) => {
             onClick={handleZoomOut}
           >
             <FaSearchMinus />
+          </button>
+          <button
+            className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
+            onClick={()=>openModalUpdate()}
+          >
+            <FaEdit/>
           </button>
         </div>
       </div>

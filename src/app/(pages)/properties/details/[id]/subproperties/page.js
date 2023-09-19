@@ -16,6 +16,7 @@ import {
   MdRemoveShoppingCart,
   MdCheckCircle,
   MdAttachMoney,
+  MdEditDocument
 } from 'react-icons/md';
 import NoDataMessage from '@/components/NoDataMsg';
 import ShimmerSubProperty from '@/components/Shimmers/ShimmerSupProperty';
@@ -60,8 +61,8 @@ const Page = ({ params }) => {
     setSelectedPath(pathId);
   };
 
-  const toggleModalSvg = (status) => {
-    setModalSvg(status);
+  const toggleModalSvg = () => {
+    setModalSvg(!modalSvg);
   };
 
   const togglePopUp = () => {
@@ -72,7 +73,7 @@ const Page = ({ params }) => {
     const newData = { ...data };
     newData.imagePlan = uploaded[0];
     await updateProperties(newData);
-    setUploadedSvg([...uploaded]);
+    setUploadedSvg(uploaded);
   };
 
   const updateProperties = async (payload) => {
@@ -98,18 +99,17 @@ const Page = ({ params }) => {
     <div className="container mx-auto px-4 md:px-0">
       <h2 className="text-3xl mb-2 text-center md:text-left">{data.name}</h2>
       {arraySubproperty.length === 0 && uploadedSvg === null ? (
-        <div>
-          <Button type="Button" label="Subir svg" onClick={() => toggleModalSvg(true)} />
-          <NoDataMessage message="No existe un plano disponible en este momento..." />
-        </div>
-      ) : null}
+        <Button type="Button" label="Subirr svg" className="text-xs absolute mt-[-7px]" onClick={() => toggleModalSvg()} />
+      ) :
+        null
+      }
       {modalSvg ? (
         <UploadSvg detailsData={data} SvgUploaded={handleSvgUploaded} SvgSave={uploadedSvg} ModalSvg={toggleModalSvg} />
       ) : null}
       <div className="flex flex-col md:flex-row">
         {uploadedSvg ? (
           <>
-            <SvgView svg={uploadedSvg} onPathSelect={handlePathSelect} arraySubProperties={arraySubproperty} className="md:w-1/2" />
+            <SvgView svg={uploadedSvg} onPathSelect={handlePathSelect} arraySubProperties={arraySubproperty} ModalSvg={toggleModalSvg} className="md:w-1/2" />
             <div className="flex justify-center md:w-1/2 md:flex-col">
               {isPopUpOpen && selectedPath ? (
                 subPropertySelect ? (
@@ -183,7 +183,11 @@ const Page = ({ params }) => {
               )}
             </div>
           </>
-        ) : null}
+        ) :
+          <div className='flex w-full justify-center items-center'>
+            <NoDataMessage message="No existe un plano disponible en este momento." />
+          </div>
+        }
       </div>
     </div>
   );
