@@ -40,7 +40,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
         Logger.info('Imagen eliminada con éxito');
       })
       .catch((error) => {
-        Logger.error(error);
+        Logger.error("Error al eliminar la imagen: ",error);
       });
   };
   const handleFileChange = (e) => {
@@ -129,6 +129,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
         }
       } catch (error) {
         toast.error("Error en la carga de imágenes");
+        Logger.error("Error al cargar la imagen: ",error)
       }
     }else{
       toast.error("Seleccione al menos un archivo SVG");

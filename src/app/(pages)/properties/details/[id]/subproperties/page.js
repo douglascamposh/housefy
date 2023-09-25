@@ -99,7 +99,7 @@ const Page = ({ params }) => {
     <div className="container mx-auto px-4 md:px-0">
       <h2 className="text-3xl mb-2 text-center md:text-left">{data.name}</h2>
       {arraySubproperty.length === 0 && uploadedSvg === null ? (
-        <Button type="Button" label="Subirr svg" className="text-xs absolute mt-[-7px]" onClick={() => toggleModalSvg()} />
+        <Button type="Button" label="Subir svg" className="text-xs absolute mt-[-7px]" onClick={() => toggleModalSvg()} />
       ) :
         null
       }
