@@ -98,9 +98,11 @@ export const validationSubPropertySaleScheme = (price) => {
     customer: Yup.object().shape({
       name: Yup.string().required('El nombre es requerido'),
       lastName: Yup.string().required('El apellido es requerido'),
-      email: Yup.string().email('Debe ser un correo electrónico válido').required('El correo electronico es requerido'),
+      ci: Yup.string().required('El carnet de identidad es requerido'),
       phoneNumber: Yup.string().required('El numero de telefono es requerido'),
-      birthDate: Yup.date().nullable().required('La fecha de nacimiento es requerida'),
+      street: Yup.string().required('La direccion es requerida'),
+      streetNumber: Yup.string().required('El numero de casa es requerido'),
+      city: Yup.string().required('La ciudad es requerida'),
     }),
   });
 };

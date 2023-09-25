@@ -51,6 +51,11 @@ export const subPropertySaleScheme={
       lastName: "",
       email: "",
       phoneNumber: "",
-      birthDate: ""
+      ci: '',
+      street: '',
+      streetNumber: '',
+      city: '',
+      state: '',
+      country: '',
     }
 }
