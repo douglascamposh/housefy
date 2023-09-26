@@ -1,4 +1,4 @@
-import { Formik, Form } from 'formik';
+import { Formik, Form, FieldArray } from 'formik';
 import { FormInputLabel } from '../common/FormInputLabel';
 import Button from "./Button"
 import { subPropertySaleScheme } from '@/app/utils/schema/propertySchema';
@@ -9,16 +9,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { cities } from '@/app/constants/constants';
 import { Logger } from '@/services/Logger';
 
-const FormSale=(params)=>{
+const FormSale = (params)=>{
 
     const [createSale, { isLoading }, errorSale] = useCreateSalePropertyMutation();
     const handleSubmit = async(values, {resetForm}) => {
-        const modifiedValues = { ...values };
-        modifiedValues.propertyId = params.idProperty;
-        modifiedValues.subPropertyId = params.idSubProperty;
-        modifiedValues.customer.state = modifiedValues.customer.city;
-        modifiedValues.customer.country = 'Bolivia'; //Todo: we should improve it getting country from the city
-        await handleCreateSales(modifiedValues,{resetForm})
+      const modifiedValues = { ...values };
+      modifiedValues.propertyId = params.idProperty;
+      modifiedValues.subPropertyId = params.idSubProperty;
+      modifiedValues.customer.state = modifiedValues.customer.city;
+      modifiedValues.customer.country = 'Bolivia'; //Todo: we should improve it getting country from the city Object
+      await handleCreateSales(modifiedValues,{resetForm})
     }
     const handleCreateSales= async (newSaleProperty,{resetForm}) => {
       try {
@@ -36,12 +36,12 @@ const FormSale=(params)=>{
     };
 
     return (
-        <div>
-            <Formik
-                initialValues={subPropertySaleScheme}
-                validationSchema={validationSubPropertySaleScheme(params.price)}
-                onSubmit={handleSubmit}
-            >
+      <div>
+        <Formik
+          initialValues={subPropertySaleScheme}
+          validationSchema={validationSubPropertySaleScheme(params.price)}
+          onSubmit={handleSubmit}
+        >
         {({ errors, touched, values }) => (
           <Form>
             <label className='font-bold'>Datos de cliente:</label>
@@ -147,12 +147,92 @@ const FormSale=(params)=>{
               type="number"
               autoComplete="onAccount"
               value={values.onAccount}
-
             />
             <div className="flex justify-between">
-              <p className="text-gray-700">Total: </p>
+              <p className="text-gray-700">Saldo: </p>
               <p>{params.price-values.onAccount}</p>
+              <p className="text-gray-700">Total: </p>
+              <p>{params.price}</p>
             </div>
+            <FieldArray
+              name="references"
+              render={(arrayHelpers) => {
+                const references = values.references;
+                return (
+                  <div>
+                    {references && references.length > 0
+                      ? references.map((reference, index) => (
+                          <div key={index}>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <FormInputLabel
+                                  label="Datos referido"
+                                  name={`references.${index}.name`}
+                                  placeholder="Nombres"
+                                  value={reference.name}
+                                  touched={touched}
+                                  errors={errors}
+                                />
+                              </div>
+                              <div>
+                                <FormInputLabel
+                                  label="&#160;"
+                                  name={`references.${index}.lastName`}
+                                  placeholder="Apellidos"
+                                  value={reference.lastName}
+                                  touched={touched}
+                                  errors={errors}
+                                />
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <FormInputLabel
+                                  label="telf. referido"
+                                  name={`references.${index}.phoneNumber`}
+                                  placeholder="Agregar telefono"
+                                  autoComplete="street"
+                                  value={reference.phoneNumber}
+                                  touched={touched}
+                                  errors={errors}
+                                />
+                              </div>
+                              <div>
+                                <FormInputLabel
+                                  label="Grado de parentesco"
+                                  name={`references.${index}.relationship`}
+                                  placeholder="Ej. Padre"
+                                  autoComplete="relationship"
+                                  value={references.relationship}
+                                  touched={touched}
+                                  errors={errors}
+                                />
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              label={'Remover Referido'}
+                              onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
+                            />
+                          </div>
+                        ))
+                      : null}
+                    <Button
+                      type="button"
+                      label={'Agregar Referidos'}
+                      onClick={() =>
+                        arrayHelpers.push({
+                          name: "",
+                          lastName: "",
+                          phoneNumber: "",
+                          relationship: "",
+                        })
+                      } // insert an empty string at a position
+                    />
+                  </div>
+                );
+              }}
+            />
             <div className="mt-6">
               <Button
                 type="submit"

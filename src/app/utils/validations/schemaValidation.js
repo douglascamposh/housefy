@@ -104,5 +104,13 @@ export const validationSubPropertySaleScheme = (price) => {
       streetNumber: Yup.string().required('El numero de casa es requerido'),
       city: Yup.string().required('La ciudad es requerida'),
     }),
+    references: Yup.array().of(
+      Yup.object().shape({
+        name: Yup.string().required('Nombre Requerido'),
+        lastName: Yup.string().required('Apellido Requerido'),
+        phoneNumber: Yup.string().required('Numero de Telefono Requerido'),
+        relationship: Yup.string().required('Grado de parentesco Requerido'),
+      })
+    )
   });
 };
