@@ -13,6 +13,8 @@ const TopMenu = () => {
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/properties", label: "Propiedades" },
+    { href: "/roles", label: "Roles" },
+
   ];
 
   return (
