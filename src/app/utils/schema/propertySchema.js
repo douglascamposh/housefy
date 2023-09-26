@@ -57,6 +57,6 @@ export const subPropertySaleScheme={
       city: '',
       state: '',
       country: '',
+      references: [],
     },
-    references: [],
 }

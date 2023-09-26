@@ -28,6 +28,7 @@ const FormSale = (params)=>{
           toast.success("Se vendio esta propiedad");
           params.onClose();
         } else {
+          Logger.error('An error ocurred at create sale: ', response.error);
           toast.error("No se puedo realizar la venta de la propiedad");
         }
       } catch (error) {
@@ -155,9 +156,9 @@ const FormSale = (params)=>{
               <p>{params.price}</p>
             </div>
             <FieldArray
-              name="references"
+              name="customer.references"
               render={(arrayHelpers) => {
-                const references = values.references;
+                const references = values.customer.references;
                 return (
                   <div>
                     {references && references.length > 0
@@ -167,7 +168,7 @@ const FormSale = (params)=>{
                               <div>
                                 <FormInputLabel
                                   label="Datos referido"
-                                  name={`references.${index}.name`}
+                                  name={`customer.references.${index}.name`}
                                   placeholder="Nombres"
                                   value={reference.name}
                                   touched={touched}
@@ -177,7 +178,7 @@ const FormSale = (params)=>{
                               <div>
                                 <FormInputLabel
                                   label="&#160;"
-                                  name={`references.${index}.lastName`}
+                                  name={`customer.references.${index}.lastName`}
                                   placeholder="Apellidos"
                                   value={reference.lastName}
                                   touched={touched}
@@ -189,7 +190,7 @@ const FormSale = (params)=>{
                               <div>
                                 <FormInputLabel
                                   label="telf. referido"
-                                  name={`references.${index}.phoneNumber`}
+                                  name={`customer.references.${index}.phoneNumber`}
                                   placeholder="Agregar telefono"
                                   autoComplete="street"
                                   value={reference.phoneNumber}
@@ -200,7 +201,7 @@ const FormSale = (params)=>{
                               <div>
                                 <FormInputLabel
                                   label="Grado de parentesco"
-                                  name={`references.${index}.relationship`}
+                                  name={`customer.references.${index}.relationship`}
                                   placeholder="Ej. Padre"
                                   autoComplete="relationship"
                                   value={references.relationship}
