@@ -5,11 +5,14 @@ import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
 import Button from "../Form/Button";
 import { v4 as uuidv4 } from "uuid";
 import { stylesSvg } from "@/app/constants/stylesSvg";
+import { useDeleteImagesMutation } from "@/redux/services/propertiesApi";
+import { Logger } from "@/services/Logger";
 const TIPOS_DE_IMAGEN_ADMITIDOS = ["image/svg+xml"];
 const EXTENSION_IMAGEN_VALIDA = ".svg";
 
 const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
-  const [previewImagesSave, setPreviewImagesSave] = useState(SvgSave);
+  const [previewSvgsSave, setPreviewSvgsSave] = useState(SvgSave && SvgSave.length>0? SvgSave:[]);
+  const [deleteImagesMutation] = useDeleteImagesMutation();
   const [file, setFile] = useState({ content: null });
   const [modifiedFile, setModifiedFile] = useState({ content: null });
 
@@ -31,7 +34,15 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
       archivo.name.endsWith(EXTENSION_IMAGEN_VALIDA)
     );
   };
-
+  const handleDeleteImage = (imageId) => {
+    deleteImagesMutation(imageId)
+      .then(() => {
+        Logger.info('Imagen eliminada con éxito');
+      })
+      .catch((error) => {
+        Logger.error("Error al eliminar la imagen: ",error);
+      });
+  };
   const handleFileChange = (e) => {
     const archivoSeleccionado = e.target.files[0];
     if (validarImagen(archivoSeleccionado)) {
@@ -89,9 +100,11 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
       previewImage: [],
       urlImages: [],
     });
+    setPreviewSvgsSave([])
   };
 
   const handleUpload = async () => {
+    if (modifiedFile.content!=null || modifiedFile.name){
       try {
         const response = await uploadImageMutation({ file: modifiedFile });
 
@@ -105,8 +118,10 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
             ...prevState,
             urlImages: [...prevState.urlImages, uploadedImage],
           }));
-
-          ModalSvg(false);
+          if (SvgSave&&SvgSave.length>0){
+            handleDeleteImage(SvgSave[0].id)
+          }
+          ModalSvg();
           toast.success("SVG cargado exitosamente");
           SvgUploaded([uploadedImage]);
         } else {
@@ -114,7 +129,12 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
         }
       } catch (error) {
         toast.error("Error en la carga de imágenes");
+        Logger.error("Error al cargar la imagen: ",error)
       }
+    }else{
+      toast.error("Seleccione al menos un archivo SVG");
+    }
+
   };
 
   const handlePathClick = (e) => {
@@ -185,7 +205,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
             <button
               type="button"
               onClick={() => {
-                ModalSvg(false);
+                ModalSvg();
               }}
               className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200"
             >
@@ -197,7 +217,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
           </div>
           <style>{stylesSvg}</style>
 
-          {!file.content  ? (
+          {!file.content && previewSvgsSave.length==0 ? (
             <label
               htmlFor="fileInput"
               className="h-[420px] flex flex-col hover:bg-gray-100 items-center justify-center border-2 border-dashed border-gray-300 bg-white cursor-pointer"
@@ -206,7 +226,18 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
                 <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
               </div>
             </label>
-          ) : null}
+            ) 
+            :
+            null
+          }
+          {
+            previewSvgsSave.length>0?
+            <object data={previewSvgsSave[0].url} type="image/svg+xml" className="h-[400px]">
+            Tu navegador no admite la visualización de SVG.
+            </object>
+            :
+            null
+          }
           {imageData.previewImage  && (
             <div ref={svgContainerRef} className="svg-container">
               {file.content && (
@@ -227,14 +258,16 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
             className="sr-only"
           />
           <div className="flex items-center justify-between m-4">
-            {imageData.files.length > 0 ? (
+            {imageData.files.length > 0 ||previewSvgsSave.length>0 ? (
               <button
                 onClick={handleRemoveImage}
                 className="text-red-500 text-xs cursor-pointer"
               >
                 Eliminar Svg
               </button>
-            ) : null}
+            ) :
+              null
+            }
           </div>
           <Button onClick={handleUpload} type="button" label="Subir" />
         </div>
