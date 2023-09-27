@@ -7,10 +7,9 @@ import Carousel from '@/components/Carrousel';
 import ServerErrorComponent from '@/components/ServerError';
 import ShimmerDetails from '@/components/Shimmers/ShimmerDetails';
 import { categories } from '@/app/utils/schema/propertySchema';
-import { MdLightbulbOutline,MdCheckCircleOutline,MdOutlineWaterDamage,MdOutlineDomain,MdOutlineKingBed } from "react-icons/md";
-import Button from '@/components/Form/Button';
 import { FaMap } from 'react-icons/fa';
 import Link from 'next/link'
+import { serviceOptions } from '@/app/constants/constants';
 const Page = ({ params }) => {
     const id = params.id;
     const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
@@ -41,57 +40,30 @@ const Page = ({ params }) => {
                 </span>
             </div>
             {data.images.length !== 0 && <Carousel images={data.images} h="300px"/>}
-
             <div className="flex flex-col md:flex-row">
-                
-                <div className="md:w-2/3  pt-4 ">
-                    <div className='flex justify-center md:justify-around mb-8'>
-                        <div className="w-[150px] md:w-[250px] bg-white border rounded-lg shadow-lg">
-                            <div className="p-2 md:p-8 flex items-center ">
-
-                                <div className="md:flex md:items-center text-center">
-                                <div className="md:mr-4 mr-1 flex justify-center ">
-                                    <MdOutlineDomain className='md:text-2xl text-xl text-gray-700'/>
-                                </div>
-                                <div>
-                                    <p className="text-black md:text-sm text-xs">{data.subProperties.length} propiedades totales</p>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="w-[150px] md:w-[250px] bg-white border rounded-lg shadow-lg">
-                            <div className="p-2 md:p-8  flex items-center ">
-                                <div className="md:flex md:items-center">
-                                <div className="md:mr-4 mr-1 flex justify-center ">
-
-
-                                    <MdOutlineWaterDamage className='md:text-2xl text-xl text-gray-700'/>
-                                </div>
-                                <div>
-                                    <p className="text-black md:text-sm text-xs">Servicio de agua</p>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="w-[150px] md:w-[250px] bg-white border rounded-lg shadow-lg">
-                            <div className="p-2 md:p-8   flex items-center ">
-
-                                <div className="md:flex md:items-center">
-                                <div className="md:mr-4 mr-1 flex justify-center ">
-
-                                    <MdLightbulbOutline className='md:text-2xl text-xl text-gray-700'/>
-                                </div>
-                                <div>
-                                    <p className="text-black md:text-sm text-xs">Electricidad.</p>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
+                <div className="md:w-2/3  pt-2 ">
                     <label className='text-xl font-semibold '>Acerca de este lugar</label>
                     <p>{data.description}</p>
+                    <br></br>
+                    <hr></hr>
+                    <br></br>
+                    <label className='text-xl font-semibold'>Lo que este lugar ofrece</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-1 sm:mt-8">
+                    {data && data.services.length!=0 ?
+                        data.services.map((servicio, index) => (
+                        <div key={index} className=" flex items-center">
+                            <div>
+                            {serviceOptions[servicio]}
+                            </div>
+                            <div className='ml-5'>
+                            {servicio}
+                            </div>
+                        </div>
+                        )):
+                        <div>Esta propiedad no tiene servicios.</div>
+                    }
+                    </div>
+
 
                 </div>
 

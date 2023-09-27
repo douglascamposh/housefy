@@ -9,11 +9,16 @@ import { FormInputLabel } from '../common/FormInputLabel';
 import { categories, departments } from '@/app/utils/schema/propertySchema';
 import UploadImages from '../UploadImages';
 import ImageGallery from '../ImageGallery';
-
+import TagSelector from '../common/TagSelector';
+import { serviceOptions } from '@/app/constants/constants';
 const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [uploadedImages, setUploadedImages] = useState(data ? data.images : []);
   const [modalImages,setModalImages]=useState(false);
+  const [selectedTags, setSelectedTags] = useState(data && data.services!=null ? data.services : []);
+  const handleSelectedTagsChange = (newSelectedTags) => {
+    setSelectedTags(newSelectedTags);
+  };
   const toggleModal=(status)=>{
     setModalImages(status)
   }
@@ -22,7 +27,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
   }
   const handleSubmit = (values) => {
     const newValues = { ...values };
-    newValues.images=uploadedImages
+    newValues.images=uploadedImages;
     if (newValues.images!=0) {
       if (coordinates.latitude!=0) {
         newValues.address = {
@@ -32,12 +37,17 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
         };
       }
       if (newValues.address.latitude !== 0) {
-        const payload = {
-          ...newValues,
-          type: newValues.category,
-        };
-        delete payload.category;
-        onSubmit(payload);
+        if (selectedTags.length!=0){
+          newValues.services=selectedTags;
+          const payload = {
+            ...newValues,
+            type: newValues.category,
+          };
+          delete payload.category;
+          onSubmit(payload);
+        }else{
+          toast.error('Seleccione al menos un servicio de la propiedad');
+        }
       } else {
         toast.error('Seleccione una ubicación en el mapa');
       }
@@ -79,7 +89,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                   :null
                 }
                 <FormInputLabel
-                    label="Nombre"
+                    label="Nombre *"
                     name="name"
                     type="text"
                     autoComplete="name"
@@ -89,7 +99,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                     value={values.name}
                 />
                 <FormInputLabel
-                    label="Descripcion"
+                    label="Descripción *"
                     name="description"
                     type="text"
                     maxLength={401}
@@ -100,7 +110,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                     value={values.description}
                 />
                 <FormInputLabel
-                  label="Categoria"
+                  label="Categoria *"
                   as="select"
                   name="category"
                   touched={touched}
@@ -115,10 +125,19 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
             </div>
             <div className="w-full md:w-1/2 mt-4 md:mt-0">
               <div>
+                <div>
+                    <label className="text-sm">Servicios de la propiedad *</label>
+                    <TagSelector 
+                      options={Object.keys(serviceOptions)} 
+                      placeholder="Seleccione los servicios"
+                      selectedTags={selectedTags}
+                      onSelectedTagsChange={handleSelectedTagsChange} 
+                    ></TagSelector>
+                </div>
                 <div className="flex space-x-4">
                   <div className="w-1/2">
                     <FormInputLabel
-                      label="Departamento"
+                      label="Departamento *"
                       as="select"
                       name="address.state"
                       placeholder="Departamento"
@@ -134,7 +153,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                 </div>
                   <div className="w-1/2">
                     <FormInputLabel
-                      label="Ciudad"
+                      label="Ciudad *"
                       name="address.city"
                       type="text"
                       autoComplete="address.city"
@@ -148,7 +167,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
               </div>
               <div>
                 <FormInputLabel
-                  label="Calle"
+                  label="Calle *"
                   name="address.street"
                   type="text"
                   autoComplete="address.street"
@@ -159,28 +178,31 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                 >
                 </FormInputLabel>
               </div>
-              <div>
-                <FormInputLabel
-                  label="Referencia"
-                  name="address.reference"
-                  type="text"
-                  autoComplete="address.reference"
-                  placeholder="Ej: Frente al parque central"
-                  value={values.address.reference}
-                >
-                </FormInputLabel>
+              <div className="flex space-x-4">
+                  <div className="w-1/2">
+                    <FormInputLabel
+                      label="Referencia"
+                      name="address.reference"
+                      type="text"
+                      autoComplete="address.reference"
+                      placeholder="Ej: Frente al parque central"
+                      value={values.address.reference}
+                    >
+                    </FormInputLabel>
+                  </div>
+                  <div className="w-1/2">
+                    <FormInputLabel
+                      label="Nro De Calle"
+                      name="address.streetNumber"
+                      type="text"
+                      autoComplete="address.streetNumber"
+                      placeholder="Ej: 123"
+                      value={values.address.streetNumber}
+                    >
+                    </FormInputLabel>
+                  </div>
               </div>
-              <div>
-                <FormInputLabel
-                  label="Nro De Calle"
-                  name="address.streetNumber"
-                  type="text"
-                  autoComplete="address.streetNumber"
-                  placeholder="Ej: 123"
-                  value={values.address.streetNumber}
-                >
-                </FormInputLabel>
-              </div>
+
             </div>
               <div>
                 {coordinates.latitude !== 0 && coordinates.longitude !== 0 ? (
