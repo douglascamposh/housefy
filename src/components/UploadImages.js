@@ -104,63 +104,80 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
   const showUploadButton = imageData.files.length + previewImagesSave.length < 6;
   
   return (
-    <div className='fixed inset-0 z-50 flex p-5 items-center justify-center bg-gray-700 bg-opacity-50'>
-      <div className="bg-white pl-6 pr-6 flex flex-col rounded-lg shadow-lg w-full md:h-full md:w-3/4 lg:w-1/2">
+    <div className='fixed inset-0 z-50 flex p-5 items-center justify-center bg-gray-700 bg-opacity-50' style={{ overflowY: 'auto' }}  >
+      <div className={"bg-white pl-6 pr-6 flex flex-col rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2 "+(imageData.files.length + previewImagesSave.length > 0?"":"md:h-3/4")}>
         <div className='flex items-center border-b-[1px] border-gray-600 p-4 mb-4'>
-        <button type="button" onClick={()=>{ModalImages(false)}} className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200">
-          <MdClose className="text-gray-600 w-4 h-4 " />
-        </button>
+          <button
+            type="button"
+            onClick={() => {
+              ModalImages(false);
+            }}
+            className="flex items-center justify-center p-1 rounded-full  hover:bg-gray-200"
+          >
+            <MdClose className="text-gray-600 w-4 h-4 " />
+          </button>
           <div className='flex-1'>
             <p className='text-center'>Selecciona imágenes</p>
           </div>
         </div>
-  
-        {isLoading ? (
-          <div className="h-60  items-center justify-center">
-            <Spinner />
-            <label className="text-green-500 ml-3"> Subiendo imagenes</label>
-          </div>
-        ) : (
-          <div className='flex-1'>
-            {imageData.files.length + previewImagesSave.length > 0 ? (
-              <div className="grid grid-cols-2 grid-rows-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
-                {previewImagesSave.map((previewImage, index) => (
-                  <div key={index} className="mb-2 flex justify-center items-center  relative shadow-lg bg-white">
-                    <Image src={previewImage.url} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
-                    <button type='button' onClick={() => handleRemoveImage(index, true)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
-                      <MdClose />
-                    </button>
-                  </div>
-                ))}
-                {imageData.previewImages.map((previewImage, index) => (
-                  <div key={index} className="mb-2 flex h-100 justify-center items-center relative shadow-lg bg-white">
-                    <Image src={previewImage} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
-                    <button type='button' onClick={() => handleRemoveImage(index, false)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
-                      <MdClose />
-                    </button>
-                  </div>
-                ))}
-                {showUploadButton && (
-                  <div onClick={() => document.getElementById('fileInput').click()} className="h-[80px] md:h-[200px] flex flex-col hover:bg-gray-100 items-center justify-center  border-2 border-dashed border-gray-300 bg-white cursor-pointer">
-                    <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
-                      <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+        <div className="flex-1" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {isLoading ? (
+            <div className="h-60  items-center justify-center">
+              <Spinner />
+              <label className="text-green-500 ml-3"> Subiendo imagenes</label>
+            </div>
+          ) : (
+            <div className="h-full">
+              {imageData.files.length + previewImagesSave.length > 0 ? (
+                <div className="grid grid-cols-2 grid-rows-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                  {previewImagesSave.map((previewImage, index) => (
+                    <div key={index} className="mb-2 flex justify-center items-center  relative shadow-lg bg-white">
+                      <Image src={previewImage.url} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
+                      <button type='button' onClick={() => handleRemoveImage(index, true)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
+                        <MdClose />
+                      </button>
                     </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div onClick={() => document.getElementById('fileInput').click()} className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 bg-white cursor-pointer">
-                <div className="text-lg text-center mb-2">Selecciona archivos JPG para subir</div>
-                <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
-                  <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+                  ))}
+                  {imageData.previewImages.map((previewImage, index) => (
+                    <div key={index} className="mb-2 flex h-100 justify-center items-center relative shadow-lg bg-white">
+                      <Image src={previewImage} alt="Vista previa de la imagen" width={130} height={130} className="w-auto h-[80px] md:h-[200px]" />
+                      <button type='button' onClick={() => handleRemoveImage(index, false)} className="absolute bg-red-500 top-0 right-0 p-1 text-white">
+                        <MdClose />
+                      </button>
+                    </div>
+                  ))}
+                  {showUploadButton && (
+                    <div onClick={() => document.getElementById('fileInput').click()} className="h-[80px] md:h-[200px] flex flex-col hover:bg-gray-100 items-center justify-center  border-2 border-dashed border-gray-300 bg-white cursor-pointer">
+                      <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
+                        <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="text-sm text-gray-400 mt-2">Elegir archivos</div>
-              </div>
-            )}
-            <input id="fileInput" type="file" accept=".jpg" multiple onChange={handleFileChange} disabled={isLoading || !showUploadButton} className="sr-only" />
-          </div>
-        )}
-  
+              ) : (
+                <div
+                  onClick={() => document.getElementById('fileInput').click()}
+                  className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-300 bg-white cursor-pointer"
+                >
+                  <div className="text-lg text-center mb-2">Selecciona archivos JPG para subir</div>
+                  <div className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-400 rounded-full">
+                    <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
+                  </div>
+                  <div className="text-sm text-gray-400 mt-2">Elegir archivos</div>
+                </div>
+              )}
+              <input
+                id="fileInput"
+                type="file"
+                accept=".jpg"
+                multiple
+                onChange={handleFileChange}
+                disabled={isLoading || !showUploadButton}
+                className="sr-only"
+              />
+            </div>
+          )}
+        </div>
         <div className="flex items-center justify-between m-4">
           {imageData.files.length + previewImagesSave.length >= 6 ? (
             <label className="text-red-500 text-xs">
@@ -174,7 +191,6 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
       </div>
     </div>
   );
-  
 };
 
 export default UploadImages;
