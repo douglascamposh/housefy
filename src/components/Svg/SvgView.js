@@ -2,6 +2,7 @@ import { Logger } from "@/services/Logger";
 import React, { useState, useRef, useEffect } from "react";
 import { FaSearchPlus, FaSearchMinus, FaEdit, FaExclamationTriangle } from "react-icons/fa";
 import { stylesSvg } from "@/app/constants/stylesSvg";
+import ConfirmationDialog from "../ConfirmationDialog";
 const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
   const [fileContent, setFileContent] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -181,28 +182,13 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
     <div className="svg-container p-4 md:p-8 w-full">
       <style>{stylesSvg}</style>
       {showModalWarning && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          {/* Fondo oscuro */}
-          <div className="fixed inset-0 bg-black opacity-50"></div>
-
-          <div className="bg-white p-6 max-w-md mx-auto rounded-lg shadow-xl relative z-10">
-            <div className="flex items-center justify-center text-4xl text-yellow-500">
-              <FaExclamationTriangle/>
-            </div>
-            <p className="text-xl text-gray-700 mt-4 mb-6">
-              Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano.
-            </p>
-            <div className="flex justify-center">
-              <button onClick={handleCancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mr-2 rounded">
-                Cancelar
-              </button>
-              <button onClick={handleContinue} className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded ">
-                Continuar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        <ConfirmationDialog
+            isOpen={showModalWarning}
+            onCancel={handleCancel}
+            onConfirm={handleContinue}
+            content="Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano."
+        />
+      )} 
 
       <div className="flex flex-wrap justify-center w-full mb-4">
         <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">

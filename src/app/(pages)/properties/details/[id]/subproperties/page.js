@@ -9,36 +9,33 @@ import ServerErrorComponent from '@/components/ServerError';
 import Button from '@/components/Form/Button';
 import UploadSvg from '@/components/Svg/UploadSvg';
 import SvgView from '@/components/Svg/SvgView';
-import SubPropertyForm from '@/components/Form/SubPropertyForm';
 import DetailsSubProperty from '@/components/DetailsSubProperty';
 import {
   MdHome,
   MdRemoveShoppingCart,
   MdCheckCircle,
   MdAttachMoney,
-  MdEditDocument
 } from 'react-icons/md';
 import NoDataMessage from '@/components/NoDataMsg';
 import ShimmerSubProperty from '@/components/Shimmers/ShimmerSupProperty';
 import { Logger } from '@/services/Logger';
+import SubPropertyCreateUpdate from '@/components/properties/SubPropertyCreateUpdate';
 
 const Page = ({ params }) => {
   const { id } = params;
   const [modalSvg, setModalSvg] = useState(false);
   const [selectedPath, setSelectedPath] = useState(null);
   const [subPropertySelect, setSubPropertySelect] = useState(null);
-
   const [updateProperty, { isLoading: isLoading2 }] = useUpdatePropertiesMutation({
     fixedCacheKey: 'shared-update-post',
   });
-
   const { data, error, isLoading } = useGetPropertiesByIdQuery(String(id));
   const getSubProperties = useGetSubPropertiesQuery(String(id));
   const dataSubProperties = getSubProperties.data || [];
-
   const [arraySubproperty, setArraySubProperty] = useState([]);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [uploadedSvg, setUploadedSvg] = useState(null);
+  const [showSubPropertyForm, setShowSubPropertyForm] = useState(false);
 
   useEffect(() => {
     if (data && data.imagePlan) {
@@ -53,22 +50,19 @@ const Page = ({ params }) => {
   const handleUpdateSubproperty = (newValue) => {
     setArraySubProperty((prevArray) => [...prevArray, newValue]);
   };
-
   const handlePathSelect = (pathId) => {
     const objetoEncontrado = arraySubproperty.find((objeto) => objeto.svgId === pathId);
     setSubPropertySelect(objetoEncontrado);
     setIsPopUpOpen(true);
     setSelectedPath(pathId);
   };
-
   const toggleModalSvg = () => {
     setModalSvg(!modalSvg);
   };
-
   const togglePopUp = () => {
     setIsPopUpOpen(!isPopUpOpen);
+    setShowSubPropertyForm(false);
   };
-
   const handleSvgUploaded = async (uploaded) => {
     const newData = { ...data };
     newData.imagePlan = uploaded[0];
@@ -111,13 +105,18 @@ const Page = ({ params }) => {
           <>
             <SvgView svg={uploadedSvg} onPathSelect={handlePathSelect} arraySubProperties={arraySubproperty} ModalSvg={toggleModalSvg} className="md:w-1/2" />
             <div className="flex justify-center md:w-1/2 md:flex-col">
-              {isPopUpOpen && selectedPath ? (
-                subPropertySelect ? (
-                  <DetailsSubProperty dataSubproperty={subPropertySelect} id={id} />
+            {isPopUpOpen && selectedPath ? (
+                    (
+                    showSubPropertyForm ? (
+                      <SubPropertyCreateUpdate  onClose={togglePopUp}newSubproperty={handleUpdateSubproperty} idSvg={selectedPath} data={subPropertySelect} idProperty={data.id}></SubPropertyCreateUpdate>
+                    ) : 
+                      subPropertySelect ? (
+                        <DetailsSubProperty  dataSubproperty={subPropertySelect} id={id} toggleFormSubProperty={() => setShowSubPropertyForm(true)} onClose={togglePopUp}/>
+                      ) : (
+                      <SubPropertyCreateUpdate onClose={togglePopUp} newSubproperty={handleUpdateSubproperty} idSvg={selectedPath} data={subPropertySelect} idProperty={data.id}></SubPropertyCreateUpdate>
+                      )
+                    )
                 ) : (
-                  <SubPropertyForm idSvg={selectedPath} onClose={togglePopUp} newSubproperty={handleUpdateSubproperty} subPropertySave={subPropertySelect} idProperty={data.id} />
-                )
-              ) : (
                 <div>
                   <div className="flex">
                     <div className="border-r-2 border-black p-4 md:flex md:items-center text-center">

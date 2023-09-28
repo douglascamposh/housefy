@@ -3,39 +3,18 @@ import { Formik, Form } from 'formik';
 import { FormInputLabel } from '../common/FormInputLabel';
 import { validationSubPropertySchema } from '@/app/utils/validations/schemaValidation';
 import { subPropertiesScheme } from '@/app/utils/schema/propertySchema';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCreateSubPropertiesMutation } from '@/redux/services/propertiesApi';
 import Button from './Button';
 import { Logger } from '@/services/Logger';
-const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySave}) => {
-    const [createSubProperties] = useCreateSubPropertiesMutation();
-    
+const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
     const handleSubmit = async(values,{ resetForm }) => {
         const updatedValues = { ...values };
         updatedValues.svgId = idSvg
         await handleCreateSubProperties(updatedValues,{ resetForm })
-
     };
-    const handleCreateSubProperties = async (newSubPropertiesData,{ resetForm }) => {
+    const handleCreateSubProperties = async (newSubPropertiesData) => {
       try {
-        const response = await createSubProperties({
-          id: idProperty,
-          newSubProperties: newSubPropertiesData,
-        });
-        if (response.data){
-          const dataNew={...response.data}
-          dataNew.isAvailable = true;
-          newSubproperty(dataNew);
-          onClose()
-          toast.success("Se registro la nueva propiedad")        
-          resetForm();
-        }else{
-          toast.error(response.error.data.message)
-        }
-
-
-  
+        onSubmit(newSubPropertiesData)
       } catch (error) {
         Logger.error(error);
       }
@@ -44,15 +23,18 @@ const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySav
       <div className="w-96 bg-white rounded-lg shadow-2xl  p-6">
       <Formik
       enableReinitialize={true}
-        initialValues={subPropertySave|| subPropertiesScheme}
+        initialValues={data|| subPropertiesScheme}
         validationSchema={validationSubPropertySchema}
         onSubmit={handleSubmit}
       >
         {({ errors, touched, values }) => (
           <Form>
             {
-              subPropertySave?
-              null:
+              data?
+              <div className='mb-10'>
+              <label className='text-xl font-bold'>Editar propiedad</label>  
+            </div>
+              :
               <div className='mb-10'>
               <label className='text-xl font-bold'>Registro de propiedad</label>  
             </div>
@@ -84,18 +66,16 @@ const SubPropertyForm = ({idSvg,newSubproperty,idProperty,onClose,subPropertySav
               value={values.price}
 
             />
-
-
             <div className="flex mt-10 justify-between">
               <Button
                 type="submit"
-                label="Registrar"
+                label={data?"Actualizar":"Registrar"}
                 className="w-full"
               >
               </Button>
                 <Button 
                   type="button" 
-                  onClick={onClose} 
+                  onClick={onClose}
                   label="Cancelar" 
                   className="w-full ml-2"
                 ></Button>
