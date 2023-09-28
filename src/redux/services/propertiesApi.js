@@ -57,6 +57,22 @@ export const propertiesApi = createApi({
         url: `/properties/${id}/subproperties`,
         body: newSubProperties,
       }),
+      invalidatesTags: ["SubProperties"],
+    }),
+    updateSubProperties: builder.mutation({
+      query: ({ id, subId, updateSubProperties }) => ({
+        method: 'PUT',
+        url: `/properties/${id}/subproperties/${subId}`,
+        body: updateSubProperties,
+      }),
+      invalidatesTags: ["SubProperties"],
+    }),
+    deleteSubProperties: builder.mutation({
+      query: ({id, subId}) => ({
+        method: 'DELETE',
+        url: `/properties/${id}/subproperties/${subId}`,
+      }),
+      invalidatesTags: ["SubProperties"],
     }),
     getSubProperties: builder.query({
       query: (id) => `/properties/${id}/subproperties`,
@@ -97,6 +113,8 @@ export const {
   useDeletePropertiesMutation,
   useDeleteImagesMutation,
   useCreateSubPropertiesMutation,
+  useUpdateSubPropertiesMutation,
+  useDeleteSubPropertiesMutation,
   useGetSubPropertiesQuery,
   useUploadImagePropertiesMutation,
   useCreateSalePropertyMutation,

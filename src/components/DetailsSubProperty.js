@@ -1,15 +1,49 @@
-import { MdModeEdit,MdShoppingCart } from "react-icons/md";
+import { MdModeEdit,MdShoppingCart,MdDelete } from "react-icons/md";
 import { useState } from "react";
 import FormSale from "./Form/FormSale";
-
-const DetailsSubProperty=(params,toggleFormSubProperty)=>{
+import { useDeleteSubPropertiesMutation } from "@/redux/services/propertiesApi";
+import { toast } from "react-toastify";
+import { Logger } from "@/services/Logger";
+import ConfirmationDialog from "./ConfirmationDialog";
+const DetailsSubProperty=(params)=>{
     const [formSale, setFormSale] = useState(false);
-
+    const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
+    const [deleteSubProperty] = useDeleteSubPropertiesMutation();
 
     const toggleSaleForm=()=>{
         setFormSale(!formSale)
     }
     const dataSubProperty=params.dataSubproperty
+    const handleDeleteSubProperty = async () => {
+        if (!dataSubProperty || !dataSubProperty.id || !dataSubProperty.propertyId) {
+          Logger.error("Los valores de id o propertyId son inválidos.");
+          return;
+        }
+        setIsConfirmationDialogOpen(true);
+      };
+    
+      const handleCancelDelete = () => {
+        setIsConfirmationDialogOpen(false);
+      };
+    
+      const handleConfirmDelete = async () => {
+        setIsConfirmationDialogOpen(false);
+        const id = dataSubProperty.id;
+        const PropertyId = dataSubProperty.propertyId;
+    
+        try {
+          const response = await deleteSubProperty({ id: PropertyId, subId: id });
+          if (response.error) {
+            toast.error("Esta subpropiedad no puede ser eliminada");
+          } else {
+            toast.success("Se eliminó correctamente la subpropiedad");
+            params.onClose();
+          }
+        } catch (error) {
+          Logger.error("Error al eliminar la subpropiedad ", error);
+        }
+      };
+      
     return (
         <div className="w-96 bg-white rounded-lg shadow-2xl p-6 h-auto ">
             <div className="flex justify-between">
@@ -28,8 +62,11 @@ const DetailsSubProperty=(params,toggleFormSubProperty)=>{
                     }
 
                 </div>
-                <button onClick={()=>toggleFormSubProperty} className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg">
+                <button onClick={()=>{params.toggleFormSubProperty()}} className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg">
                     <MdModeEdit size={15} />
+                </button>
+                <button onClick={handleDeleteSubProperty} className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg">
+                    <MdDelete size={15} />
                 </button>
             </div>
 
@@ -68,6 +105,12 @@ const DetailsSubProperty=(params,toggleFormSubProperty)=>{
                 
 
             }
+            <ConfirmationDialog
+                isOpen={isConfirmationDialogOpen}
+                onCancel={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+                content="¿Estas seguro que deseas eliminar esta sub propiedad?"
+            />
         </div>
     )
 
