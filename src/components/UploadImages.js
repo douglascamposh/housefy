@@ -5,8 +5,10 @@ import { MdOutlineAddPhotoAlternate, MdClose } from 'react-icons/md';
 import Button from './Form/Button';
 import Image from 'next/image';
 import Spinner from './Spinner';
+import { useDeleteImagesMutation } from '@/redux/services/propertiesApi';
+import { Logger } from '@/services/Logger';
 
-const SUPPORTED_IMAGE_TYPES = ['image/jpeg'];
+const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];
 const VALID_IMAGE_EXTENSION = '.jpg';
 
 const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
@@ -17,10 +19,11 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
   });
   const [previewImagesSave, setPreviewImagesSave] = useState(ImagesSave);
   const [uploadImageMutation, { isLoading }] = useUploadImagePropertiesMutation();
+  const [deleteImages] = useDeleteImagesMutation();
 
   const validateImage = (file) => {
     return (
-      SUPPORTED_IMAGE_TYPES.includes(file.type) && file.name.endsWith(VALID_IMAGE_EXTENSION)
+      (SUPPORTED_IMAGE_TYPES.includes(file.type) || file.name.endsWith(VALID_IMAGE_EXTENSION))
     );
   };
 
@@ -42,6 +45,16 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
       toast.error('Por favor selecciona archivos de imagen JPG');
     }
   };
+  const handleDeleteImages = async (imagesArray) => {
+    try {
+      for (const image of imagesArray) {
+        await deleteImages(image.id);
+      }
+    } catch (error) {
+      Logger.error("Error al eliminar la imagen: ",error);
+    }
+  };
+  
   const handleRemoveImage = (index, isPreviewSave) => {
     const newImages = isPreviewSave
       ? [...previewImagesSave]
@@ -63,6 +76,8 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
   const handleUpload = async () => {
     if (imageData.files.length + previewImagesSave.length > 0) {
       try {
+        const arrayDeleted = ImagesSave.filter(objeto => !previewImagesSave.some(item => item.id === objeto.id));
+        await handleDeleteImages(arrayDeleted);
         const promises = imageData.files.map(async (file) => {
           try {
             const response = await uploadImageMutation({ file });
@@ -94,6 +109,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
         toast.success('Imagenes subidas exitosamente');
         ImagesUploaded(combinedImages);
       } catch (error) {
+        Logger.error("Error en la carga de imagenes: ",error);
         toast.error('Error en la carga de imágenes');
       }
     } else {
@@ -169,7 +185,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
               <input
                 id="fileInput"
                 type="file"
-                accept=".jpg"
+                accept=".jpg, .jpeg"
                 multiple
                 onChange={handleFileChange}
                 disabled={isLoading || !showUploadButton}
