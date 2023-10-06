@@ -8,3 +8,7 @@ export const serviceOptions = {
   "Telefonía/internet": <FaWifi />,
   "Gas": <FaGasPump />,
 };
+export const sale_status = {
+  sold: 'SOLD',
+  reserved: 'RESERVED'
+};

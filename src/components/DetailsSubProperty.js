@@ -5,11 +5,15 @@ import { useDeleteSubPropertiesMutation } from "@/redux/services/propertiesApi";
 import { toast } from "react-toastify";
 import { Logger } from "@/services/Logger";
 import ConfirmationDialog from "./ConfirmationDialog";
+import AutoCompleteCustomer from "./AutoCompleteCustomer";
 const DetailsSubProperty=(params)=>{
     const [formSale, setFormSale] = useState(false);
     const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
     const [deleteSubProperty] = useDeleteSubPropertiesMutation();
-
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const handleSelectCustomer = (value) => {
+        setSelectedCustomer(value);
+    };
     const toggleSaleForm=()=>{
         setFormSale(!formSale)
     }
@@ -95,7 +99,12 @@ const DetailsSubProperty=(params)=>{
                 </div>:
                 (
                 formSale?
-                    <FormSale idProperty={params.id} idSubProperty={dataSubProperty.id} price={dataSubProperty.price} onClose={toggleSaleForm}></FormSale>
+                    <>
+                        <label className='font-bold'>Buscar cliente:</label>
+                        <AutoCompleteCustomer onSelect={handleSelectCustomer} />
+                        <FormSale idProperty={params.id} idSubProperty={dataSubProperty.id} price={dataSubProperty.price} onClose={toggleSaleForm} selectedCustomer={selectedCustomer}></FormSale>
+
+                    </>
                     :
                     <button onClick={()=>setFormSale(!formSale)} className="text-blue-400 flex mt-20 w-full text-center">
                         <MdShoppingCart></MdShoppingCart>

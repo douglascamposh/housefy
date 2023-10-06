@@ -77,7 +77,6 @@ export const propertiesApi = createApi({
     getSubProperties: builder.query({
       query: (id) => `/properties/${id}/subproperties`,
       providesTags: ['SubProperties'],
-
     }),
 
     uploadImageProperties: builder.mutation({
@@ -101,6 +100,13 @@ export const propertiesApi = createApi({
       }),
       invalidatesTags: ['SubProperties'],
     }),
+    getCustomers: builder.query({
+      query: (criteria) => {
+        const queryParams = criteria ? `?criteria=${criteria}` : '';
+        return `/customers${queryParams}`;
+      },
+    }),
+
 
   }),
 });
@@ -118,4 +124,5 @@ export const {
   useGetSubPropertiesQuery,
   useUploadImagePropertiesMutation,
   useCreateSalePropertyMutation,
+  useGetCustomersQuery
 } = propertiesApi;
