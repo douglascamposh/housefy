@@ -49,7 +49,7 @@ const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
 
             />
             <FormInputLabel
-              label="TAMAÑO"
+              label="TAMAÑO (m²)"
               name="size"
               type="number"
               placeholder="Ej. 100m2"
@@ -58,7 +58,7 @@ const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
 
             />
             <FormInputLabel
-              label="PRECIO"
+              label="PRECIO ($)"
               name="price"
               type="number"
               placeholder="Ej. 100000$"

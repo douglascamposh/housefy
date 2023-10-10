@@ -49,14 +49,17 @@ export const subPropertySaleScheme={
     customer: {
       name: "",
       lastName: "",
-      email: "",
       phoneNumber: "",
       ci: '',
-      street: '',
-      streetNumber: '',
-      city: '',
-      state: '',
-      country: '',
+      extensionCi: "",
+      address: {
+        street: "",
+        reference: "",
+        streetNumber: "",
+        city: "",
+        country: "",
+        state: ""
+      },
       references: [],
     },
 }
