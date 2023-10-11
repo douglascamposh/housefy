@@ -10,16 +10,6 @@ const PropertyCreateUpdate = ({data, saveProperty, isLoading}) => {
 
   const [ deleteImages ] = useDeleteImagesMutation();
 
-  // const handleDeleteImages = async (imagesArray) => {
-  //   try {
-  //     for (const image of imagesArray) {
-  //       await deleteImages(image.id);
-  //     }
-  //   } catch (error) {
-  //     Logger.error("Error al eliminar la imagen: ",error);
-  //   }
-  // };
-
   const handleNavigation = async (imagesToDelete) => {
     if (imagesToDelete.length > 0){
       try {
