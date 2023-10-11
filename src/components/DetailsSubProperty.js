@@ -52,10 +52,12 @@ const DetailsSubProperty=(params)=>{
         <div className="w-96 bg-white rounded-lg shadow-2xl p-6 h-auto ">
             <div className="flex justify-between">
                 <div className="flex items-end">
-                    <p className="font-bold text-2xl">
-                        $ {dataSubProperty.price} USD
-                    </p>
-                    {dataSubProperty.isAvailable?
+                    {!dataSubProperty.commonArea && 
+                        <p className="font-bold text-2xl">
+                            $ {dataSubProperty.price} USD
+                        </p>
+                    }
+                    {dataSubProperty.isAvailable ?
                         <p className="text-sm">
                             Disponible
                         </p>
@@ -73,8 +75,12 @@ const DetailsSubProperty=(params)=>{
                     <MdDelete size={15} />
                 </button>
             </div>
-
-            <div className="mt-5 font-semibold">Detalle de propiedad:</div>
+            { dataSubProperty.commonArea ?
+                <div className="mt-5 font-semibold">Area común:</div>
+                :
+                <div className="mt-5 font-semibold">Detalle de propiedad:</div>
+            }
+            
             <div className="flex justify-between">
                 <p className="text-gray-700">Codigo: </p>
                 <p>{dataSubProperty.code}</p>
@@ -83,8 +89,9 @@ const DetailsSubProperty=(params)=>{
                 <p className="text-gray-700">Tamaño: </p>
                 <p>{dataSubProperty.size} m²</p>
             </div>
-            {   dataSubProperty.isAvailable!=true?
-                <div>
+
+            { !dataSubProperty.isAvailable ?
+                !dataSubProperty.commonArea && <div>
                     <label className="font-semibold">
                         Propiedad vendida
                     </label>
@@ -98,7 +105,7 @@ const DetailsSubProperty=(params)=>{
                     </div>
                 </div>:
                 (
-                formSale?
+                formSale ?
                     <>
                         <label className='font-bold'>Buscar cliente:</label>
                         <AutoCompleteCustomer onSelect={handleSelectCustomer} />

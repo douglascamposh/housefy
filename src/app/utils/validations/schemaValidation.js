@@ -79,14 +79,16 @@ export const validationRegisterSchema = Yup.object().shape({
 });
 
 export const validationSubPropertySchema = Yup.object().shape({
-  code: Yup.string().required('El código es obligatorio'),
+  code: Yup.string().required('El código es requerido'),
   size: Yup.number()
-    .required('El tamaño es obligatorio')
+    .required('El tamaño es requerido')
     .moreThan(0, 'El tamaño debe ser mayor que cero'),
   price: Yup.number()
-    .required('El precio es obligatorio')
-    .moreThan(0, 'El precio debe ser mayor que cero'),
-  isAvailable: Yup.boolean().required('El estado es obligatorio'),
+    .when('commonArea',(commonArea, schema) => {
+      if (commonArea == 'false' ) {
+        return schema.positive('El precio debe ser un número positivo');
+      }
+    }),
 });
 
 export const validationSubPropertySaleScheme = (price) => {
