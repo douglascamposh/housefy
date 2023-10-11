@@ -219,7 +219,7 @@ const PropertyForm = ({data, isLoading, onSubmit, onCancel}) => {
                 <Button
                   label="Cancelar"
                   className="w-full m-2"
-                  onClick={onCancel}
+                  onClick={() => onCancel(uploadedImages)}
                   disabled={isLoading}
                 />
                 <Button
