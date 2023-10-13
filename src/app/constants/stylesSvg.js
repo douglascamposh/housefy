@@ -19,6 +19,12 @@ export const stylesSvg = `
 .not-available-path {
   fill: #e90107;
 }
+.common-area-path {
+  fill: #66FFFF;
+}
+.common-area-path:hover {
+  fill: #66FFFF;
+}
 .not-available-path:hover {
   fill: #e90107;
 }

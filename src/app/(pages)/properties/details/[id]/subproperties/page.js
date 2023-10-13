@@ -125,7 +125,7 @@ const Page = ({ params }) => {
                       </div>
                       <div>
                         <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">Total propiedades</p>
-                        <p className="text-gray-600">{arraySubproperty.length}</p>
+                        <p className="text-gray-600">{arraySubproperty.filter(property => !property.commonArea).length }</p>
                       </div>
                     </div>
                     <div className="border-r-2 border-black p-4 md:flex md:items-center text-center">
@@ -135,7 +135,7 @@ const Page = ({ params }) => {
                       <div>
                         <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">Propiedades vendidas</p>
                         <p className="text-gray-600">
-                          {arraySubproperty.filter((obj) => obj.isAvailable !== true).length}
+                          {arraySubproperty.filter((obj) => obj.isAvailable !== true && !obj.commonArea).length}
                         </p>
                       </div>
                     </div>
@@ -146,7 +146,7 @@ const Page = ({ params }) => {
                       <div>
                         <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">Propiedades disponibles</p>
                         <p className="text-gray-600 ">
-                          {arraySubproperty.filter((obj) => obj.isAvailable === true).length}
+                          {arraySubproperty.filter((obj) => obj.isAvailable === true && !obj.commonArea).length}
                         </p>
                       </div>
                     </div>

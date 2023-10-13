@@ -11,12 +11,19 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
   const [pathStyleClass, setPathStyleClass] = useState("default-path-style");
   const [svgIds, setSvgIds] = useState([]);
   const [showModalWarning, setShowModalWarning] = useState(false);
+
   const svgIdsAvailableTrue = arraySubProperties
     .filter((item) => item.isAvailable === true)
     .map((item) => item.svgId);
+
   const svgIdsAvailableFalse = arraySubProperties
-    .filter((item) => item.isAvailable !== true)
+    .filter((item) => item.isAvailable !== true && !item.commonArea)
     .map((item) => item.svgId);
+
+  const svgIdsCommonArea = arraySubProperties
+    .filter((item) => item.commonArea)
+    .map((item) => item.svgId);
+
   const handleZoomIn = () => {
     setZoom((prevZoom) => prevZoom + 0.1);
   };
@@ -69,15 +76,18 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         if (id === clickedId) {
           path.classList.remove("available-path");
           path.classList.remove("not-available-path");
+          path.classList.remove("common-area-path");
           path.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
           path.classList.remove("selected-path");
           path.classList.add("available-path");
         } else if (svgIdsAvailableFalse.includes(id)) {
           path.classList.remove("selected-path");
-
           path.classList.add("not-available-path");
-        } else {
+        } else if (svgIdsCommonArea.includes(id)) {
+          path.classList.remove("selected-path");
+          path.classList.add("common-area-path");
+        }else {
           path.classList.add(pathStyleClass);
         }
       });
@@ -88,6 +98,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         if (id === clickedId) {
           polygon.classList.remove("available-path");
           polygon.classList.remove("not-available-path");
+          polygon.classList.remove(".common-area-path");
 
           polygon.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
@@ -98,6 +109,9 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           polygon.classList.remove("selected-path");
 
           polygon.classList.add("not-available-path");
+        } else if (svgIdsCommonArea.includes(id)) {
+          polygon.classList.remove("selected-path");
+          polygon.classList.add(".common-area-path");
         } else {
           polygon.classList.add(pathStyleClass);
         }
@@ -109,6 +123,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         if (id === clickedId) {
           circle.classList.remove("available-path");
           circle.classList.remove("not-available-path");
+          circle.classList.remove(".common-area-path");
 
           circle.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
@@ -119,7 +134,10 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           circle.classList.remove("selected-path");
 
           circle.classList.add("not-available-path");
-        } else {
+        } else if (svgIdsCommonArea.includes(id)) {
+          circle.classList.remove("selected-path");
+          circle.classList.add(".common-area-path");
+        }else {
           circle.classList.add(pathStyleClass);
         }
       });
@@ -218,6 +236,13 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
             style={{ backgroundColor: "#313231" }}
           ></div>
           No disponible
+        </div>
+        <div className="flex items-center ml-2 md:ml-4">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#66FFFF" }}
+          ></div>
+          Area común
         </div>
         <div className="absolute mt-[60px] ml-[200px] md:ml-[-650px]  md:mt-[0px] space-x-2 flex ">
           <button

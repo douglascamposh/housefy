@@ -39,7 +39,8 @@ export const subPropertiesScheme={
   code: "",
   size: 0,
   price: 0,
-  isAvailable: true
+  isAvailable: true,
+  commonArea: false,
 };
 export const subPropertySaleScheme={
     onAccount: 0,
