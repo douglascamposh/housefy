@@ -81,16 +81,15 @@ const UploadImages = ({ ImagesUploaded, ImagesSave, ModalImages }) => {
         const promises = imageData.files.map(async (file) => {
           try {
             const response = await uploadImageMutation({ file }).unwrap();
-            if (response.status) {
+            if (response.imageId) {
               return {
-                id: response.data.imageId,
-                url: response.data.url,
+                id: response.imageId,
+                url: response.url,
               };
             }
             return null;
           } catch (error) {
             Logger.error('Error at load images', error);
-            return null;
           }
         });
 
