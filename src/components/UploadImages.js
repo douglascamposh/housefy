@@ -77,7 +77,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave, ModalImages }) => {
     if (imageData.files.length + previewImagesSave.length > 0) {
       try {
         const arrayDeleted = ImagesSave.filter(objeto => !previewImagesSave.some(item => item.id === objeto.id));
-        await handleDeleteImages(arrayDeleted).unwrap();
+        await handleDeleteImages(arrayDeleted);
         const promises = imageData.files.map(async (file) => {
           try {
             const response = await uploadImageMutation({ file }).unwrap();
