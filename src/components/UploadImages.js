@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUploadImagePropertiesMutation } from '@/redux/services/propertiesApi';
 import { toast } from 'react-toastify';
 import { MdOutlineAddPhotoAlternate, MdClose } from 'react-icons/md';
@@ -11,7 +11,7 @@ import { Logger } from '@/services/Logger';
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];
 const VALID_IMAGE_EXTENSION = '.jpg';
 
-const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
+const UploadImages = ({ ImagesUploaded, ImagesSave, ModalImages }) => {
   const [imageData, setImageData] = useState({
     files: [],
     previewImages: [],
@@ -77,11 +77,11 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
     if (imageData.files.length + previewImagesSave.length > 0) {
       try {
         const arrayDeleted = ImagesSave.filter(objeto => !previewImagesSave.some(item => item.id === objeto.id));
-        await handleDeleteImages(arrayDeleted);
+        await handleDeleteImages(arrayDeleted).unwrap();
         const promises = imageData.files.map(async (file) => {
           try {
-            const response = await uploadImageMutation({ file });
-            if (response.data) {
+            const response = await uploadImageMutation({ file }).unwrap();
+            if (response.status) {
               return {
                 id: response.data.imageId,
                 url: response.data.url,
@@ -89,6 +89,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
             }
             return null;
           } catch (error) {
+            Logger.error('Error at load images', error);
             return null;
           }
         });
@@ -97,16 +98,20 @@ const UploadImages = ({ ImagesUploaded, ImagesSave,ModalImages }) => {
         const combinedImages = [
           ...previewImagesSave,
           ...uploadResults
-            .filter((result) => result.status === 'fulfilled')
+            .filter((result) => result.status === 'fulfilled' && result.value)
             .map((result) => result.value),
         ];
-
+        const errorImgUpload = uploadResults.filter(img => !img.value);
         setImageData((prevState) => ({
           ...prevState,
           urlImages: [...prevState.urlImages, ...combinedImages],
         }));
-        ModalImages(false)
-        toast.success('Imagenes subidas exitosamente');
+        ModalImages(false);
+        if(errorImgUpload.length) {
+          toast.error('Error en la carga de imágenes');
+        } else {
+          toast.success('Imagenes subidas exitosamente');
+        }
         ImagesUploaded(combinedImages);
       } catch (error) {
         Logger.error("Error en la carga de imagenes: ",error);
