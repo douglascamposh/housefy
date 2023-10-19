@@ -1,9 +1,10 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   useGetPropertiesByIdQuery,
   useGetSubPropertiesQuery,
   useUpdatePropertiesMutation,
+  useDeleteImagesMutation,
 } from '@/redux/services/propertiesApi';
 import ServerErrorComponent from '@/components/ServerError';
 import Button from '@/components/Form/Button';
@@ -20,17 +21,20 @@ import NoDataMessage from '@/components/NoDataMsg';
 import ShimmerSubProperty from '@/components/Shimmers/ShimmerSupProperty';
 import { Logger } from '@/services/Logger';
 import SubPropertyCreateUpdate from '@/components/properties/SubPropertyCreateUpdate';
+import { toast } from "react-toastify";
 
 const Page = ({ params }) => {
   const { id } = params;
   const [modalSvg, setModalSvg] = useState(false);
   const [selectedPath, setSelectedPath] = useState(null);
   const [subPropertySelect, setSubPropertySelect] = useState(null);
-  const [updateProperty, { isLoading: isLoading2 }] = useUpdatePropertiesMutation({
+  const [imageDeletedId, setImageDeletedId] = useState(null);
+  const [updateProperty, { data: dataUpdProperty, isLoading: isLoading2, error: errorUpdProperty }] = useUpdatePropertiesMutation({
     fixedCacheKey: 'shared-update-post',
   });
   const { data, error, isLoading } = useGetPropertiesByIdQuery(String(id));
   const getSubProperties = useGetSubPropertiesQuery(String(id));
+  const [deleteImagesMutation,{error: errorDeleteSvg}] = useDeleteImagesMutation();
   const dataSubProperties = getSubProperties.data || [];
   const [arraySubproperty, setArraySubProperty] = useState([]);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -47,38 +51,59 @@ const Page = ({ params }) => {
     }
   }, [data, dataSubProperties]);
 
+  useEffect(() => {
+    if (dataUpdProperty) {
+      Logger.info('update property was successfully');
+      setUploadedSvg([dataUpdProperty.imagePlan]);
+      toast.success("SVG cargado exitosamente.");
+    }
+  },[dataUpdProperty]);
+
+  useEffect(() => {
+    if (errorUpdProperty) {
+      Logger.error('Error at update property', errorUpdProperty);
+      toast.error("Hubo un error al actualizar la propiedad.");
+    }
+  },[errorUpdProperty]);
+
+  useEffect(() => {
+    if(imageDeletedId && dataUpdProperty) {
+      deleteImagesMutation(imageDeletedId);
+    }
+  },[imageDeletedId, dataUpdProperty])
+  
+  useEffect(() => {
+    if(errorDeleteSvg) {
+      Logger.error('Error at delete svg.');
+    }
+  },[errorDeleteSvg]);
+
   const handleUpdateSubproperty = (newValue) => {
     setArraySubProperty((prevArray) => [...prevArray, newValue]);
   };
+
   const handlePathSelect = (pathId) => {
     const objetoEncontrado = arraySubproperty.find((objeto) => objeto.svgId === pathId);
     setSubPropertySelect(objetoEncontrado);
     setIsPopUpOpen(true);
     setSelectedPath(pathId);
   };
+
   const toggleModalSvg = () => {
     setModalSvg(!modalSvg);
   };
+
   const togglePopUp = () => {
     setIsPopUpOpen(!isPopUpOpen);
     setShowSubPropertyForm(false);
   };
-  const handleSvgUploaded = async (uploaded) => {
-    const newData = { ...data };
-    newData.imagePlan = uploaded[0];
-    await updateProperties(newData);
-    setUploadedSvg(uploaded);
-  };
 
-  const updateProperties = async (payload) => {
-    try {
-      await updateProperty({
-        id: payload.id,
-        updateProperties: payload,
-      });
-    } catch (error) {
-      Logger.error(error);
-    }
+  const handleSvgUploaded = async (imgUploaded) => {
+    const newData = { ...data };
+    const {id: imageId} = newData.imagePlan;
+    setImageDeletedId(imageId);
+    newData.imagePlan = imgUploaded[0];
+    updateProperty({id: newData.id, updateProperties: newData});
   };
 
   if (isLoading || getSubProperties.isLoading) {
