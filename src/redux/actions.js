@@ -1,5 +1,4 @@
-export const setData = (Data) => ({
-    type: 'SET_DATA',
-    payload: Data,
-  });
-  
+export const setSaleData = (saleData) => ({
+  type: "SET_SALE_DATA",
+  payload: saleData,
+});
