@@ -1,4 +1,4 @@
-import { MdModeEdit,MdShoppingCart,MdDelete } from "react-icons/md";
+import { MdModeEdit,MdDelete } from "react-icons/md";
 import { useState } from "react";
 import FormSale from "./Form/FormSale";
 import { useDeleteSubPropertiesMutation } from "@/redux/services/propertiesApi";
@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { Logger } from "@/services/Logger";
 import ConfirmationDialog from "./ConfirmationDialog";
 import AutoCompleteCustomer from "./AutoCompleteCustomer";
+import Link from "next/link";
 const DetailsSubProperty=(params)=>{
     const [formSale, setFormSale] = useState(false);
     const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
@@ -25,7 +26,6 @@ const DetailsSubProperty=(params)=>{
         }
         setIsConfirmationDialogOpen(true);
       };
-    
       const handleCancelDelete = () => {
         setIsConfirmationDialogOpen(false);
       };
@@ -113,13 +113,19 @@ const DetailsSubProperty=(params)=>{
 
                     </>
                     :
-                    <button onClick={()=>setFormSale(!formSale)} className="text-blue-400 flex mt-20 w-full text-center">
-                        <MdShoppingCart></MdShoppingCart>
-                         Realizar venta
-                    </button>
+                    <div>
+                        <Link href={`/properties/details/${params.id}/subproperties/reserve/${dataSubProperty.id}` }>
+                            <div className="bg-primary w-full text-center text-white font-semibold py-2 mt-2 hover:bg-orange-600 hover:cursor-pointer">
+                                Reservar
+                            </div>
+                        </Link>
+                        <Link href={`/properties/details/${params.id}/subproperties/sale/${dataSubProperty.id}`}>
+                            <div className="border border-primary w-full text-center text-primary font-semibold py-2 mt-2 hover:bg-gray-100 hover:cursor-pointer">
+                                Vender  ahora
+                            </div>
+                        </Link>
+                    </div>
                 )
-                
-
             }
             <ConfirmationDialog
                 isOpen={isConfirmationDialogOpen}
@@ -129,6 +135,5 @@ const DetailsSubProperty=(params)=>{
             />
         </div>
     )
-
 }
 export default DetailsSubProperty
