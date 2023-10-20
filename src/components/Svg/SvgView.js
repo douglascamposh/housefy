@@ -1,9 +1,15 @@
 import { Logger } from "@/services/Logger";
 import React, { useState, useRef, useEffect } from "react";
-import { FaSearchPlus, FaSearchMinus, FaEdit, FaExclamationTriangle } from "react-icons/fa";
+import {
+  FaSearchPlus,
+  FaSearchMinus,
+  FaEdit,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import { stylesSvg } from "@/app/constants/stylesSvg";
 import ConfirmationDialog from "../ConfirmationDialog";
-const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
+import { sale_status } from "@/app/constants/constants";
+const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
   const [fileContent, setFileContent] = useState(null);
   const [zoom, setZoom] = useState(1);
   const svgContainerRef = useRef(null);
@@ -17,24 +23,37 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
     .map((item) => item.svgId);
 
   const svgIdsAvailableFalse = arraySubProperties
-    .filter((item) => item.isAvailable !== true && !item.commonArea)
+    .filter(
+      (item) =>
+        item.isAvailable !== true &&
+        !item.commonArea &&
+        item.status == sale_status.sold
+    )
     .map((item) => item.svgId);
 
   const svgIdsCommonArea = arraySubProperties
     .filter((item) => item.commonArea)
     .map((item) => item.svgId);
 
+  const svgIdsReserved = arraySubProperties
+    .filter(
+      (item) =>
+        item.isAvailable !== true &&
+        !item.commonArea &&
+        item.status == sale_status.reserved
+    )
+    .map((item) => item.svgId);
   const handleZoomIn = () => {
     setZoom((prevZoom) => prevZoom + 0.1);
   };
   const handleZoomOut = () => {
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
   };
-  const openModalUpdate=()=>{
-    setShowModalWarning(true)
-  }
+  const openModalUpdate = () => {
+    setShowModalWarning(true);
+  };
   const handleContinue = () => {
-    ModalSvg()
+    ModalSvg();
     setShowModalWarning(false);
   };
   const handleCancel = () => {
@@ -77,6 +96,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           path.classList.remove("available-path");
           path.classList.remove("not-available-path");
           path.classList.remove("common-area-path");
+          path.classList.remove("reserved-path");
           path.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
           path.classList.remove("selected-path");
@@ -87,7 +107,10 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         } else if (svgIdsCommonArea.includes(id)) {
           path.classList.remove("selected-path");
           path.classList.add("common-area-path");
-        }else {
+        } else if (svgIdsReserved.includes(id)) {
+          path.classList.remove("selected-path");
+          path.classList.add("reserved-path");
+        } else {
           path.classList.add(pathStyleClass);
         }
       });
@@ -98,20 +121,22 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         if (id === clickedId) {
           polygon.classList.remove("available-path");
           polygon.classList.remove("not-available-path");
-          polygon.classList.remove(".common-area-path");
+          polygon.classList.remove("common-area-path");
+          polygon.classList.remove("reserved-path");
 
           polygon.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
           polygon.classList.remove("selected-path");
-
           polygon.classList.add("available-path");
         } else if (svgIdsAvailableFalse.includes(id)) {
           polygon.classList.remove("selected-path");
-
           polygon.classList.add("not-available-path");
         } else if (svgIdsCommonArea.includes(id)) {
           polygon.classList.remove("selected-path");
-          polygon.classList.add(".common-area-path");
+          polygon.classList.add("common-area-path");
+        } else if (svgIdsReserved.includes(id)) {
+          polygon.classList.remove("selected-path");
+          polygon.classList.add("reserved-path");
         } else {
           polygon.classList.add(pathStyleClass);
         }
@@ -123,7 +148,8 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         if (id === clickedId) {
           circle.classList.remove("available-path");
           circle.classList.remove("not-available-path");
-          circle.classList.remove(".common-area-path");
+          circle.classList.remove("common-area-path");
+          circle.classList.remove("reserved-path");
 
           circle.classList.add("selected-path");
         } else if (svgIdsAvailableTrue.includes(id)) {
@@ -136,8 +162,11 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           circle.classList.add("not-available-path");
         } else if (svgIdsCommonArea.includes(id)) {
           circle.classList.remove("selected-path");
-          circle.classList.add(".common-area-path");
-        }else {
+          circle.classList.add("common-area-path");
+        } else if (svgIdsReserved.includes(id)) {
+          circle.classList.remove("selected-path");
+          circle.classList.add("reserved-path");
+        } else {
           circle.classList.add(pathStyleClass);
         }
       });
@@ -158,8 +187,6 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
       }
     };
   }, [fileContent, pathStyleClass, clickedId]);
-
-
 
   useEffect(() => {
     if (svg.length > 0) {
@@ -201,12 +228,12 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
       <style>{stylesSvg}</style>
       {showModalWarning && (
         <ConfirmationDialog
-            isOpen={showModalWarning}
-            onCancel={handleCancel}
-            onConfirm={handleContinue}
-            content="Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano."
+          isOpen={showModalWarning}
+          onCancel={handleCancel}
+          onConfirm={handleContinue}
+          content="Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano."
         />
-      )} 
+      )}
 
       <div className="flex flex-wrap justify-center w-full mb-4">
         <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
@@ -229,6 +256,13 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
             style={{ backgroundColor: "#e90107" }}
           ></div>
           Vendido
+        </div>
+        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#ECC604" }}
+          ></div>
+          Reservada
         </div>
         <div className="flex items-center ml-2 md:ml-4">
           <div
@@ -259,9 +293,9 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           </button>
           <button
             className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
-            onClick={()=>openModalUpdate()}
+            onClick={() => openModalUpdate()}
           >
-            <FaEdit/>
+            <FaEdit />
           </button>
         </div>
       </div>
@@ -272,14 +306,12 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
         style={{
           width: "100%",
           height: "auto",
-          backgroundColor:"#F1F1F1",
+          backgroundColor: "#F1F1F1",
           maxHeight: "80vh",
-          borderRadius:"10px",
+          borderRadius: "10px",
           overflow: "auto",
         }}
       >
-
-
         {fileContent && (
           <div
             dangerouslySetInnerHTML={{ __html: fileContent }}
@@ -293,7 +325,6 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect,ModalSvg }) => {
           />
         )}
       </div>
-      
     </div>
   );
 };
