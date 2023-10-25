@@ -1,16 +1,27 @@
 "use client"
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form } from "formik";
+import { useSignUpMutation } from "@/redux/services/authApi"; 
 import { RiUser3Line, RiLockLine, RiMailLine, RiPhoneLine } from "react-icons/ri";
 import FormInputIcon from "@/components/common/FormInputIcon";
 import Link from "next/link";
 import { validationRegisterSchema } from "@/app/utils/validations/schemaValidation";
 import { userCreateScheme } from "@/app/utils/schema/propertySchema";
+
 const Register  = () => {
+  const [ signUp, { data: dataSignUp, error, isLoading}] = useSignUpMutation();
+
   const handleSubmit = (values) => {
-    
+    console.log('values ========>',values);
+    signUp(values)
   };
+
+  useEffect(() => {
+    if(dataSignUp) {
+      console.log('dataSignUp', dataSignUp);
+    }
+  }, [dataSignUp]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -84,7 +95,7 @@ const Register  = () => {
                   type="submit"
                   className="bg-primary mb-3 uppercase font-bold text-sm text-white w-full py-3 px-4 rounded-lg hover:text-gray-100 transition-colors"
                 >
-                  Registrarme
+                  Registrar
                 </button>
               </div>
             </Form>
