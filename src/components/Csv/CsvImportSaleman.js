@@ -93,7 +93,7 @@ const CsvImportSalesman = ({ closeModal }) => {
   };
 
   const reviewData = () => {
-    setSteps(2);
+    setSteps(steps + 1);
     const filteredArray = selectHeaders(csvData, selectedHeaders);
     const updatedPeople = mapHeaders(
       filteredArray,
@@ -121,14 +121,14 @@ const CsvImportSalesman = ({ closeModal }) => {
   };
 
   const handleImportCsv = () => {
-    setSteps(3);
+    setSteps(steps + 1);
     const csv = Papa.unparse(importedData);
     const csvBlob = new Blob([csv], { type: "text/csv" });
     handleUpload(csvBlob);
   };
 
   const assignHeaders = () => {
-    setSteps(1);
+    setSteps(steps + 1);
     if (!isChecked) {
       const reorganizedPeople = csvData.map((person, index) => {
         const keys = Object.keys(person);
@@ -271,7 +271,7 @@ const CsvImportSalesman = ({ closeModal }) => {
             </div>
           )}
           <div className="flex justify-between mt-4">
-            <Button onClick={() => setSteps(1)}>Anterior</Button>
+            <Button onClick={() => setSteps(steps - 1)}>Anterior</Button>
             <Button onClick={handleImportCsv}>Importar</Button>
           </div>
         </>

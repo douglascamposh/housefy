@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useGetPropertiesByIdQuery,
   useGetSubPropertiesQuery,
@@ -31,7 +31,11 @@ const Page = ({ params }) => {
   const [imageDeletedId, setImageDeletedId] = useState(null);
   const [
     updateProperty,
-    { data: dataUpdProperty, isLoading: isLoading2, error: errorUpdProperty },
+    {
+      data: dataUpdProperty,
+      isLoading: isLoadingUpdProp,
+      error: errorUpdProperty,
+    },
   ] = useUpdatePropertiesMutation({
     fixedCacheKey: "shared-update-post",
   });
