@@ -1,18 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const propertiesApi = createApi({
-  reducerPath: 'propertiesApi',
+  reducerPath: "propertiesApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: NEXT_PUBLIC_BASE_URL + '/api/v1'
+    baseUrl: NEXT_PUBLIC_BASE_URL + "/api/v1",
   }),
 
   tagTypes: ["Properties", "SubProperties"],
 
   endpoints: (builder) => ({
-    
     getProperties: builder.query({
-      query: () => '/properties',
+      query: () => "/properties",
       providesTags: ["Properties"],
     }),
 
@@ -23,15 +22,15 @@ export const propertiesApi = createApi({
 
     createProperties: builder.mutation({
       query: (newProperties) => ({
-        method: 'POST',
-        url: '/properties', 
+        method: "POST",
+        url: "/properties",
         body: newProperties,
       }),
     }),
 
     updateProperties: builder.mutation({
       query: ({ id, updateProperties }) => ({
-        method: 'PUT',
+        method: "PUT",
         url: `/properties/${id}`,
         body: updateProperties,
       }),
@@ -40,20 +39,20 @@ export const propertiesApi = createApi({
 
     deleteProperties: builder.mutation({
       query: (id) => ({
-        method: 'DELETE',
+        method: "DELETE",
         url: `/properties/${id}`,
       }),
     }),
     deleteImages: builder.mutation({
       query: (imageId) => ({
-        method: 'DELETE',
+        method: "DELETE",
         url: `/properties/delete/${imageId}`,
       }),
     }),
 
     createSubProperties: builder.mutation({
-      query: ({id,newSubProperties}) => ({
-        method: 'POST',
+      query: ({ id, newSubProperties }) => ({
+        method: "POST",
         url: `/properties/${id}/subproperties`,
         body: newSubProperties,
       }),
@@ -61,32 +60,32 @@ export const propertiesApi = createApi({
     }),
     updateSubProperties: builder.mutation({
       query: ({ id, subId, updateSubProperties }) => ({
-        method: 'PUT',
+        method: "PUT",
         url: `/properties/${id}/subproperties/${subId}`,
         body: updateSubProperties,
       }),
       invalidatesTags: ["SubProperties"],
     }),
     deleteSubProperties: builder.mutation({
-      query: ({id, subId}) => ({
-        method: 'DELETE',
+      query: ({ id, subId }) => ({
+        method: "DELETE",
         url: `/properties/${id}/subproperties/${subId}`,
       }),
       invalidatesTags: ["SubProperties"],
     }),
     getSubProperties: builder.query({
       query: (id) => `/properties/${id}/subproperties`,
-      providesTags: ['SubProperties'],
+      providesTags: ["SubProperties"],
     }),
 
     uploadImageProperties: builder.mutation({
       query: ({ file }) => {
         const formData = new FormData();
-        formData.append('image', file);
-        formData.append('filename', file.name);
+        formData.append("image", file);
+        formData.append("filename", file.name);
         return {
-          method: 'POST',
-          url: `/properties/upload`, 
+          method: "POST",
+          url: `/properties/upload`,
           body: formData,
         };
       },
@@ -94,20 +93,30 @@ export const propertiesApi = createApi({
 
     createSaleProperty: builder.mutation({
       query: (newSaleProperty) => ({
-        method: 'POST',
-        url: '/sales',
+        method: "POST",
+        url: "/sales",
         body: newSaleProperty,
       }),
-      invalidatesTags: ['SubProperties'],
+      invalidatesTags: ["SubProperties"],
     }),
     getCustomers: builder.query({
       query: (criteria) => {
-        const queryParams = criteria ? `?criteria=${criteria}` : '';
+        const queryParams = criteria ? `?criteria=${criteria}` : "";
         return `/customers${queryParams}`;
       },
     }),
-
-
+    uploadCsvSaleman: builder.mutation({
+      query: ({ file, filename }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("fileName", filename);
+        return {
+          method: "POST",
+          url: `/saleman/upload`,
+          body: formData,
+        };
+      },
+    }),
   }),
 });
 
@@ -124,5 +133,6 @@ export const {
   useGetSubPropertiesQuery,
   useUploadImagePropertiesMutation,
   useCreateSalePropertyMutation,
-  useGetCustomersQuery
+  useGetCustomersQuery,
+  useUploadCsvSalemanMutation,
 } = propertiesApi;
