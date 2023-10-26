@@ -1,14 +1,14 @@
-"use client"
-import React, { useState } from 'react';
-import { useGetPropertiesQuery } from '@/redux/services/propertiesApi';
-import ServerErrorComponent from '@/components/ServerError';
-import CardView from '@/components/Cards/CardPropertyView';
-import ShimmerCard from '@/components/Shimmers/ShimmerCard';
-import Button from '@/components/Form/Button';
-import NoDataMessage from '@/components/NoDataMsg';
-import Link from 'next/link';
-import { FiChevronDown } from 'react-icons/fi';
-import { Logger } from '@/services/Logger';
+"use client";
+import React, { useState } from "react";
+import { useGetPropertiesQuery } from "@/redux/services/propertiesApi";
+import ServerErrorComponent from "@/components/ServerError";
+import CardView from "@/components/Cards/CardPropertyView";
+import ShimmerCard from "@/components/Shimmers/ShimmerCard";
+import Button from "@/components/Form/Button";
+import NoDataMessage from "@/components/NoDataMsg";
+import Link from "next/link";
+import { FiChevronDown } from "react-icons/fi";
+import { Logger } from "@/services/Logger";
 
 const Page = () => {
   const { data, error, isLoading } = useGetPropertiesQuery();
@@ -17,10 +17,10 @@ const Page = () => {
   if (isLoading) {
     return (
       <div>
-        <div className='flex justify-between m-2'>
+        <div className="flex justify-between m-2">
           <div></div>
-          <Link href='/properties/create'>
-            <Button label='Crear nuevo'/>
+          <Link href="/properties/create">
+            <Button>Crear nuevo</Button>
           </Link>
         </div>
         <ShimmerCard />
@@ -33,11 +33,13 @@ const Page = () => {
     return <ServerErrorComponent />;
   }
 
-  const filteredData = filterType ? data.filter(item => item.type === filterType) : data;
+  const filteredData = filterType
+    ? data.filter((item) => item.type === filterType)
+    : data;
 
   return (
     <div>
-      <div className='flex justify-between m-2'>
+      <div className="flex justify-between m-2">
         <div className="relative">
           <select
             className="block text-sm appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -51,15 +53,15 @@ const Page = () => {
             <FiChevronDown className="h-4 w-4" />
           </div>
         </div>
-        <Link href='/properties/create'>
-          <Button label='Crear nuevo'/>
+        <Link href="/properties/create">
+          <Button>Crear nuevo</Button>
         </Link>
       </div>
-      {
-        filteredData.length !== 0 ?
-        <CardView data={filteredData} /> :
-        <NoDataMessage message='No existen propiedades disponibles en este momento.'></NoDataMessage>
-      }
+      {filteredData.length !== 0 ? (
+        <CardView data={filteredData} />
+      ) : (
+        <NoDataMessage message="No existen propiedades disponibles en este momento."></NoDataMessage>
+      )}
     </div>
   );
 };

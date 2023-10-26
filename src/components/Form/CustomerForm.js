@@ -213,7 +213,6 @@ const CustomerForm = ({ modifiedPage }) => {
                     ) : null}
                     <Button
                       type="button"
-                      label="Agregar nuevo referido"
                       onClick={() =>
                         arrayHelpers.push({
                           name: "",
@@ -222,13 +221,15 @@ const CustomerForm = ({ modifiedPage }) => {
                           relationship: "",
                         })
                       }
-                    />
+                    >
+                      Agregar nuevo referido
+                    </Button>
                   </div>
                 );
               }}
             />
             <div className="mt-6 flex justify-end ">
-              <Button type="submit" label="Continuar"></Button>
+              <Button type="submit">Continuar</Button>
             </div>
           </Form>
         )}
