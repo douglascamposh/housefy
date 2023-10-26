@@ -31,7 +31,7 @@ export const userCreateScheme={
   email:"",
   password: "",
   confirmPassword: '', 
-  firstName:"", 
+  name:"", 
   lastName:"",
   phoneNumber:""
 }

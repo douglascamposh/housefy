@@ -7,10 +7,9 @@ export const authApi = createApi({
     baseUrl: NEXT_PUBLIC_BASE_URL + '/api/v1/auth'
   }),
 
-  tagTypes: ["signUp"],
+  // tagTypes: ["signUp"],
 
   endpoints: (builder) => ({
-    
     signUp: builder.mutation({
       query: (signUp) => ({
         url: '/signUp',
@@ -18,9 +17,17 @@ export const authApi = createApi({
         body: signUp,
       }),
     }),
+    logIn: builder.mutation({
+      query: (credentials) => ({
+        method: "POST",
+        url: "/logIn",
+        body: credentials,
+      }),
+    }),
   })
 });
 
 export const {
   useSignUpMutation, 
+  useLogInMutation,
 } = authApi;

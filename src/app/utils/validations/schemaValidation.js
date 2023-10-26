@@ -62,7 +62,7 @@ export const validationRegisterSchema = Yup.object().shape({
     confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
     .required('Confirma tu contraseña'),
-  firstName: Yup.string()
+  name: Yup.string()
     .required("El nombre es requerido")
     .min(2, "El nombre debe tener al menos 2 caracteres")
     .max(50, "El nombre no puede tener más de 50 caracteres"),
