@@ -1,49 +1,50 @@
-import React from 'react';
-import { Formik, Form, Field } from 'formik';
-import { FormInputLabel } from '../common/FormInputLabel';
-import { Label } from '../common/Label';
-import { validationSubPropertySchema } from '@/app/utils/validations/schemaValidation';
-import { subPropertiesScheme } from '@/app/utils/schema/propertySchema';
-import 'react-toastify/dist/ReactToastify.css';
-import Button from './Button';
-import { Logger } from '@/services/Logger';
-const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
-    const handleSubmit = async(values,{ resetForm }) => {
-        const updatedValues = { ...values };
-        updatedValues.svgId = idSvg
-        if(values.commonArea) {
-          updatedValues.price = 0;
-        }
-        
-        await handleCreateSubProperties(updatedValues,{ resetForm })
-    };
-    const handleCreateSubProperties = async (newSubPropertiesData) => {
-      try {
-        onSubmit(newSubPropertiesData)
-      } catch (error) {
-        Logger.error(error);
-      }
-    };
+import React from "react";
+import { Formik, Form, Field } from "formik";
+import { FormInputLabel } from "../common/FormInputLabel";
+import { Label } from "../common/Label";
+import { validationSubPropertySchema } from "@/app/utils/validations/schemaValidation";
+import { subPropertiesScheme } from "@/app/utils/schema/propertySchema";
+import "react-toastify/dist/ReactToastify.css";
+import Button from "./Button";
+import { Logger } from "@/services/Logger";
+const SubPropertyForm = ({ data, isLoading, onSubmit, idSvg, onClose }) => {
+  const handleSubmit = async (values, { resetForm }) => {
+    const updatedValues = { ...values };
+    updatedValues.svgId = idSvg;
+    if (values.commonArea) {
+      updatedValues.price = 0;
+    }
+
+    await handleCreateSubProperties(updatedValues, { resetForm });
+  };
+  const handleCreateSubProperties = async (newSubPropertiesData) => {
+    try {
+      onSubmit(newSubPropertiesData);
+    } catch (error) {
+      Logger.error(error);
+    }
+  };
   return (
-      <div className="w-96 bg-white rounded-lg shadow-2xl  p-6">
+    <div className="w-96 bg-white rounded-lg shadow-2xl  p-6">
       <Formik
-      enableReinitialize={true}
+        enableReinitialize={true}
         initialValues={data || subPropertiesScheme}
         validationSchema={validationSubPropertySchema}
         onSubmit={handleSubmit}
       >
         {({ errors, touched, values }) => (
           <Form>
-            {
-              data?
-              <div className='mb-10'>
-              <label className='text-xl font-bold'>Editar propiedad</label>  
-            </div>
-              :
-              <div className='mb-10'>
-              <label className='text-xl font-bold'>Registro de propiedad</label>  
-            </div>
-            }
+            {data ? (
+              <div className="mb-10">
+                <label className="text-xl font-bold">Editar propiedad</label>
+              </div>
+            ) : (
+              <div className="mb-10">
+                <label className="text-xl font-bold">
+                  Registro de propiedad
+                </label>
+              </div>
+            )}
 
             <FormInputLabel
               label="CODIGO"
@@ -51,7 +52,6 @@ const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
               placeholder="Ej. L-2323"
               autoComplete="code"
               value={values.code}
-
             />
             <FormInputLabel
               label="TAMAÑO (m²)"
@@ -60,44 +60,33 @@ const SubPropertyForm = ({data, isLoading, onSubmit,idSvg,onClose}) => {
               placeholder="Ej. 100m2"
               autoComplete="size"
               value={values.size}
-
             />
             <Label>
-              Es Area común? 
+              Es Area común?
               <Field type="checkbox" name="commonArea" />
             </Label>
-            {
-              !values.commonArea ?
-                <FormInputLabel
+            {!values.commonArea ? (
+              <FormInputLabel
                 label="PRECIO ($)"
                 name="price"
                 type="number"
                 placeholder="Ej. 100000$"
                 autoComplete="price"
                 value={values.price}
-
-              /> :
-              null
-            }
+              />
+            ) : null}
             <div className="flex mt-10 justify-between">
-              <Button
-                type="submit"
-                label={data?"Actualizar":"Registrar"}
-                className="w-full"
-              >
+              <Button type="submit" className="w-full">
+                {data ? "Actualizar" : "Registrar"}
               </Button>
-                <Button 
-                  type="button" 
-                  onClick={onClose}
-                  label="Cancelar" 
-                  className="w-full ml-2"
-                ></Button>
+              <Button type="button" onClick={onClose} className="w-full ml-2">
+                Cancelar
+              </Button>
             </div>
           </Form>
         )}
       </Formik>
     </div>
-
   );
 };
 

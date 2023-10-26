@@ -195,13 +195,9 @@ const Page = ({ params }) => {
             <small className="text-gray-400">
               Al completar la venta, aceptas estas Condiciones de uso.
             </small>
-            <Button
-              label={
-                action === "reserve" ? "Realizar reserva" : "Realizar venta"
-              }
-              className="w-full"
-              onClick={MakeSale}
-            />
+            <Button className="w-full" onClick={MakeSale}>
+              {action === "reserve" ? "Realizar reserva" : "Realizar venta"}
+            </Button>
           </div>
         </div>
       </div>

@@ -9,7 +9,9 @@ const TIPOS_DE_IMAGEN_ADMITIDOS = ["image/svg+xml"];
 const EXTENSION_IMAGEN_VALIDA = ".svg";
 
 const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
-  const [previewSvgsSave, setPreviewSvgsSave] = useState(SvgSave && SvgSave.length>0? SvgSave:[]);
+  const [previewSvgsSave, setPreviewSvgsSave] = useState(
+    SvgSave && SvgSave.length > 0 ? SvgSave : []
+  );
   const [file, setFile] = useState({ content: null });
   const [modifiedFile, setModifiedFile] = useState({ content: null });
 
@@ -23,14 +25,17 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
     previewImage: null,
     urlImages: [],
   });
-  const [uploadImageMutation, { data: imageUpload, isLoading, error: errorImgUpload }] = useUploadImagePropertiesMutation();
+  const [
+    uploadImageMutation,
+    { data: imageUpload, isLoading, error: errorImgUpload },
+  ] = useUploadImagePropertiesMutation();
 
   useEffect(() => {
-    if(imageUpload) {
+    if (imageUpload) {
       const uploadedImage = {
         id: imageUpload.imageId,
         url: imageUpload.url,
-        weight:0
+        weight: 0,
       };
       setImageData((prevState) => ({
         ...prevState,
@@ -39,14 +44,14 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
       ModalSvg();
       SvgUploaded([uploadedImage]);
     }
-  },[imageUpload]);
+  }, [imageUpload]);
 
   useEffect(() => {
-    if(errorImgUpload){
-      toast.error('Error al carga de la imagen');
-      Logger.error('Error at upload the image: ', errorImgUpload);
+    if (errorImgUpload) {
+      toast.error("Error al carga de la imagen");
+      Logger.error("Error at upload the image: ", errorImgUpload);
     }
-  },[errorImgUpload]);  
+  }, [errorImgUpload]);
 
   const validarImagen = (archivo) => {
     return (
@@ -106,26 +111,30 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
   };
 
   const handleRemoveImage = () => {
-    setFile({content:null});
+    setFile({ content: null });
     setImageData({
       files: [],
       previewImage: [],
       urlImages: [],
     });
-    setPreviewSvgsSave([])
+    setPreviewSvgsSave([]);
   };
 
   const handleUpload = async () => {
-    if (modifiedFile.content!=null || modifiedFile.name){
+    if (modifiedFile.content != null || modifiedFile.name) {
       uploadImageMutation({ file: modifiedFile });
-    }else{
+    } else {
       toast.error("Seleccione al menos un archivo SVG");
     }
   };
 
   const handlePathClick = (e) => {
     const target = e.target;
-    if (target.tagName === "path" || target.tagName === "polygon" || target.tagName === "circle") {
+    if (
+      target.tagName === "path" ||
+      target.tagName === "polygon" ||
+      target.tagName === "circle"
+    ) {
       const pathElement = target;
       const id = pathElement.getAttribute("id");
       setClickedId(id === clickedId ? null : id);
@@ -203,7 +212,7 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
           </div>
           <style>{stylesSvg}</style>
 
-          {!file.content && previewSvgsSave.length==0 ? (
+          {!file.content && previewSvgsSave.length == 0 ? (
             <label
               htmlFor="fileInput"
               className="h-[420px] flex flex-col hover:bg-gray-100 items-center justify-center border-2 border-dashed border-gray-300 bg-white cursor-pointer"
@@ -212,19 +221,17 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
                 <MdOutlineAddPhotoAlternate className="text-gray-400 w-8 h-8" />
               </div>
             </label>
-            ) 
-            :
-            null
-          }
-          {
-            previewSvgsSave.length>0?
-            <object data={previewSvgsSave[0].url} type="image/svg+xml" className="h-[400px]">
-            Tu navegador no admite la visualización de SVG.
+          ) : null}
+          {previewSvgsSave.length > 0 ? (
+            <object
+              data={previewSvgsSave[0].url}
+              type="image/svg+xml"
+              className="h-[400px]"
+            >
+              Tu navegador no admite la visualización de SVG.
             </object>
-            :
-            null
-          }
-          {imageData.previewImage  && (
+          ) : null}
+          {imageData.previewImage && (
             <div ref={svgContainerRef} className="svg-container">
               {file.content && (
                 <div
@@ -244,18 +251,18 @@ const UploadSvg = ({ SvgUploaded, SvgSave, ModalSvg }) => {
             className="sr-only"
           />
           <div className="flex items-center justify-between m-4">
-            {imageData.files.length > 0 ||previewSvgsSave.length>0 ? (
+            {imageData.files.length > 0 || previewSvgsSave.length > 0 ? (
               <button
                 onClick={handleRemoveImage}
                 className="text-red-500 text-xs cursor-pointer"
               >
                 Eliminar Svg
               </button>
-            ) :
-              null
-            }
+            ) : null}
           </div>
-          <Button onClick={handleUpload} type="button" label="Subir" />
+          <Button onClick={handleUpload} type="button">
+            Subir
+          </Button>
         </div>
       </div>
     </div>

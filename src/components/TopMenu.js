@@ -13,6 +13,7 @@ const TopMenu = () => {
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/properties", label: "Propiedades" },
+    { href: "/users/saleman", label: "Vendedores" },
   ];
 
   return (
@@ -26,7 +27,6 @@ const TopMenu = () => {
           </Link>
         </div>
         <div className="flex items-center">
-
           <ul className="hidden md:flex uppercase font-semibold ">
             {navItems.map(({ href, label }) => (
               <NavItem
@@ -41,7 +41,7 @@ const TopMenu = () => {
 
           <div className="hidden md:flex">
             <Link href="/login">
-              <Button label="Inicia sesión" />
+              <Button>Iniciar sesion</Button>
             </Link>
           </div>
         </div>
@@ -73,7 +73,7 @@ const TopMenu = () => {
             <div className="flex flex-col justify-center items-center mt-16">
               <div className="flex">
                 <Link href="/login">
-                  <Button label="Inicia sesión" />
+                  <Button>Iniciar sesión</Button>
                 </Link>
               </div>
             </div>
@@ -83,6 +83,5 @@ const TopMenu = () => {
     </header>
   );
 };
-
 
 export default TopMenu;
