@@ -12,7 +12,7 @@ export const store = configureStore({
     rootReducer: rootReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(propertiesApi.middleware, authApi.middleware),
+    getDefaultMiddleware().concat(propertiesApi.middleware, authApi.middleware,roleApi.middleware),
 })
 
 setupListeners(store.dispatch);

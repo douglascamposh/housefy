@@ -38,6 +38,7 @@ export const roleApi = createApi({
         method: "DELETE",
         url: `/roles/${id}`,
       }),
+      invalidatesTags: ["Roles"],
     }),
   }),
 });
