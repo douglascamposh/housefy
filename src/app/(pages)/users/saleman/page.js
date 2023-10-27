@@ -61,6 +61,7 @@ const Page = () => {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Importar vendedores"
+        className="h-[80vh]"
       >
         <CsvImportSaleman closeModal={closeModal}></CsvImportSaleman>
       </Modal>
