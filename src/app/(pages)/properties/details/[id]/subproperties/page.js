@@ -110,8 +110,10 @@ const Page = ({ params }) => {
 
   const handleSvgUploaded = async (imgUploaded) => {
     const newData = { ...data };
-    const { id: imageId } = newData.imagePlan;
-    setImageDeletedId(imageId);
+    if (newData.imagePlan) {
+      const { id: imageId } = newData.imagePlan;
+      setImageDeletedId(imageId);
+    }
     newData.imagePlan = imgUploaded[0];
     updateProperty({ id: newData.id, updateProperties: newData });
   };
