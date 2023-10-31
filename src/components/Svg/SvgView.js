@@ -189,8 +189,8 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
   }, [fileContent, pathStyleClass, clickedId]);
 
   useEffect(() => {
-    if (svg.length > 0) {
-      loadSvgFromUrl(svg[0].url);
+    if (svg && svg[0]) {
+      loadSvgFromUrl(svg[0]?.url);
     }
   }, [svg]);
 
