@@ -26,3 +26,14 @@ export const headersMappingSaleman = [
   { key: "lastName", text: "Apellido" },
   { key: "phoneNumber", text: "Telefono" },
 ];
+
+export const routes = {
+  properties: "/properties",
+};
+
+export const methods = {
+  get: "GET",
+  post: "POST",
+  update: "UPDATE",
+  delete: "DELETE",
+};
