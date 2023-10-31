@@ -31,7 +31,7 @@ export const userCreateScheme={
   email:"",
   password: "",
   confirmPassword: '', 
-  firstName:"", 
+  name:"", 
   lastName:"",
   phoneNumber:""
 }
@@ -42,25 +42,31 @@ export const subPropertiesScheme={
   isAvailable: true,
   commonArea: false,
 };
+export const customerScheme={
+  name: "",
+  lastName: "",
+  phoneNumber: "",
+  ci: '',
+  extensionCi: "",
+  address: {
+    street: "",
+    reference: "",
+    streetNumber: "",
+    city: "",
+    country: "",
+    state: ""
+  },
+  references: [],
+}
+export const payScheme={
+  onAccount: 0,
+  total: 0,
+}
 export const subPropertySaleScheme={
-    onAccount: 0,
-    total: 0,
-    subPropertyId: "",
-    propertyId: "",
-    customer: {
-      name: "",
-      lastName: "",
-      phoneNumber: "",
-      ci: '',
-      extensionCi: "",
-      address: {
-        street: "",
-        reference: "",
-        streetNumber: "",
-        city: "",
-        country: "",
-        state: ""
-      },
-      references: [],
-    },
+  onAccount: 0,
+  total: 0,
+  subPropertyId: "",
+  propertyId: "",
+  status: "",
+  customer: customerScheme
 }

@@ -62,7 +62,7 @@ export const validationRegisterSchema = Yup.object().shape({
     confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
     .required('Confirma tu contraseña'),
-  firstName: Yup.string()
+  name: Yup.string()
     .required("El nombre es requerido")
     .min(2, "El nombre debe tener al menos 2 caracteres")
     .max(50, "El nombre no puede tener más de 50 caracteres"),
@@ -91,13 +91,9 @@ export const validationSubPropertySchema = Yup.object().shape({
     }),
 });
 
-export const validationSubPropertySaleScheme = (price) => {
+
+export const validationCustomer = (price) => {
   return Yup.object().shape({
-    onAccount: Yup.number()
-      .positive('Debe ser un número positivo')
-      .max(price, `El anticipo no puede ser mayor que el precio (${price})`)
-      .required('El anticipo es requerido'),
-    customer: Yup.object().shape({
       name: Yup.string().required('El nombre es requerido'),
       lastName: Yup.string().required('El apellido es requerido'),
       ci: Yup.string().required('El carnet de identidad es requerido'),
@@ -116,6 +112,22 @@ export const validationSubPropertySaleScheme = (price) => {
           relationship: Yup.string().required('Grado de parentesco Requerido'),
         })
       )
+  });
+};
+export const validationPayScheme = (price) => {
+  return Yup.object().shape({
+    onAccount: Yup.number()
+      .positive('Debe ser un número positivo')
+      .max(price, `El anticipo no puede ser mayor que el precio (${price})`)
+      .required('El anticipo es requerido'),
+  });
+};
+export const validationSubPropertySaleScheme = (price) => {
+  return Yup.object().shape({
+  validationPayScheme,
+    customer: Yup.object().shape({
+
+      validationCustomer,
     }),
   });
 };

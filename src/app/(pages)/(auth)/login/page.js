@@ -1,18 +1,45 @@
 "use client"
 
-import React from "react";
+import React, { use, useEffect } from "react";
 import { Formik, Form } from "formik";
+import { useLogInMutation } from "@/redux/services/authApi";
 import { RiMailLine, RiLockLine } from "react-icons/ri";
 import FormInputIcon from "@/components/common/FormInputIcon";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { validationLoginSchema } from "@/app/utils/validations/schemaValidation";
-const Login = () => {
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Logger } from "@/services/Logger";
+import Spinner from "@/components/Spinner";
 
+const Login = () => {
+  const router = useRouter();
+  const [logInMutation, {data, error, isLoading}] = useLogInMutation();
 
   const handleSubmit = (values) => {
+    logInMutation(values);
   };
 
+  useEffect(() => {
+   if(data) {
+    //Todo: persist the token on local storage
+     router.push(`/properties`);
+   }
+  }, [data]);
+  
+  useEffect(() => {
+    if(error) {
+      Logger.error('There is an error at login the user', error);
+      toast.error("No se pudo iniciar sesión, revise sus datos");
+    }
+  }, [error]);
+
   return (
+    isLoading ? 
+    <div className="justify-center flex items-center h-screen ">
+      <Spinner/>
+    </div> :
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-gray-200 p-8 rounded-xl shadow-2xl w-auto lg:w-[450px]">
         <h1 className="text-2xl text-center uppercase font-bold tracking-[5px] mb-8 py-2 ">
