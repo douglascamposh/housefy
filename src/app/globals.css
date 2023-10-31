@@ -5,3 +5,10 @@
 ::-webkit-scrollbar{
     width: 0px;
 }
+
+input:checked + div {
+    @apply border-gray-500;
+  }
+  input:checked + div svg {
+    @apply block;
+  }

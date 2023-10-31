@@ -30,3 +30,10 @@ export const headersMappingSaleman = [
 export const routes = {
   properties: "/properties",
 };
+
+export const methods = {
+  get: "GET",
+  post: "POST",
+  update: "UPDATE",
+  delete: "DELETE",
+};
