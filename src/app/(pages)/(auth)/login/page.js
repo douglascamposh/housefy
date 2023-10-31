@@ -23,7 +23,7 @@ const Login = () => {
 
   useEffect(() => {
    if(data) {
-    //Todo: persist the token on local storage
+    localStorage.setItem('token', dataSignUp.token);
      router.push(`/properties`);
    }
   }, [data]);
