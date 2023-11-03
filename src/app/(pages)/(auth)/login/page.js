@@ -15,18 +15,18 @@ import Spinner from "@/components/Spinner";
 
 const Login = () => {
   const router = useRouter();
-  const [logInMutation, {data, error, isLoading}] = useLogInMutation();
+  const [logInMutation, {data:dataLogIn, error, isLoading}] = useLogInMutation();
 
   const handleSubmit = (values) => {
     logInMutation(values);
   };
 
   useEffect(() => {
-   if(data) {
-    localStorage.setItem('token', dataSignUp.token);
+   if(dataLogIn) {
+    localStorage.setItem('token', dataLogIn.token);
      router.push(`/properties`);
    }
-  }, [data]);
+  }, [dataLogIn]);
   
   useEffect(() => {
     if(error) {

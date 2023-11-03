@@ -1,13 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { addTokenInterceptor, baseQueryInterceptor } from "@/app/utils/utils";
+import { addTokenInterceptor, baseQueryValidateToken } from "@/app/utils/utils";
 const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: NEXT_PUBLIC_BASE_URL + "/api/v1",
+  prepareHeaders: addTokenInterceptor,
+});
 
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",
-  baseQuery:  fetchBaseQuery({
-    baseUrl: NEXT_PUBLIC_BASE_URL + "/api/v1",
-    prepareHeaders: addTokenInterceptor,
-  }),
+  baseQuery: baseQueryValidateToken(baseQuery),
 
   tagTypes: ["Properties", "SubProperties"],
 
