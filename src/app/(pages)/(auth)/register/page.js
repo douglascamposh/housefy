@@ -24,6 +24,7 @@ const Register  = () => {
 
   useEffect(() => {
     if(dataSignUp) {
+      localStorage.setItem('token', dataSignUp.token);
       router.push(`/properties`);
     }
   }, [dataSignUp]);
