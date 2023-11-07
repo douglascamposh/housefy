@@ -11,13 +11,7 @@ import Button from "@/components/Form/Button";
 import UploadSvg from "@/components/Svg/UploadSvg";
 import SvgView from "@/components/Svg/SvgView";
 import DetailsSubProperty from "@/components/DetailsSubProperty";
-import {
-  MdHome,
-  MdRemoveShoppingCart,
-  MdCheckCircle,
-  MdAttachMoney,
-} from "react-icons/md";
-import NoDataMessage from "@/components/NoDataMsg";
+import { useRouter } from "next/navigation";
 import ShimmerSubProperty from "@/components/Shimmers/ShimmerSupProperty";
 import { Logger } from "@/services/Logger";
 import SubPropertyCreateUpdate from "@/components/properties/SubPropertyCreateUpdate";
@@ -48,7 +42,11 @@ const Page = ({ params }) => {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [uploadedSvg, setUploadedSvg] = useState(null);
   const [showSubPropertyForm, setShowSubPropertyForm] = useState(false);
+  const router = useRouter();
 
+  const handleGoBack = () => {
+    router.back();
+  };
   useEffect(() => {
     if (data && data.imagePlan) {
       setUploadedSvg([data.imagePlan]);
@@ -117,18 +115,77 @@ const Page = ({ params }) => {
     newData.imagePlan = imgUploaded[0];
     updateProperty({ id: newData.id, updateProperties: newData });
   };
-
   if (isLoading || getSubProperties.isLoading) {
     return <ShimmerSubProperty />;
   }
-
   if (error) {
     return <ServerErrorComponent />;
   }
-
   return (
-    <div className="container mx-auto px-4 md:px-0">
-      <h2 className="text-3xl mb-2 text-center md:text-left">{data.name}</h2>
+    <div className=" w-full bg-[#f1f1f1] h-screen ">
+      <div className="flex  justify-end ">
+        <div
+          onClick={handleGoBack}
+          className="sm:absolute bg-primary cursor-pointer text-white py-2 px-5 sm:right-0 mx-3 hover:bg-orange-300 z-40  rounded-lg"
+        >
+          Atras
+        </div>
+      </div>
+
+      <div className="md:absolute shadow-lg text-sm  sm:bottom-0 mb-2 mx-5 bg-white sm:pr-20 py-4  sm:z-50 sm:justify-end ">
+        <h2 className="text-lg uppercase ml-5 font-semibold text-primary mb-2 text-center md:text-left">
+          {data.name}
+        </h2>
+        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#9b59b6 " }}
+          ></div>
+          Seleccionado
+        </div>
+        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#4ac581" }}
+          ></div>
+          Disponible
+        </div>
+        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#e74c3c " }}
+          ></div>
+          Vendido
+        </div>
+        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#f1c40f " }}
+          ></div>
+          Reservada
+        </div>
+        <div className="flex items-center ml-2 md:ml-4">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#cccccc" }}
+          ></div>
+          No disponible
+        </div>
+        <div className="flex items-center ml-2 md:ml-4">
+          <div
+            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
+            style={{ backgroundColor: "#3498db " }}
+          ></div>
+          Area común
+        </div>
+      </div>
+      <SvgView
+        svg={uploadedSvg}
+        onPathSelect={handlePathSelect}
+        arraySubProperties={arraySubproperty}
+        ModalSvg={toggleModalSvg}
+      />
+
       {arraySubproperty.length === 0 && uploadedSvg === null ? (
         <Button
           type="Button"
@@ -146,135 +203,33 @@ const Page = ({ params }) => {
           ModalSvg={toggleModalSvg}
         />
       ) : null}
-      <div className="flex flex-col md:flex-row">
-        {uploadedSvg ? (
-          <>
-            <SvgView
-              svg={uploadedSvg}
-              onPathSelect={handlePathSelect}
-              arraySubProperties={arraySubproperty}
-              ModalSvg={toggleModalSvg}
-              className="md:w-1/2"
+      <div className="sm:bottom-0 sm:right-0 shadow-lg  sm:absolute sm:m-2 sm:z-30">
+        {isPopUpOpen && selectedPath ? (
+          showSubPropertyForm ? (
+            <SubPropertyCreateUpdate
+              onClose={togglePopUp}
+              newSubproperty={handleUpdateSubproperty}
+              idSvg={selectedPath}
+              data={subPropertySelect}
+              idProperty={data.id}
+            ></SubPropertyCreateUpdate>
+          ) : subPropertySelect ? (
+            <DetailsSubProperty
+              dataSubproperty={subPropertySelect}
+              id={id}
+              toggleFormSubProperty={() => setShowSubPropertyForm(true)}
+              onClose={togglePopUp}
             />
-            <div className="flex justify-center md:w-1/2 md:flex-col">
-              {isPopUpOpen && selectedPath ? (
-                showSubPropertyForm ? (
-                  <SubPropertyCreateUpdate
-                    onClose={togglePopUp}
-                    newSubproperty={handleUpdateSubproperty}
-                    idSvg={selectedPath}
-                    data={subPropertySelect}
-                    idProperty={data.id}
-                  ></SubPropertyCreateUpdate>
-                ) : subPropertySelect ? (
-                  <DetailsSubProperty
-                    dataSubproperty={subPropertySelect}
-                    id={id}
-                    toggleFormSubProperty={() => setShowSubPropertyForm(true)}
-                    onClose={togglePopUp}
-                  />
-                ) : (
-                  <SubPropertyCreateUpdate
-                    onClose={togglePopUp}
-                    newSubproperty={handleUpdateSubproperty}
-                    idSvg={selectedPath}
-                    data={subPropertySelect}
-                    idProperty={data.id}
-                  ></SubPropertyCreateUpdate>
-                )
-              ) : (
-                <div>
-                  <div className="flex">
-                    <div className="border-r-2 border-black p-4 md:flex md:items-center text-center">
-                      <div className="mr-4 flex justify-center">
-                        <MdHome size={22} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">
-                          Total propiedades
-                        </p>
-                        <p className="text-gray-600">
-                          {
-                            arraySubproperty.filter(
-                              (property) => !property.commonArea
-                            ).length
-                          }
-                        </p>
-                      </div>
-                    </div>
-                    <div className="border-r-2 border-black p-4 md:flex md:items-center text-center">
-                      <div className="mr-4 flex justify-center">
-                        <MdRemoveShoppingCart size={22} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">
-                          Propiedades vendidas
-                        </p>
-                        <p className="text-gray-600">
-                          {
-                            arraySubproperty.filter(
-                              (obj) =>
-                                obj.isAvailable !== true && !obj.commonArea
-                            ).length
-                          }
-                        </p>
-                      </div>
-                    </div>
-                    <div className="p-4 md:flex md:items-center text-center">
-                      <div className="mr-4 flex justify-center">
-                        <MdCheckCircle size={22} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-xs md:text-sm md:mt-0 mt-1">
-                          Propiedades disponibles
-                        </p>
-                        <p className="text-gray-600 ">
-                          {
-                            arraySubproperty.filter(
-                              (obj) =>
-                                obj.isAvailable === true && !obj.commonArea
-                            ).length
-                          }
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  {arraySubproperty.length > 0 ? (
-                    <div className="p-4 flex items-center">
-                      <div className="mr-4">
-                        <MdAttachMoney size={32} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-lg">
-                          <label>Desde: $ </label>
-                          {Math.min.apply(
-                            Math,
-                            arraySubproperty.map(function (obj) {
-                              return obj.price;
-                            })
-                          )}
-                        </p>
-                        <p className="font-semibold text-lg">
-                          <label>Hasta: $ </label>
-                          {Math.max.apply(
-                            Math,
-                            arraySubproperty.map(function (obj) {
-                              return obj.price;
-                            })
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div className="flex w-full justify-center items-center">
-            <NoDataMessage message="No existe un plano disponible en este momento." />
-          </div>
-        )}
+          ) : (
+            <SubPropertyCreateUpdate
+              onClose={togglePopUp}
+              newSubproperty={handleUpdateSubproperty}
+              idSvg={selectedPath}
+              data={subPropertySelect}
+              idProperty={data.id}
+            ></SubPropertyCreateUpdate>
+          )
+        ) : null}
       </div>
     </div>
   );

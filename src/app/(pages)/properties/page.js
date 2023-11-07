@@ -38,7 +38,7 @@ const Page = () => {
     : data;
 
   return (
-    <div>
+    <div className="mx-2">
       <div className="flex justify-between m-2">
         <div className="relative">
           <select
