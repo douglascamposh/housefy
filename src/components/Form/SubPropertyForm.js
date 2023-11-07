@@ -25,7 +25,7 @@ const SubPropertyForm = ({ data, isLoading, onSubmit, idSvg, onClose }) => {
     }
   };
   return (
-    <div className="w-96 bg-white rounded-lg shadow-2xl  p-6">
+    <div className="sm:w-96 bg-white rounded-lg shadow-2xl p-2 sm:p-6">
       <Formik
         enableReinitialize={true}
         initialValues={data || subPropertiesScheme}
