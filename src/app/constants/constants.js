@@ -1,4 +1,5 @@
 import { FaWater, FaBolt, FaWifi, FaGasPump } from "react-icons/fa";
+import PageRoles from "../(pages)/roles/page";
 export const cities = [
   "Pando",
   "Beni",
@@ -36,4 +37,15 @@ export const methods = {
   post: "POST",
   update: "UPDATE",
   delete: "DELETE",
+};
+
+export const ConfigurationItems = [
+  { label: "General" },
+  { label: "Apariencia" },
+  { label: "Roles y accesos" },
+  { label: "Seguridad" },
+];
+
+export const contentConfiguration = {
+  "Roles y accesos": <PageRoles />,
 };
