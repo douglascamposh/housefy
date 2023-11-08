@@ -1,17 +1,21 @@
 import { Logger } from "@/services/Logger";
 import React, { useState, useRef, useEffect } from "react";
 import {
+  TransformWrapper,
+  TransformComponent,
+  useControls,
+} from "react-zoom-pan-pinch";
+import {
   FaSearchPlus,
   FaSearchMinus,
   FaEdit,
-  FaExclamationTriangle,
+  FaSearchLocation,
 } from "react-icons/fa";
 import { stylesSvg } from "@/app/constants/stylesSvg";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { sale_status } from "@/app/constants/constants";
 const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
   const [fileContent, setFileContent] = useState(null);
-  const [zoom, setZoom] = useState(1);
   const svgContainerRef = useRef(null);
   const [clickedId, setClickedId] = useState(null);
   const [pathStyleClass, setPathStyleClass] = useState("default-path-style");
@@ -43,12 +47,7 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
         item.status == sale_status.reserved
     )
     .map((item) => item.svgId);
-  const handleZoomIn = () => {
-    setZoom((prevZoom) => prevZoom + 0.1);
-  };
-  const handleZoomOut = () => {
-    setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.1));
-  };
+
   const openModalUpdate = () => {
     setShowModalWarning(true);
   };
@@ -77,7 +76,6 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
       }
     }
   };
-
   const applyStylesToPaths = () => {
     if (fileContent && svgContainerRef.current) {
       const container = document.createElement("div");
@@ -176,11 +174,16 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
   };
 
   useEffect(() => {
-    applyStylesToPaths();
+    if (
+      fileContent &&
+      svgContainerRef.current &&
+      pathStyleClass !== "selected-path"
+    ) {
+      applyStylesToPaths();
+    }
     if (fileContent && svgContainerRef.current) {
       svgContainerRef.current.addEventListener("click", handlePathClick);
     }
-
     return () => {
       if (svgContainerRef.current) {
         svgContainerRef.current.removeEventListener("click", handlePathClick);
@@ -203,10 +206,8 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
       if (!response.ok) {
         throw new Error("No se pudo obtener el archivo SVG");
       }
-
       const svgContent = await response.text();
       setFileContent(svgContent);
-
       const parser = new DOMParser();
       const doc = parser.parseFromString(svgContent, "image/svg+xml");
       const svgElement = doc.documentElement;
@@ -216,15 +217,40 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
       const pathIds = Array.from(pathElements).map((path) =>
         path.getAttribute("id")
       );
-
       setSvgIds(pathIds);
     } catch (error) {
       Logger.error(error);
     }
   };
 
+  const Controls = () => {
+    const { zoomIn, zoomOut, resetTransform } = useControls();
+    return (
+      <>
+        <button
+          className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => zoomIn()}
+        >
+          <FaSearchPlus />
+        </button>
+        <button
+          className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => zoomOut()}
+        >
+          <FaSearchMinus />
+        </button>
+        <button
+          className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
+          onClick={() => resetTransform()}
+        >
+          <FaSearchLocation />
+        </button>
+      </>
+    );
+  };
+
   return (
-    <div className="svg-container p-4 md:p-8 w-full">
+    <div className=" svg-container  w-full ">
       <style>{stylesSvg}</style>
       {showModalWarning && (
         <ConfirmationDialog
@@ -234,97 +260,41 @@ const SvgView = ({ svg, arraySubProperties, onPathSelect, ModalSvg }) => {
           content="Los lotes/departamentos asociados al plano serán eliminados si se actualiza el plano."
         />
       )}
-
-      <div className="flex flex-wrap justify-center w-full mb-4">
-        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#2d0df1" }}
-          ></div>
-          Seleccionado
+      <TransformWrapper>
+        <div>
+          <div className=" mx-5 absolute z-30 sm:flex sm:flex-col">
+            <Controls></Controls>
+            <button
+              className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => openModalUpdate()}
+            >
+              <FaEdit />
+            </button>
+          </div>
+          <TransformComponent>
+            <div
+              ref={svgContainerRef}
+              className="svg-content-container h-[45vh] sm:h-[100vh] p-[100px] sm:w-[100vw]"
+              style={{
+                backgroundColor: "#f1f1f1",
+                maxHeight: "100vh",
+                borderRadius: "10px",
+              }}
+            >
+              {fileContent && (
+                <div
+                  dangerouslySetInnerHTML={{ __html: fileContent }}
+                  className={`svg-content ${pathStyleClass}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              )}
+            </div>
+          </TransformComponent>
         </div>
-        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#2db303" }}
-          ></div>
-          Disponible
-        </div>
-        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#e90107" }}
-          ></div>
-          Vendido
-        </div>
-        <div className="flex items-center ml-2 md:ml-4 mb-2 md:mb-0">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#ECC604" }}
-          ></div>
-          Reservada
-        </div>
-        <div className="flex items-center ml-2 md:ml-4">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#313231" }}
-          ></div>
-          No disponible
-        </div>
-        <div className="flex items-center ml-2 md:ml-4">
-          <div
-            className="w-3 h-3 md:w-4 md:h-4 mr-2 rounded"
-            style={{ backgroundColor: "#66FFFF" }}
-          ></div>
-          Area común
-        </div>
-        <div className="absolute mt-[60px] ml-[200px] md:ml-[-650px]  md:mt-[0px] space-x-2 flex ">
-          <button
-            className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
-            onClick={handleZoomIn}
-          >
-            <FaSearchPlus />
-          </button>
-          <button
-            className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
-            onClick={handleZoomOut}
-          >
-            <FaSearchMinus />
-          </button>
-          <button
-            className="bg-white border border-gray-400 rounded p-2 hover:bg-gray-200 cursor-pointer"
-            onClick={() => openModalUpdate()}
-          >
-            <FaEdit />
-          </button>
-        </div>
-      </div>
-
-      <div
-        ref={svgContainerRef}
-        className="svg-content-container"
-        style={{
-          width: "100%",
-          height: "auto",
-          backgroundColor: "#F1F1F1",
-          maxHeight: "80vh",
-          borderRadius: "10px",
-          overflow: "auto",
-        }}
-      >
-        {fileContent && (
-          <div
-            dangerouslySetInnerHTML={{ __html: fileContent }}
-            className={`svg-content ${pathStyleClass}`}
-            style={{
-              width: "100%",
-              height: "auto",
-              transform: `scale(${zoom})`,
-              transformOrigin: "top left",
-            }}
-          />
-        )}
-      </div>
+      </TransformWrapper>
     </div>
   );
 };

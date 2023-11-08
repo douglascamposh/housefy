@@ -1,42 +1,44 @@
 export const stylesSvg = `
 .default-path-style {
-  fill: #313231;
+  fill: #cccccc ;
   stroke: white;
+  stroke: #34495e;
+  stroke-width: 2px;
   transition: fill 0.3s ease, stroke 0.3s ease;
 }
 
 .default-path-style:hover {
-  cursor: pointer;
-  fill: #535550;
+  cursor: grab;
+  fill: #cccccc ;
 }
 .selected-path {
-  fill: #2d0df1;
+  fill: #9b59b6 ;
 }
 .selected-path:hover {
-  fill: #5E46EE;
+  fill: #9b59b6 ;
 }
 .not-available-path {
-  fill: #e90107;
+  fill: #e74c3c ;
 }
 .not-available-path:hover {
-  fill: #EE474B;
+  fill: #e74c3c ;
 }
 .common-area-path {
-  fill: #66FFFF;
+  fill: #3498db ;
 }
 .common-area-path:hover {
-  fill: #47EEEE;
+  fill: #3498db ;
 }
 .reserved-path {
-  fill: #ECC604;
+  fill: #f1c40f ;
 }
 .reserved-path:hover {
-  fill: #EBD047;
+  fill: #f1c40f ;
 }
 .available-path {
-  fill: #2db303;
+  fill: #4ac581 ;
 }
 .available-path:hover {
-  fill: #6FEE47;
+  fill: #4ac581 ;
 }
 `;

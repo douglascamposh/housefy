@@ -43,9 +43,10 @@ const PayForm = (params) => {
               <p>{subPropertyInfo.price}</p>
             </div>
             <div className="mt-6 flex justify-between ">
-              <Button onClick={() => params.modifiedPage(0)} type="button" />
-              Anterior
-              <Button type="submit" label="Continuar" />
+              <Button onClick={() => params.modifiedPage(0)} type="button">
+                Anterior
+              </Button>
+              <Button type="submit">Continuar</Button>
             </div>
           </Form>
         )}
