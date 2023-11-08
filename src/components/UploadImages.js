@@ -47,6 +47,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave, ModalImages }) => {
       toast.error("Por favor selecciona archivos de imagen JPG");
     }
   };
+
   const handleDeleteImages = async (imagesArray) => {
     try {
       for (const image of imagesArray) {
@@ -73,7 +74,7 @@ const UploadImages = ({ ImagesUploaded, ImagesSave, ModalImages }) => {
       }));
     }
   };
-
+  
   const handleUpload = async () => {
     if (imageData.files.length + previewImagesSave.length > 0) {
       try {
