@@ -2,26 +2,37 @@ import React from "react";
 import { FormInput } from "./FormInput";
 import { ErrorMessage } from "formik";
 import { Label } from "./Label";
-import { colors } from "@/app/constants/colors";
+import { Colors, Border } from "@/app/constants/Styles";
+
 const FormInputLabel = (props) => {
+  const { name } = props
+  const { inputStyle, inputErrorStyle } = styles;
 
-  const {name} = props
-  return(
-        <div>
-            <Label htmlFor="name">{props.label}</Label>
-            <FormInput
-            {...props}
-
-            className={`${(props.errors?.[name] && props.touched?.[name]) || (props.errors?.address?.[name.split(".")[1]] && props.touched?.address?.[name.split(".")[1]]) ? style.errorBorder :style.border} pl-4`}
-            />
-            <ErrorMessage name={props.name} component="div" className={style.errorBorder+" "+style.color} />
-        </div>
-
+  return (
+    <div>
+      <Label htmlFor="name">{props.label}</Label>
+      <FormInput
+        {...props}
+        className={`
+          ${(props.errors?.[name] 
+            && props.touched?.[name]) || (props.errors?.address?.[name.split(".")[1]] 
+            && props.touched?.address?.[name.split(".")[1]]) 
+            ? inputErrorStyle : inputStyle}`}
+      />
+      <ErrorMessage name={props.name} component="div" className={Colors.primaryRed} />
+    </div>
   );
 }
-const style = {
-    errorBorder: colors.borderErrorRed, //border-red-500
-    color:colors.textErrorRed,
-    border: 'border-gray-300'
+
+const styles = {
+  inputStyle: `
+    ${Border.input}
+    pl-4
+  `,
+  inputErrorStyle: `
+    ${Border.inputError}
+    pl-4
+  `,
 };
-export {FormInputLabel};
+
+export { FormInputLabel };
