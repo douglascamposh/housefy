@@ -3,52 +3,88 @@ import React, { useState } from "react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { FormInput } from "./FormInput";
 import { ErrorMessage } from "formik";
-import { colors } from "@/app/constants/colors";
+import { Colors, Border } from "@/app/constants/Styles";
+
 const FormInputIcon = (props) => {
   const { icon: Icon, type, name, placeholder, ...rest } = props;
+  const {
+    inputContainerStyle,
+    iconStyle,
+    inputStyle,
+    inputErrorStyle,
+    eyeIconStyle,
+    errorLabelStyle,
+  } = styles;
+
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="">
+    <div>
+      <div className={`${inputContainerStyle}`}>
+        <Icon className={`${iconStyle}`} />
+        <FormInput
+          type={type === "password" && showPassword ? "text" : type}
+          id={name}
+          name={name}
+          placeholder={placeholder}
+          className={`${props.errors[name] && props.touched[name] ? inputErrorStyle : inputStyle}`}
 
-    <div className="relative ">
-      <Icon className="absolute top-1/2 -translate-y-1/2 left-2" />
-      <FormInput
-        type={type === "password" && showPassword ? "text" : type}
-        id={name}
-        name={name}
-        placeholder={placeholder}
-        className={`${props.errors[name] && props.touched[name] ? style.errorBorder :style.border} pl-8`}
-        
-        {...rest}
-        >
-        
-      </FormInput>
+          {...rest}
+        />
 
-
-      {type === "password" ? (
-        showPassword ? (
-          <RiEyeOffLine
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-primary"
-          />
-        ) : (
-          <RiEyeLine
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer text-primary"
-          />
-        )
-      ) : null}
-    </div>
-      <ErrorMessage name={props.name} component="div" className={style.errorBorder+" "+style.color+" "+style.fontStyle} />
+        {type === "password" ? (
+          showPassword ? (
+            <RiEyeOffLine
+              onClick={() => setShowPassword(!showPassword)}
+              className={`${eyeIconStyle}`}
+            />
+          ) : (
+            <RiEyeLine
+              onClick={() => setShowPassword(!showPassword)}
+              className={`${eyeIconStyle}`}
+            />
+          )
+        ) : null}
       </div>
-
+      <ErrorMessage 
+        name={props.name} 
+        component="div" 
+        className={errorLabelStyle} 
+      />
+    </div>
   );
 };
-const style = {
-    errorBorder: colors.borderErrorRed,
-    color:colors.textErrorRed,
-    border: 'border-gray-300',
-    fontStyle:'text-sm '
+
+const styles = {
+  inputContainerStyle: `
+    relative
+  `,
+  iconStyle: `
+    absolute 
+    top-1/2 
+    -translate-y-1/2 
+    left-2
+  `,
+  inputStyle: `
+    ${Border.input}
+    pl-8
+  `,
+  inputErrorStyle: `
+    ${Border.inputError}
+    pl-8
+  `,
+  eyeIconStyle: `
+    ${Colors.primaryText}
+    absolute 
+    top-1/2 
+    -translate-y-1/2 
+    right-2 
+    hover:cursor-pointer
+  `,
+  errorLabelStyle: `
+    ${Colors.primaryRed}
+    text-sm
+  `,
 };
+
 export default FormInputIcon;
