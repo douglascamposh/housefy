@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useGetPropertiesQuery } from "@/redux/services/propertiesApi";
 import ServerErrorComponent from "@/components/ServerError";
-import CardView from "@/components/Cards/CardPropertyView";
+import CardView from "@/app/(pages)/properties/PropertyList";
 import ShimmerCard from "@/components/Shimmers/ShimmerCard";
 import Button from "@/components/Form/Button";
 import NoDataMessage from "@/components/NoDataMsg";
