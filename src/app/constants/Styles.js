@@ -22,7 +22,7 @@ export const Size = {
 
 export const Padding = {
 	checkbox: 'p2',
-
+	cardPropertyBody: 'p-4',
 }
 
 export const Margin = {
