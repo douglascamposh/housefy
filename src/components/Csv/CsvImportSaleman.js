@@ -8,7 +8,7 @@ import { BsFiletypeCsv } from "react-icons/bs";
 import { MdDone } from "react-icons/md";
 import "tailwindcss/tailwind.css";
 import Checkbox from "../common/CheckBox";
-import Button from "../Form/Button";
+import Button from "../common/Button";
 import Spinner from "../Spinner";
 import { useUploadCsvSalemanMutation } from "@/redux/services/propertiesApi";
 import { Logger } from "@/services/Logger";

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FiTrash2, FiEdit, FiEye } from "react-icons/fi";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import Modal from "@/components/common/Modal";
 import CsvImportSaleman from "@/components/Csv/CsvImportSaleman";
 

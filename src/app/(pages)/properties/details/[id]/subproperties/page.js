@@ -7,7 +7,7 @@ import {
   useDeleteImagesMutation,
 } from "@/redux/services/propertiesApi";
 import ServerErrorComponent from "@/components/ServerError";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import UploadSvg from "@/components/Svg/UploadSvg";
 import SvgView from "@/components/Svg/SvgView";
 import DetailsSubProperty from "@/components/DetailsSubProperty";

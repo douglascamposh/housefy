@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
-import Button from "./Form/Button";
+import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 const TopMenu = () => {
   const [menuIcon, setMenuIcon] = useState(false);
@@ -14,6 +14,7 @@ const TopMenu = () => {
     { href: "/", label: "Inicio" },
     { href: "/properties", label: "Propiedades" },
     { href: "/users/saleman", label: "Vendedores" },
+    { href: "/compute", label: "Calcular Credito" },
   ];
 
   return (

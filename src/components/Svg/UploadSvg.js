@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUploadImagePropertiesMutation } from "@/redux/services/propertiesApi";
 import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
-import Button from "../Form/Button";
+import Button from "../common/Button";
 import { v4 as uuidv4 } from "uuid";
 import { stylesSvg } from "@/app/constants/stylesSvg";
 import { Logger } from "@/services/Logger";

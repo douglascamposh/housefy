@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Checkbox from "@/components/common/CheckBox";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import { useGetRolesQuery } from "@/redux/services/roleApi";
 import Spinner from "@/components/Spinner";
 import { useUpdateRolesMutation } from "@/redux/services/roleApi";

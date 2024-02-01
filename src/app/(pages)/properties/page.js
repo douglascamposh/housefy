@@ -4,7 +4,7 @@ import { useGetPropertiesQuery } from "@/redux/services/propertiesApi";
 import ServerErrorComponent from "@/components/ServerError";
 import CardView from "@/app/(pages)/properties/PropertyList";
 import ShimmerCard from "@/components/Shimmers/ShimmerCard";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import NoDataMessage from "@/components/NoDataMsg";
 import Link from "next/link";
 import { FiChevronDown } from "react-icons/fi";

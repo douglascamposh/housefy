@@ -5,7 +5,7 @@ import { Label } from "../common/Label";
 import { validationSubPropertySchema } from "@/app/utils/validations/schemaValidation";
 import { subPropertiesScheme } from "@/app/utils/schema/propertySchema";
 import "react-toastify/dist/ReactToastify.css";
-import Button from "./Button";
+import Button from "../common/Button";
 import { Logger } from "@/services/Logger";
 const SubPropertyForm = ({ data, isLoading, onSubmit, idSvg, onClose }) => {
   const handleSubmit = async (values, { resetForm }) => {
