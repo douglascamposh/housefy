@@ -10,7 +10,7 @@ const generatePaymentDate = (startDay, monthNumber) => {
     const nextMonth = nextDate.month();
     const nextYear = nextDate.year();
 
-    var lastDayOfMonth = moment([nextYear, nextMonth]).endOf('month').date();
+    const lastDayOfMonth = moment([nextYear, nextMonth]).endOf('month').date();
     if (payDay > lastDayOfMonth) payDay = lastDayOfMonth; 
 
     const paymentMonthlyDate = moment([nextYear, nextMonth, payDay]);

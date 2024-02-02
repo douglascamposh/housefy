@@ -13,11 +13,11 @@ const Compute = () => {
   const { containerStyle, tableComputeStyle, creditDetailStyle } = styles;
 
   const computeCredit = (data) => {
-    const {total, downPayment, months, setDate} = data;
-    const monthlyPayment = ((total - downPayment)/months).toFixed(2);
-    
+    const { total, downPayment, months, setDate } = data;
+    const monthlyPayment = ((total - downPayment) / months).toFixed(2);
+
     const report = generatePaymentDate(setDate, months).map(item => {
-      return {item, monthlyPayment}
+      return { item, monthlyPayment }
     })
     dispatch(getTable(report));
 
@@ -42,7 +42,7 @@ const Compute = () => {
 }
 
 const styles = {
-	containerStyle: `
+  containerStyle: `
 		p-10
 	`,
   tableComputeStyle: `
