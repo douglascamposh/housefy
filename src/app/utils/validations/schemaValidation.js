@@ -138,3 +138,24 @@ export const validationRolScheme = () => {
     roleName: Yup.string().required("Nombre de rol Requerido"),
   });
 };
+
+export const validationComputeCredit =  Yup.object().shape({
+  total: Yup.number()
+    .required("El precio total es requerido")
+    .moreThan(0, "El precio debe ser mayor que cero")
+    .test('decimal-places', 'El precio debe tener máximo dos decimales', value => {
+      if (!value) return true;
+      return /^\d+(\.\d{1,2})?$/.test(value.toString());
+    }),
+  downPayment: Yup.number()
+    .required("El monto de aporte inicial es requerido")
+    .moreThan(0, "El monto debe ser mayor que cero")
+    .test('decimal-places', 'El precio debe tener máximo dos decimales', value => {
+      if (!value) return true;
+      return /^\d+(\.\d{1,2})?$/.test(value.toString());
+    }),
+  months: Yup.number()
+    .required("El plazo es requerido"),
+  setDate: Yup.date()
+    .required("La fecha de inicio es requerido"),
+});

@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import CustomerForm from "@/components/Form/CustomerForm";
 import StepperHorizontal from "@/components/Steppers/StepperHorizontal";
 import { useEffect, useState } from "react";

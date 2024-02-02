@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useUploadImagePropertiesMutation } from "@/redux/services/propertiesApi";
 import { toast } from "react-toastify";
 import { MdOutlineAddPhotoAlternate, MdClose } from "react-icons/md";
-import Button from "./Form/Button";
+import Button from "./common/Button";
 import Image from "next/image";
 import Spinner from "./Spinner";
 import { useDeleteImagesMutation } from "@/redux/services/propertiesApi";

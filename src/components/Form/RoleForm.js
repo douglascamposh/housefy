@@ -1,4 +1,4 @@
-import Button from "./Button";
+import Button from "../common/Button";
 import { FormInputLabel } from "../common/FormInputLabel";
 import { Formik, Form } from "formik";
 import { validationRolScheme } from "@/app/utils/validations/schemaValidation";

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setSaleData } from "@/redux/actions";
 import { validationPayScheme } from "@/app/utils/validations/schemaValidation";
 import { payScheme } from "@/app/utils/schema/propertySchema";
-import Button from "./Button";
+import Button from "../common/Button";
 const PayForm = (params) => {
   const dispatch = useDispatch();
   const subPropertyInfo = params.subPropertyInfo;

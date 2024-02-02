@@ -1,6 +1,6 @@
 import AutoCompleteCustomer from "../AutoCompleteCustomer";
 import { useState } from "react";
-import Button from "./Button";
+import Button from "../common/Button";
 import { FormInputLabel } from "../common/FormInputLabel";
 import { Formik, Form, FieldArray } from "formik";
 import { validationCustomer } from "@/app/utils/validations/schemaValidation";

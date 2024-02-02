@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
 import MapComponent from "../Maps/MapComponent";
-import Button from "./Button";
+import Button from "../common/Button";
 import { validationPropertySchema } from "@/app/utils/validations/schemaValidation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

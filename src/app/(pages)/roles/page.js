@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Button from "@/components/Form/Button";
+import Button from "@/components/common/Button";
 import React from "react";
 import Modal from "@/components/common/Modal";
 import RoleForm from "@/components/Form/RoleForm";
