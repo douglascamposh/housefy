@@ -138,7 +138,7 @@ const Page = ({ params }) => {
     return (
       <div className="container mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-3xl font-semibold mb-4">
-          Rol - {roleSelected && roleSelected.roleName}
+          Administrar Permisos - {roleSelected && roleSelected.roleName}
         </h1>
         <div className="sm:flex sm:justify-between">
           <div className="mt-4 sm:mt-0"></div>

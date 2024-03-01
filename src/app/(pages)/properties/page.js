@@ -9,6 +9,8 @@ import NoDataMessage from "@/components/NoDataMsg";
 import Link from "next/link";
 import { FiChevronDown } from "react-icons/fi";
 import { Logger } from "@/services/Logger";
+import HasPermission from "@/components/permissions/HasPermission";
+import { methods } from "@/app/constants/constants";
 
 const Page = () => {
   const { data, error, isLoading } = useGetPropertiesQuery();
@@ -19,9 +21,11 @@ const Page = () => {
       <div>
         <div className="flex justify-between m-2">
           <div></div>
-          <Link href="/properties/create">
-            <Button>Crear nuevo</Button>
-          </Link>
+          <HasPermission to={methods.create}>
+            <Link href="/properties/create">
+              <Button>Crear Propiedad</Button>
+            </Link>
+          </HasPermission>
         </div>
         <ShimmerCard />
       </div>
@@ -53,9 +57,11 @@ const Page = () => {
             <FiChevronDown className="h-4 w-4" />
           </div>
         </div>
-        <Link href="/properties/create">
-          <Button>Crear nuevo</Button>
-        </Link>
+        <HasPermission to={methods.create}>
+          <Link href="/properties/create">
+            <Button>Crear Propiedad</Button>
+          </Link>
+        </HasPermission>
       </div>
       {filteredData.length !== 0 ? (
         <CardView data={filteredData} />

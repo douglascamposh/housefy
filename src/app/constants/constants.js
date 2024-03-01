@@ -29,7 +29,10 @@ export const headersMappingSaleman = [
 ];
 
 export const routes = {
-  properties: "/properties",
+  propiedades: '/properties',
+  roles: '/roles',
+  vendedores: '/saleman',
+  ventas: '/sales'
 };
 
 export const methods = {
