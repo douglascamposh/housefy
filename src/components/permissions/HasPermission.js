@@ -15,6 +15,7 @@ const HasPermission = ({children, to:permissionTo=methods.read}) => {
       const pagePermissions = rolesData.filter(
         ({roleName}) => claims.roles.find(currentRole => currentRole === roleName)
       ).flatMap(({permissions}) => permissions);
+      //TODO: there is an issue at sales we should no permission but we are getting path of this page (example properties/id/subproperties) but in backend we have /sales
       const hasAccess = pagePermissions.find(({page}) => pathName.includes(page));
       return hasAccess && hasAccess.methods.find(method => permissionTo === method) ? (<>{children}</>) : (<></>);
     }

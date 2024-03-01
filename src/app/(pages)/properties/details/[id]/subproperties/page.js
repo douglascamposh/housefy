@@ -16,6 +16,8 @@ import ShimmerSubProperty from "@/components/Shimmers/ShimmerSupProperty";
 import { Logger } from "@/services/Logger";
 import SubPropertyCreateUpdate from "@/components/properties/SubPropertyCreateUpdate";
 import { toast } from "react-toastify";
+import HasPermission from "@/components/permissions/HasPermission";
+import { methods } from "@/app/constants/constants";
 
 const Page = ({ params }) => {
   const { id } = params;
@@ -187,13 +189,15 @@ const Page = ({ params }) => {
       />
 
       {arraySubproperty.length === 0 && uploadedSvg === null ? (
-        <Button
-          type="Button"
-          className="text-xs absolute mt-[-7px]"
-          onClick={() => toggleModalSvg()}
-        >
-          Subir Svg
-        </Button>
+        <HasPermission to={methods.update}>
+          <Button
+            type="Button"
+            className="text-xs absolute mt-[-7px]"
+            onClick={() => toggleModalSvg()}
+          >
+            Subir Svg
+          </Button>
+        </HasPermission>
       ) : null}
       {modalSvg ? (
         <UploadSvg

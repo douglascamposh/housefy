@@ -2,7 +2,6 @@ import React from "react";
 import PropertyListItem from "./PropertyListItem";
 import Card from "../../../components/common/Card";
 import HasPermission from "@/components/permissions/HasPermission";
-import { methods } from "@/app/constants/constants";
 
 const PropertyList = ({ data }) => {
   const { containerStyle } = styles;
@@ -12,7 +11,7 @@ const PropertyList = ({ data }) => {
     <div className={`${containerStyle}`}>
       {data.map((item) => (
         (item.name && item.address?.street) &&
-          <Card>
+          <Card key={item.id}>
             <PropertyListItem
               key={item.id}
               name={item.name}

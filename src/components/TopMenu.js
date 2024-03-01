@@ -3,6 +3,7 @@ import { useState } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
+import HasPermission from "./permissions/HasPermission";
 const TopMenu = () => {
   const [menuIcon, setMenuIcon] = useState(false);
 
@@ -13,8 +14,10 @@ const TopMenu = () => {
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/properties", label: "Propiedades" },
-    { href: "/users/saleman", label: "Vendedores" },
+    // { href: "/users/saleman", label: "Vendedores" },
+    { href: "/saleman", label: "Vendedores" },
     { href: "/compute", label: "Calcular Credito" },
+    { href: "/settings", label: "Configuración" },
   ];
 
   return (
@@ -30,13 +33,15 @@ const TopMenu = () => {
         <div className="flex items-center">
           <ul className="hidden md:flex uppercase font-semibold ">
             {navItems.map(({ href, label }) => (
-              <NavItem
-                key={href}
-                href={href}
-                onClick={handleSmallerScreensNavigation}
-              >
-                {label}
-              </NavItem>
+              
+                <NavItem
+                  key={href}
+                  href={href}
+                  onClick={handleSmallerScreensNavigation}
+                >
+                  {label}
+                </NavItem>
+              
             ))}
           </ul>
 

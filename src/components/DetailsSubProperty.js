@@ -6,6 +6,8 @@ import { Logger } from "@/services/Logger";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { FaCalendar, FaPhoneAlt, FaShoppingCart } from "react-icons/fa";
 import Link from "next/link";
+import HasPermission from "./permissions/HasPermission";
+import { methods } from "@/app/constants/constants";
 const DetailsSubProperty = (params) => {
   const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
     useState(false);
@@ -65,20 +67,24 @@ const DetailsSubProperty = (params) => {
         )}
         {(dataSubProperty.isAvailable || dataSubProperty.commonArea) && (
           <div className="flex">
-            <button
-              onClick={() => {
-                params.toggleFormSubProperty();
-              }}
-              className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg"
-            >
-              <MdModeEdit size={15} />
-            </button>
-            <button
-              onClick={handleDeleteSubProperty}
-              className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg"
-            >
-              <MdDelete size={15} />
-            </button>
+            <HasPermission to={methods.create}>
+              <button
+                onClick={() => {
+                  params.toggleFormSubProperty();
+                }}
+                className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg"
+              >
+                <MdModeEdit size={15} />
+              </button>
+            </HasPermission>
+            <HasPermission to={methods.delete}>
+              <button
+                onClick={handleDeleteSubProperty}
+                className="w-8 h-8 bg-white mt-[-7px] text-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg"
+              >
+                <MdDelete size={15} />
+              </button>
+            </HasPermission>
           </div>
         )}
       </div>
@@ -158,13 +164,15 @@ const DetailsSubProperty = (params) => {
                     <FaPhoneAlt className="mr-2"></FaPhoneAlt>
                     Contactar cliente
                   </Link>
-                  <Link
-                    className="text-green-600 hover:text-green-400 font-semibold mt-5 flex items-center"
-                    href={`/properties/details/${params.id}/subproperties/sale/${dataSubProperty.id}`}
-                  >
-                    <FaShoppingCart className="mr-2"></FaShoppingCart>
-                    Realizar venta
-                  </Link>
+                  <HasPermission to={methods.update}>
+                    <Link
+                      className="text-green-600 hover:text-green-400 font-semibold mt-5 flex items-center"
+                      href={`/properties/details/${params.id}/subproperties/sale/${dataSubProperty.id}`}
+                    >
+                      <FaShoppingCart className="mr-2"></FaShoppingCart>
+                      Realizar venta
+                    </Link>
+                  </HasPermission>
                 </div>
               )}
             </div>
@@ -172,13 +180,14 @@ const DetailsSubProperty = (params) => {
         )
       ) : (
         <div>
-          <Link
-            href={`/properties/details/${params.id}/subproperties/reserve/${dataSubProperty.id}`}
-          >
-            <div className="bg-primary w-full text-center text-white font-semibold py-2 mt-2 hover:bg-orange-600 hover:cursor-pointer">
-              Reservar
-            </div>
-          </Link>
+          <HasPermission to={methods.create}>
+            <Link
+              href={`/properties/details/${params.id}/subproperties/reserve/${dataSubProperty.id}`}
+            >
+              <div className="bg-primary w-full text-center text-white font-semibold py-2 mt-2 hover:bg-orange-600 hover:cursor-pointer">
+                Reservar
+              </div>
+            </Link>
           <Link
             href={`/properties/details/${params.id}/subproperties/sale/${dataSubProperty.id}`}
           >
@@ -186,6 +195,7 @@ const DetailsSubProperty = (params) => {
               Vender ahora
             </div>
           </Link>
+          </HasPermission>
         </div>
       )}
       <ConfirmationDialog
