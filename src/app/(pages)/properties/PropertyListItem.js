@@ -3,7 +3,8 @@ import { MdLocationOn, MdOutlineHouse ,MdOutlineModeEditOutline,MdDeleteOutline}
 import { useRouter } from "next/navigation";
 import Carousel from "../../../components/Carrousel";
 import { Padding } from "@/app/constants/Styles";
-
+import HasPermission from "@/components/permissions/HasPermission";
+import { methods } from "@/app/constants/constants";
 const PropertyListItem = ({ name, images, address, description, id, propertiesAvailable }) => {
   const router = useRouter();
   const { 
@@ -37,18 +38,22 @@ const PropertyListItem = ({ name, images, address, description, id, propertiesAv
         )}
       </div>
       <div className={`${actionStyle}`}>
+        <HasPermission to={methods.update}>
           <button
             onClick={handleEditClick}
             className={`${buttonStyle}`}
           >
             <MdOutlineModeEditOutline className={`${iconStyle}`} />
           </button>
+        </HasPermission>
+        <HasPermission to={methods.delete}>
           <button
             onClick={handleEditClick}
             className={`${buttonStyle}`}
           >
             <MdDeleteOutline className={`${iconStyle}`} />
           </button>
+        </HasPermission>
       </div>
       <div className={`${Padding.cardPropertyBody}`}>
         <h4 className={`${titleStyle}`}>

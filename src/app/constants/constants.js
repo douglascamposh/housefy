@@ -33,9 +33,9 @@ export const routes = {
 };
 
 export const methods = {
-  get: "GET",
-  post: "POST",
-  update: "UPDATE",
+  read: "GET",
+  create: "POST",
+  update: "PUT",
   delete: "DELETE",
 };
 
