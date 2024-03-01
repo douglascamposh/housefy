@@ -7,8 +7,9 @@ import { usePathname } from "next/navigation";
 import { methods } from "@/app/constants/constants";
 
 const HasPermission = ({children, to:permissionTo=methods.read}) => {
-    const { data: rolesData, isLoading, isError } = useGetRolesQuery();
-    const pathName = usePathname();
+  const { data: rolesData, isLoading, isError } = useGetRolesQuery();
+  const pathName = usePathname();
+  if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token');
     if(token && rolesData) {
       const claims = JSON.parse(atob(token.split('.')[1]));
@@ -19,6 +20,7 @@ const HasPermission = ({children, to:permissionTo=methods.read}) => {
       const hasAccess = pagePermissions.find(({page}) => pathName.includes(page));
       return hasAccess && hasAccess.methods.find(method => permissionTo === method) ? (<>{children}</>) : (<></>);
     }
+  }
     
     if (isLoading) {
       return (
