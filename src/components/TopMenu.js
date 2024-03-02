@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
+
 const TopMenu = () => {
   const [menuIcon, setMenuIcon] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [tokenData,setTokenData] = useState(null);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -16,6 +19,17 @@ const TopMenu = () => {
     { href: "/users/saleman", label: "Vendedores" },
     { href: "/compute", label: "Calcular Credito" },
   ];
+
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    if (token) {
+     const datosToken = JSON.parse(atob(token.split('.')[1]));
+      
+      setIsLoggedIn(true);
+      setTokenData(datosToken);
+    }
+  }, [])
+
 
   return (
     <header className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
@@ -39,12 +53,18 @@ const TopMenu = () => {
               </NavItem>
             ))}
           </ul>
+          {isLoggedIn ? (
+            <div className="hidden md:flex font-semibold">
+              <span className="mr-2">{tokenData?.sub}</span>
+            </div>
+          ) : (
+            <div className="hidden md:flex">
+              <Link href="/login">
+                <Button>Iniciar sesión</Button>
+              </Link>
+            </div>
+          )}
 
-          <div className="hidden md:flex">
-            <Link href="/login">
-              <Button>Iniciar sesion</Button>
-            </Link>
-          </div>
         </div>
 
         <div
@@ -55,9 +75,8 @@ const TopMenu = () => {
         </div>
 
         <div
-          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${
-            menuIcon ? "" : "left-[100%]"
-          }`}
+          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${menuIcon ? "" : "left-[100%]"
+            }`}
         >
           <div className="w-full">
             <ul className="uppercase font-bold text-2xl flex flex-col items-center">
@@ -71,13 +90,14 @@ const TopMenu = () => {
                 </NavItem>
               ))}
             </ul>
-            <div className="flex flex-col justify-center items-center mt-16">
-              <div className="flex">
-                <Link href="/login">
-                  <Button>Iniciar sesión</Button>
-                </Link>
-              </div>
-            </div>
+            {!isLoggedIn && (
+              <div className="flex flex-col justify-center items-center mt-16">
+                <div className="flex">
+                  <Link href="/login">
+                    <Button>Iniciar sesión</Button>
+                  </Link>
+                </div>
+              </div>)}
           </div>
         </div>
       </nav>
