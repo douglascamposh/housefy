@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState,useEffect} from "react";
 import { MdMenu, MdClose } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
 const TopMenu = () => {
   const [menuIcon, setMenuIcon] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [tokenData,setTokenData] = useState(null);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -19,6 +21,16 @@ const TopMenu = () => {
     { href: "/compute", label: "Calcular Credito" },
     { href: "/settings", label: "Configuración" },
   ];
+
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    if (token) {
+     const datosToken = JSON.parse(atob(token.split('.')[1]));
+     
+      setIsLoggedIn(true);
+      setTokenData(datosToken);
+    }
+  }, [])
 
   return (
     <header className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
@@ -44,12 +56,17 @@ const TopMenu = () => {
               
             ))}
           </ul>
-
-          <div className="hidden md:flex">
-            <Link href="/login">
-              <Button>Iniciar sesion</Button>
-            </Link>
-          </div>
+          {isLoggedIn ? (
+            <div className="hidden md:flex font-semibold">
+              <span className="mr-2">{tokenData?.sub}</span>
+            </div>
+          ) : (
+            <div className="hidden md:flex">
+              <Link href="/login">
+                <Button>Iniciar sesión</Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         <div
@@ -76,13 +93,14 @@ const TopMenu = () => {
                 </NavItem>
               ))}
             </ul>
-            <div className="flex flex-col justify-center items-center mt-16">
-              <div className="flex">
-                <Link href="/login">
-                  <Button>Iniciar sesión</Button>
-                </Link>
-              </div>
-            </div>
+            {!isLoggedIn && (
+              <div className="flex flex-col justify-center items-center mt-16">
+                <div className="flex">
+                  <Link href="/login">
+                    <Button>Iniciar sesión</Button>
+                  </Link>
+                </div>
+              </div>)}
           </div>
         </div>
       </nav>
