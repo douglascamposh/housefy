@@ -7,7 +7,7 @@ import HasPermission from "./permissions/HasPermission";
 const TopMenu = () => {
   const [menuIcon, setMenuIcon] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [tokenData,setTokenData] = useState(null);
+  const [tokenDataEmail,setTokenDataEmail] = useState(null);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -25,10 +25,9 @@ const TopMenu = () => {
   useEffect(() => {
     let token = localStorage.getItem('token');
     if (token) {
-     const datosToken = JSON.parse(atob(token.split('.')[1]));
-     
+     const dataToken = JSON.parse(atob(token.split('.')[1]));
       setIsLoggedIn(true);
-      setTokenData(datosToken);
+      setTokenDataEmail(dataToken?.sub);
     }
   }, [])
 
@@ -58,7 +57,7 @@ const TopMenu = () => {
           </ul>
           {isLoggedIn ? (
             <div className="hidden md:flex font-semibold">
-              <span className="mr-2">{tokenData?.sub}</span>
+              <span className="mr-2">{tokenDataEmail}</span>
             </div>
           ) : (
             <div className="hidden md:flex">
