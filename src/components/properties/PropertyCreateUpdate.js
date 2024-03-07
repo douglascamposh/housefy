@@ -1,14 +1,32 @@
 import React from "react";
 import { useRouter } from 'next/navigation'
-import { useCreatePropertiesMutation, useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
+import { useCreatePropertiesMutation, useDeleteImagesMutation, useUpdatePropertiesMutation } from '@/redux/services/propertiesApi';
 import PropertyForm from '@/components/Form/PropertyForm';
 import { Logger } from "@/services/Logger";
 
 const PropertyCreateUpdate = ({data, saveProperty, isLoading}) => {
   const router = useRouter();
 
-  const handleNavigation = () => {
+  const [deleteImages] = useDeleteImagesMutation();
+
+  const handleNavigation = async (imagesToDelete) => {
+
     router.push('/properties');
+
+    if (imagesToDelete.length > 0){
+      try {
+        for (const image of imagesToDelete) {
+          const response = await deleteImages(image.id);
+          console.info(response, "The response is here");          
+        }
+      } catch (error) {
+        Logger.error("Error al eliminar la imagen: ",error);
+      }
+      // promise = promises.all()
+      //   .then()
+      //   .catch()
+      //   rotuer.push()
+    }    
   };
 
   const registerProperty = async(payload)=> {

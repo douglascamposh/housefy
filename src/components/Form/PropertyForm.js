@@ -238,7 +238,7 @@ const PropertyForm = ({ data, isLoading, onSubmit, onCancel }) => {
               <div className="flex">
                 <Button
                   className="w-full m-2"
-                  onClick={onCancel}
+                  onClick={() => onCancel(uploadedImages)}
                   disabled={isLoading}
                 >
                   Cancelar
