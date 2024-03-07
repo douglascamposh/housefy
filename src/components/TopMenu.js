@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { MdMenu, MdClose } from "react-icons/md";
+import { MdMenu, MdClose, MdExitToApp } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
@@ -11,7 +11,6 @@ const TopMenu = () => {
   const router = useRouter();
   const tokenData = useSelector(state => state.rootReducer.userTokenData);
   const [menuIcon, setMenuIcon] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [tokenDataEmail, setTokenDataEmail] = useState(null);
   const [butttonEmailActivate, setButtonEmailActivate] = useState(false);
 
@@ -27,33 +26,29 @@ const TopMenu = () => {
     { href: "/compute", label: "Calcular Credito" },
     { href: "/settings", label: "Configuración" },
   ];
-   
+
   const handleButtonEmailActivate = () => {
     setButtonEmailActivate(!butttonEmailActivate);
   }
 
-   useEffect( ()=>{
-      if(tokenData !== null) {
-        const dataToken = JSON.parse(atob(tokenData.split('.')[1]));
-        console.log(dataToken?.sub);
-        setIsLoggedIn(true);
-        setTokenDataEmail(dataToken?.sub);
-      }
-   },[tokenData]);
- 
+  useEffect(() => {
+    if (tokenData !== null) {
+      const dataToken = JSON.parse(atob(tokenData.split('.')[1]));
+      setTokenDataEmail(dataToken?.sub);
+    }
+  }, [tokenData]);
+
   useEffect(() => {
     let token = localStorage.getItem('token');
     if (token) {
       const dataToken = JSON.parse(atob(token.split('.')[1]));
-      setIsLoggedIn(true);
       setTokenDataEmail(dataToken?.sub);
     }
   }, [])
-   
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setTokenDataEmail(null);
-    setIsLoggedIn(false);
     setButtonEmailActivate(false);
     router.push('/properties');
   }
@@ -79,17 +74,23 @@ const TopMenu = () => {
               >
                 {label}
               </NavItem>
-
             ))}
           </ul>
-          {isLoggedIn ? (
+          {tokenDataEmail ? (
             <div className="relative">
-              <button onClick={handleButtonEmailActivate}>
+              <button onClick={handleButtonEmailActivate} className="flex items-center space-x-2">
                 <span className="mr-2">{tokenDataEmail}</span>
               </button>
               {butttonEmailActivate && (
-                <div className="absolute top-full left-0 mt-1 bg-orange-100 shadow-md rounded-md border-2 border-orange-500" >
-                  <button onClick={handleLogout}>cerrar sesion</button>
+                <div className="absolute top-full left-0 mt-1 bg-white shadow-md  border-2 border-primary">
+                  <ul className="flex flex-wrap">
+                    <li className="whitespace-nowrap">
+                      <button onClick={handleLogout} className="flex items-center space-x-1">
+                        <span>cerrar sesión</span>
+                        <MdExitToApp />
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               )}
             </div>
@@ -125,7 +126,7 @@ const TopMenu = () => {
                 </NavItem>
               ))}
             </ul>
-            {!isLoggedIn && (
+            {!tokenDataEmail && (
               <div className="flex flex-col justify-center items-center mt-16">
                 <div className="flex">
                   <Link href="/login">
