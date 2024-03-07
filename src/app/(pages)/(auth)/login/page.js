@@ -12,8 +12,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Logger } from "@/services/Logger";
 import Spinner from "@/components/Spinner";
+import { setUserToken } from "@/redux/actions";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [logInMutation, {data:dataLogIn, error, isLoading}] = useLogInMutation();
 
@@ -24,6 +27,7 @@ const Login = () => {
   useEffect(() => {
    if(dataLogIn) {
     localStorage.setItem('token', dataLogIn.token);
+    dispatch(setUserToken(dataLogIn.token));
      router.push(`/properties`);
    }
   }, [dataLogIn]);

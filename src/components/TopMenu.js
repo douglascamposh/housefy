@@ -1,13 +1,19 @@
 import Link from "next/link";
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+
 const TopMenu = () => {
+  const router = useRouter();
+  const tokenData = useSelector(state => state.rootReducer.userTokenData);
   const [menuIcon, setMenuIcon] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [tokenDataEmail,setTokenDataEmail] = useState(null);
+  const [tokenDataEmail, setTokenDataEmail] = useState(null);
+  const [butttonEmailActivate, setButtonEmailActivate] = useState(false);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -21,15 +27,36 @@ const TopMenu = () => {
     { href: "/compute", label: "Calcular Credito" },
     { href: "/settings", label: "Configuración" },
   ];
+   
+  const handleButtonEmailActivate = () => {
+    setButtonEmailActivate(!butttonEmailActivate);
+  }
 
+   useEffect( ()=>{
+      if(tokenData !== null) {
+        const dataToken = JSON.parse(atob(tokenData.split('.')[1]));
+        console.log(dataToken?.sub);
+        setIsLoggedIn(true);
+        setTokenDataEmail(dataToken?.sub);
+      }
+   },[tokenData]);
+ 
   useEffect(() => {
     let token = localStorage.getItem('token');
     if (token) {
-     const dataToken = JSON.parse(atob(token.split('.')[1]));
+      const dataToken = JSON.parse(atob(token.split('.')[1]));
       setIsLoggedIn(true);
       setTokenDataEmail(dataToken?.sub);
     }
   }, [])
+   
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setTokenDataEmail(null);
+    setIsLoggedIn(false);
+    setButtonEmailActivate(false);
+    router.push('/properties');
+  }
 
   return (
     <header className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
@@ -44,20 +71,27 @@ const TopMenu = () => {
         <div className="flex items-center">
           <ul className="hidden md:flex uppercase font-semibold ">
             {navItems.map(({ href, label }) => (
-              
-                <NavItem
-                  key={href}
-                  href={href}
-                  onClick={handleSmallerScreensNavigation}
-                >
-                  {label}
-                </NavItem>
-              
+
+              <NavItem
+                key={href}
+                href={href}
+                onClick={handleSmallerScreensNavigation}
+              >
+                {label}
+              </NavItem>
+
             ))}
           </ul>
           {isLoggedIn ? (
-            <div className="hidden md:flex font-semibold">
-              <span className="mr-2">{tokenDataEmail}</span>
+            <div className="relative">
+              <button onClick={handleButtonEmailActivate}>
+                <span className="mr-2">{tokenDataEmail}</span>
+              </button>
+              {butttonEmailActivate && (
+                <div className="absolute top-full left-0 mt-1 bg-orange-100 shadow-md rounded-md border-2 border-orange-500" >
+                  <button onClick={handleLogout}>cerrar sesion</button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="hidden md:flex">
@@ -76,9 +110,8 @@ const TopMenu = () => {
         </div>
 
         <div
-          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${
-            menuIcon ? "" : "left-[100%]"
-          }`}
+          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${menuIcon ? "" : "left-[100%]"
+            }`}
         >
           <div className="w-full">
             <ul className="uppercase font-bold text-2xl flex flex-col items-center">
