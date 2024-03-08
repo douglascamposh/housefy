@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { MdMenu, MdClose, MdExitToApp } from "react-icons/md";
+import { MdMenu, MdClose, MdExitToApp, MdChevronRight } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 
 const TopMenu = () => {
   const router = useRouter();
+  const dropdownRef = useRef();
   const tokenData = useSelector(state => state.rootReducer.userTokenData);
   const [menuIcon, setMenuIcon] = useState(false);
   const [tokenDataEmail, setTokenDataEmail] = useState(null);
@@ -30,6 +32,16 @@ const TopMenu = () => {
   const handleButtonEmailActivate = () => {
     setButtonEmailActivate(!butttonEmailActivate);
   }
+
+  useEffect(() => {
+    const close = e => {
+      if (!dropdownRef.current.contains(e.target)) {
+        setButtonEmailActivate(false);
+      }
+    }
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
 
   useEffect(() => {
     if (tokenData !== null) {
@@ -54,7 +66,7 @@ const TopMenu = () => {
   }
 
   return (
-    <header className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
+    <header ref={dropdownRef} className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
       <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
         <div>
           <Link href="/">
@@ -77,17 +89,20 @@ const TopMenu = () => {
             ))}
           </ul>
           {tokenDataEmail ? (
-            <div className="relative">
-              <button onClick={handleButtonEmailActivate} className="flex items-center space-x-2">
-                <span className="mr-2">{tokenDataEmail}</span>
+            <div className="relative hidden md:flex">
+              <button className="py-2 px-4 rounded bg-white shadow text-sm" onClick={handleButtonEmailActivate}>
+                <span>{tokenDataEmail}</span>
               </button>
               {butttonEmailActivate && (
-                <div className="absolute top-full left-0 mt-1 bg-white shadow-md  border-2 border-primary">
-                  <ul className="flex flex-wrap">
-                    <li className="whitespace-nowrap">
-                      <button onClick={handleLogout} className="flex items-center space-x-1">
-                        <span>cerrar sesión</span>
-                        <MdExitToApp />
+                <div className="absolute left-[-160px] mt-14 w-72 bg-white shadow-lg rounded-md border-gray-700 border-2 dropdown-content">
+                  <ul className="p-3">
+                    <li>
+                      <button onClick={handleLogout} className="flex items-center w-full p-2 text-left text-sm gap-4 hover:bg-slate-100">
+                        <div className="rounded-full p-1 bg-slate-400">
+                          <MdExitToApp className="text-white" size={24} />
+                        </div>
+                        <span>Cerrar Sesión</span>
+                        <MdChevronRight className="ml-10" size={24} />
                       </button>
                     </li>
                   </ul>
@@ -126,14 +141,15 @@ const TopMenu = () => {
                 </NavItem>
               ))}
             </ul>
-            {!tokenDataEmail && (
-              <div className="flex flex-col justify-center items-center mt-16">
-                <div className="flex">
-                  <Link href="/login">
-                    <Button>Iniciar sesión</Button>
-                  </Link>
-                </div>
-              </div>)}
+            <div className="md:hidden flex flex-col items-center p-2  rounded-md">
+                {tokenDataEmail ? (
+                       <button><span className="text-2x1">{tokenDataEmail}</span></button>
+                        ) : (
+                       <Link href="/login">
+                         <Button>Iniciar sesión</Button>
+                     </Link>
+              )}
+            </div>
           </div>
         </div>
       </nav>
