@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef} from "react";
 import { MdMenu, MdClose, MdExitToApp, MdChevronRight } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
 
 const TopMenu = () => {
   const router = useRouter();
