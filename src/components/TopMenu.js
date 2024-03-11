@@ -51,6 +51,10 @@ const TopMenu = () => {
     router.push('/properties');
   }
 
+  const dataDropMenu = [
+    {nameListDropdown: 'Cerrar sesión',handleClick: handleLogout}
+  ];
+  
   return (
     <header ref={dropdownRef} className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
       <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
@@ -76,7 +80,7 @@ const TopMenu = () => {
           </ul>
           {tokenDataEmail?(
             <div className="relative hidden md:flex">
-              <DropdownMenu handleLogout={handleLogout} tokenDataEmail ={tokenDataEmail}/>
+              <DropdownMenu dataDropMenu={dataDropMenu} tokenDataEmail ={tokenDataEmail}/>
             </div>
           ) : (
             <div className="hidden md:flex">
