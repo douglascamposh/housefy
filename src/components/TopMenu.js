@@ -1,13 +1,20 @@
 import Link from "next/link";
-import { useState,useEffect} from "react";
-import { MdMenu, MdClose } from "react-icons/md";
+import { useState, useEffect, useRef} from "react";
+import { MdMenu, MdClose, MdExitToApp, MdChevronRight } from "react-icons/md";
 import Button from "./common/Button";
 import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import DropdownMenu from "./DropdownMenu";
+
 const TopMenu = () => {
+  const router = useRouter();
+  const dropdownRef = useRef();
+  const tokenData = useSelector(state => state.rootReducer.userTokenData);
   const [menuIcon, setMenuIcon] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [tokenDataEmail,setTokenDataEmail] = useState(null);
+  const [tokenDataEmail, setTokenDataEmail] = useState(null);
+  //const [butttonEmailActivate, setButtonEmailActivate] = useState(true);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -22,17 +29,42 @@ const TopMenu = () => {
     { href: "/settings", label: "Configuración" },
   ];
 
+
+  useEffect(() => {
+    if (tokenData !== null) {
+      const dataToken = JSON.parse(atob(tokenData.split('.')[1]));
+      setTokenDataEmail(dataToken?.sub);
+    }
+  }, [tokenData]);
+
   useEffect(() => {
     let token = localStorage.getItem('token');
     if (token) {
-     const dataToken = JSON.parse(atob(token.split('.')[1]));
-      setIsLoggedIn(true);
+      const dataToken = JSON.parse(atob(token.split('.')[1]));
       setTokenDataEmail(dataToken?.sub);
     }
   }, [])
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setTokenDataEmail(null);
+    router.push('/properties');
+  }
+
+  const signOutOptionButton = (
+    <button onClick={handleLogout} className="flex items-center w-full p-2 text-left text-sm gap-2 border border-primary hover:text-primary">
+      <div className="rounded-full p-1 bg-slate-400 flex items-center">
+        <MdExitToApp className="text-white" size={24} />
+      </div>
+      <span className="flex-grow" style={{ whiteSpace: 'nowrap' }}>Cerrar sesión</span>
+      <MdChevronRight className="ml-3" size={24} />
+    </button>
+  );
+
+  const dataDropdownList = [signOutOptionButton]
+  
   return (
-    <header className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
+    <header ref={dropdownRef} className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
       <nav className="max-w-[1366px] mx-auto h-[60px] flex justify-between items-center p-4">
         <div>
           <Link href="/">
@@ -44,20 +76,19 @@ const TopMenu = () => {
         <div className="flex items-center">
           <ul className="hidden md:flex uppercase font-semibold ">
             {navItems.map(({ href, label }) => (
-              
-                <NavItem
-                  key={href}
-                  href={href}
-                  onClick={handleSmallerScreensNavigation}
-                >
-                  {label}
-                </NavItem>
-              
+
+              <NavItem
+                key={href}
+                href={href}
+                onClick={handleSmallerScreensNavigation}
+              >
+                {label}
+              </NavItem>
             ))}
           </ul>
-          {isLoggedIn ? (
-            <div className="hidden md:flex font-semibold">
-              <span className="mr-2">{tokenDataEmail}</span>
+          {tokenDataEmail ? (
+            <div className="relative hidden md:flex">
+              <DropdownMenu dataDropdownList={dataDropdownList} textDropdown={tokenDataEmail}/>
             </div>
           ) : (
             <div className="hidden md:flex">
@@ -76,9 +107,8 @@ const TopMenu = () => {
         </div>
 
         <div
-          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${
-            menuIcon ? "" : "left-[100%]"
-          }`}
+          className={`md:hidden absolute top-[100px] mt-[-30px] right-0 left-0 flex justify-center opacity-90 items-center w-full h-screen bg-black text-white ease-in duration-200 ${menuIcon ? "" : "left-[100%]"
+            }`}
         >
           <div className="w-full">
             <ul className="uppercase font-bold text-2xl flex flex-col items-center">
@@ -92,14 +122,15 @@ const TopMenu = () => {
                 </NavItem>
               ))}
             </ul>
-            {!isLoggedIn && (
-              <div className="flex flex-col justify-center items-center mt-16">
-                <div className="flex">
-                  <Link href="/login">
-                    <Button>Iniciar sesión</Button>
-                  </Link>
-                </div>
-              </div>)}
+            <div className="md:hidden flex flex-col items-center p-2  rounded-md">
+              {tokenDataEmail ? (
+                <button><span className="text-2x1">{tokenDataEmail}</span></button>
+                ) : (
+                <Link href="/login">
+                  <Button>Iniciar sesión</Button>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </nav>
