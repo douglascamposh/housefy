@@ -6,6 +6,7 @@ import NavItem from "./NavBar/NavLink";
 import HasPermission from "./permissions/HasPermission";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import DropdownMenu from "./DropdownMenu";
 
 const TopMenu = () => {
   const router = useRouter();
@@ -13,7 +14,7 @@ const TopMenu = () => {
   const tokenData = useSelector(state => state.rootReducer.userTokenData);
   const [menuIcon, setMenuIcon] = useState(false);
   const [tokenDataEmail, setTokenDataEmail] = useState(null);
-  const [butttonEmailActivate, setButtonEmailActivate] = useState(false);
+  //const [butttonEmailActivate, setButtonEmailActivate] = useState(true);
 
   const handleSmallerScreensNavigation = () => {
     setMenuIcon(!menuIcon);
@@ -28,19 +29,6 @@ const TopMenu = () => {
     { href: "/settings", label: "Configuración" },
   ];
 
-  const handleButtonEmailActivate = () => {
-    setButtonEmailActivate(!butttonEmailActivate);
-  }
-
-  useEffect(() => {
-    const close = e => {
-      if (!dropdownRef.current.contains(e.target)) {
-        setButtonEmailActivate(false);
-      }
-    }
-    document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
-  }, []);
 
   useEffect(() => {
     if (tokenData !== null) {
@@ -60,7 +48,6 @@ const TopMenu = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setTokenDataEmail(null);
-    setButtonEmailActivate(false);
     router.push('/properties');
   }
 
@@ -87,26 +74,9 @@ const TopMenu = () => {
               </NavItem>
             ))}
           </ul>
-          {tokenDataEmail ? (
+          {tokenDataEmail?(
             <div className="relative hidden md:flex">
-              <button className="py-2 px-4 rounded bg-white shadow text-sm" onClick={handleButtonEmailActivate}>
-                <span>{tokenDataEmail}</span>
-              </button>
-              {butttonEmailActivate && (
-                <div className="absolute left-[-160px] mt-14 w-72 bg-white shadow-lg rounded-md border-gray-700 border-2 dropdown-content">
-                  <ul className="p-3">
-                    <li>
-                      <button onClick={handleLogout} className="flex items-center w-full p-2 text-left text-sm gap-4 hover:bg-slate-100">
-                        <div className="rounded-full p-1 bg-slate-400">
-                          <MdExitToApp className="text-white" size={24} />
-                        </div>
-                        <span>Cerrar Sesión</span>
-                        <MdChevronRight className="ml-10" size={24} />
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              <DropdownMenu handleLogout={handleLogout} tokenDataEmail ={tokenDataEmail}/>
             </div>
           ) : (
             <div className="hidden md:flex">

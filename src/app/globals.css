@@ -5,6 +5,10 @@
 ::-webkit-scrollbar{
     width: 0px;
 }
+.group:hover .group-hover\:block {
+  display: block;
+}
+
 
 input:checked + div {
     @apply border-gray-500;
