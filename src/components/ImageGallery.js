@@ -12,13 +12,13 @@ const ImageGallery = ({ images,toggleModal }) => {
     <div className="flex flex-col items-center">
       <div className="mb-4">
         {
-          selectedImage?
+          selectedImage ?
           <Image
-          width={2000} height={2000}
+            width={2000} height={2000}
             src={selectedImage.url}
             alt="Imagen Ampliada"
             className="w-auto h-80 mb-2 border rounded"
-          />:null
+          /> : null
         }
       </div>
       <div className="flex space-x-2">

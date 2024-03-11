@@ -51,9 +51,17 @@ const TopMenu = () => {
     router.push('/properties');
   }
 
-  const dataDropMenu = [
-    {nameListDropdown: 'Cerrar sesión',handleClick: handleLogout}
-  ];
+  const signOutOptionButton = (
+    <button onClick={handleLogout} className="flex items-center w-full p-2 text-left text-sm gap-2 border border-primary hover:text-primary">
+      <div className="rounded-full p-1 bg-slate-400 flex items-center">
+        <MdExitToApp className="text-white" size={24} />
+      </div>
+      <span className="flex-grow" style={{ whiteSpace: 'nowrap' }}>Cerrar sesión</span>
+      <MdChevronRight className="ml-3" size={24} />
+    </button>
+  );
+
+  const dataDropdownList = [signOutOptionButton]
   
   return (
     <header ref={dropdownRef} className="bg-white w-full ease-in duration-300 fixed top-0 z-50 shadow-md py-2">
@@ -78,9 +86,9 @@ const TopMenu = () => {
               </NavItem>
             ))}
           </ul>
-          {tokenDataEmail?(
+          {tokenDataEmail ? (
             <div className="relative hidden md:flex">
-              <DropdownMenu dataDropMenu={dataDropMenu} tokenDataEmail ={tokenDataEmail}/>
+              <DropdownMenu dataDropdownList={dataDropdownList} textDropdown={tokenDataEmail}/>
             </div>
           ) : (
             <div className="hidden md:flex">
@@ -115,12 +123,12 @@ const TopMenu = () => {
               ))}
             </ul>
             <div className="md:hidden flex flex-col items-center p-2  rounded-md">
-                {tokenDataEmail ? (
-                       <button><span className="text-2x1">{tokenDataEmail}</span></button>
-                        ) : (
-                       <Link href="/login">
-                         <Button>Iniciar sesión</Button>
-                     </Link>
+              {tokenDataEmail ? (
+                <button><span className="text-2x1">{tokenDataEmail}</span></button>
+                ) : (
+                <Link href="/login">
+                  <Button>Iniciar sesión</Button>
+                </Link>
               )}
             </div>
           </div>
