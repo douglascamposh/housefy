@@ -41,7 +41,7 @@ const Page = () => {
     setIsModalOpen(false);
     setRoleSelected(null);
   };
-  console.log("informacion de los roles",rolesData);
+  
   const handleClickRol = (roleSelected) => {
     router.push(`/roles/${roleSelected.id}`);
   };
@@ -72,7 +72,13 @@ const Page = () => {
       </div>
 
       <div className="table-responsive">
-        <InfoTable tableConfig={tableConfig}data={rolesData}/>
+      <InfoTable 
+         headers={tableConfig} 
+         renderHeader={(header) => header.header}
+         data={rolesData}
+         renderItem={(item, header, index) => header.render ? header.render(item, index) : item[header.property]}
+      />
+
       </div>
       <Modal
         title={roleSelected ? "Actualizar rol" : "Agregar rol"}

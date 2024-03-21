@@ -23,7 +23,12 @@ const Users = () => {
   return (
     <>
       <h1 className="text-3xl font-semibold text-center">Lista de Usuarios</h1>
-      <InfoTable tableConfig={tableConfig} data={usersData} />
+      <InfoTable 
+        headers={tableConfig}
+        renderHeader={(header) => header.header}
+        data={usersData}
+        renderItem={(item, header, index) => header.render ? header.render(item, index) : item[header.property]}
+      />
     </>)
 }
 
