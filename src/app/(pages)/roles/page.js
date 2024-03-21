@@ -13,8 +13,22 @@ import { Logger } from "@/services/Logger";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { toast } from "react-toastify";
 import ServerErrorComponent from "@/components/ServerError";
+import InfoTable from "@/components/InfoTable";
 
 const Page = () => {
+
+  const tableConfig =  [
+    {  header: '#', property: 'index',render: (role, index) => { return index + 1}},
+    {  header: 'Nombre', property: 'roleName'},
+    {  header: 'Usuarios', property: 'users', render : () => "0"},
+    {  header: 'Acciones', property: 'actions', render: (role) =>  (
+    <>
+      <button className="text-blue-500 hover:text-blue-900"><FiEye size={20} onClick={() => handleClickRol(role)}></FiEye></button>
+      <button className="text-yellow-500 hover:text-yellow-900"><FiEdit size={20} onClick={() => handleEditRol(role)}></FiEdit></button>
+      <button className="text-red-500 hover:text-red-900"><FiTrash2 size={20} onClick={() => handleDeleteRol(role)}></FiTrash2></button>
+    </>)}
+  ]
+
   const router = useRouter();
   const { data: rolesData, isLoading, isError } = useGetRolesQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +41,7 @@ const Page = () => {
     setIsModalOpen(false);
     setRoleSelected(null);
   };
+  console.log("informacion de los roles",rolesData);
   const handleClickRol = (roleSelected) => {
     router.push(`/roles/${roleSelected.id}`);
   };
@@ -42,20 +57,10 @@ const Page = () => {
     }
     setIsDialog(false);
   };
-  if (isLoading) {
-    return (
-      <div>
-        <Spinner></Spinner>
-      </div>
-    );
-  }
-  if (isError) {
-    return (
-      <div>
-        <ServerErrorComponent></ServerErrorComponent>
-      </div>
-    );
-  }
+
+  if (isLoading) return<Spinner/>
+  if (isError) return <ServerErrorComponent/>
+  
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-semibold text-center mb-4">
@@ -67,55 +72,8 @@ const Page = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border p-2">#</th>
-              <th className="border p-2">Nombre</th>
-              <th className="border p-2">Usuarios</th>
-              <th className="border p-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rolesData.map((role, index) => (
-              <tr key={role.id}>
-                <td className="py-4 px-6 text-center space-x-2">{index + 1}</td>
-                <td className="py-4 px-6 text-center space-x-2">
-                  {role.roleName}
-                </td>
-                <td className="py-4 px-6 text-center space-x-2">0</td>
-                <td className="py-4 px-6 text-center space-x-2">
-                  <button
-                    className="text-blue-500 hover:text-blue-700"
-                    onClick={() => handleClickRol(role)}
-                  >
-                    <FiEye size={20} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsModalOpen(true);
-                      setRoleSelected(role);
-                    }}
-                    className="text-yellow-500 hover:text-yellow-700"
-                  >
-                    <FiEdit size={20} />
-                  </button>
-                  <button
-                    className="text-red-500 hover:text-red-700"
-                    onClick={() => {
-                      setIsDialog(true);
-                      setRoleIdToDelete(role.id);
-                    }}
-                  >
-                    <FiTrash2 size={20} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <InfoTable tableConfig={tableConfig}data={rolesData}/>
       </div>
-
       <Modal
         title={roleSelected ? "Actualizar rol" : "Agregar rol"}
         isOpen={isModalOpen}
