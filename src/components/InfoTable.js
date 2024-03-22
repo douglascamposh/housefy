@@ -13,10 +13,10 @@ const InfoTable = ({ headers, data, renderHeader, renderItem }) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((obj, indexObj) => (
-              <tr key={obj.id} className="group hover:bg-orange-200  transition-colors duration-300">
-                {headers.map((header, index) => (
-                  <td key={index} className="border px-4 py-3">{renderItem(obj, header, indexObj)}</td>
+            {data.map((obj) => (
+              <tr key={obj.id} className="group hover:bg-orange-200  transition-colors duration-250">
+                {headers.map((header,index) => (
+                  <td key={index} className="border px-4 py-3">{renderItem(obj,header)}</td>
                 ))}
               </tr>
             ))}

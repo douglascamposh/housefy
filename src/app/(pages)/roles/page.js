@@ -18,7 +18,6 @@ import InfoTable from "@/components/InfoTable";
 const Page = () => {
 
   const tableConfig =  [
-    {  header: '#', property: 'index',render: (role, index) => { return index + 1}},
     {  header: 'Nombre', property: 'roleName'},
     {  header: 'Usuarios', property: 'users', render : () => "0"},
     {  header: 'Acciones', property: 'actions', render: (role) =>  (
@@ -76,7 +75,7 @@ const Page = () => {
          headers={tableConfig} 
          renderHeader={(header) => header.header}
          data={rolesData}
-         renderItem={(item, header, index) => header.render ? header.render(item, index) : item[header.property]}
+         renderItem={(item,obj) => (<div>{item[obj.property]}</div>)}
       />
 
       </div>
