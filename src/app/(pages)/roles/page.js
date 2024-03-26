@@ -17,17 +17,49 @@ import InfoTable from "@/components/InfoTable";
 
 const Page = () => {
 
-  const tableConfig =  [
-    {  header: 'Nombre', property: 'roleName'},
-    {  header: 'Usuarios', property: 'users', render : () => "0"},
-    {  header: 'Acciones', property: 'actions', render: (role) =>  (
-    <>
-      <button className="text-blue-500 hover:text-blue-900"><FiEye size={20} onClick={() => handleClickRol(role)}></FiEye></button>
-      <button className="text-yellow-500 hover:text-yellow-900"><FiEdit size={20} onClick={() => handleEditRol(role)}></FiEdit></button>
-      <button className="text-red-500 hover:text-red-900"><FiTrash2 size={20} onClick={() => handleDeleteRol(role)}></FiTrash2></button>
-    </>)}
-  ]
-
+  const columns = [
+    {
+      Header: 'Nombre',
+      accessor: 'roleName',
+    },
+    {
+      Header: 'Usuarios',
+      accessor: 'id'
+    },
+    {
+      Header: 'Acciones',
+      accessor: 'actions',
+      Cell: ({ row }) =>
+      (
+        <>
+          <button
+            className="text-blue-500 hover:text-blue-900"
+            onClick={() => handleClickRol(row.original)}
+          >
+            <FiEye size={20} />
+          </button>
+          <button
+            className="text-yellow-500 hover:text-yellow-900"
+            onClick={() => {
+              setIsModalOpen(true);
+              setRoleSelected(row.original);
+            }}
+          >
+            <FiEdit size={20} />
+          </button>
+          <button
+            className="text-red-500 hover:text-red-900"
+            onClick={() => {
+              setIsDialog(true);
+              setRoleIdToDelete(row.original.id);
+            }}
+          >
+            <FiTrash2 size={20} />
+          </button>
+        </>
+      )
+    }
+  ];
   const router = useRouter();
   const { data: rolesData, isLoading, isError } = useGetRolesQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,12 +67,13 @@ const Page = () => {
   const [roleSelected, setRoleSelected] = useState(null);
   const [deleteRole] = useDeleteRolesMutation();
   const [roleIdToDelete, setRoleIdToDelete] = useState(null);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
     setRoleSelected(null);
   };
-  
+
   const handleClickRol = (roleSelected) => {
     router.push(`/roles/${roleSelected.id}`);
   };
@@ -57,9 +90,9 @@ const Page = () => {
     setIsDialog(false);
   };
 
-  if (isLoading) return<Spinner/>
-  if (isError) return <ServerErrorComponent/>
-  
+  if (isLoading) return <Spinner />
+  if (isError) return <ServerErrorComponent />
+
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-semibold text-center mb-4">
@@ -71,12 +104,7 @@ const Page = () => {
       </div>
 
       <div className="table-responsive">
-      <InfoTable 
-         headers={tableConfig} 
-         renderHeader={(header) => header.header}
-         data={rolesData}
-         renderItem={(item,obj) => (<div>{item[obj.property]}</div>)}
-      />
+        <InfoTable data={rolesData} columns={columns} />
 
       </div>
       <Modal

@@ -6,12 +6,32 @@ import Spinner from "../Spinner";
 const Users = () => {
   const { data: usersData, isLoading, error } = useGetUsersQuery();
 
-  const tableConfig = [
-    { header: 'Nombre', property: 'name', render: (user) => user.name },
-    { header: 'Apellido', property: 'lastName' },
-    { header: 'Correo electrónico', property: 'email', },
-    { header: 'Función asignada', property: 'roles', render: (user) => user.roles.join(", ") }
-  ]
+  const columns = [
+    {
+      Header: 'Nombre',
+      accessor: 'name',
+    },
+    {
+      Header: 'Apellido',
+      accessor: 'lastName'
+    },
+    {
+      Header: 'Correo electrónico ',
+      accessor: 'email'
+    },
+    {
+      Header: 'Función asignada',
+      accessor: 'funcion',
+      Cell: ({ row }) => {
+        let roles = row.original.roles.join(", ");
+        return (
+          <div className="flex gap-2 items-center">
+            <div>{roles}</div>
+          </div>
+        );
+      },
+    }
+  ];
 
   if (isLoading) return <Spinner />
   if (error) {
@@ -22,12 +42,7 @@ const Users = () => {
   return (
     <>
       <h1 className="text-3xl font-semibold text-center">Lista de Usuarios</h1>
-      <InfoTable
-        headers={tableConfig}
-        renderHeader={(header) => header.header}
-        data={usersData}
-        renderItem={(item,obj) => (<div>{item[obj.property]}</div>)}
-      />
+      <InfoTable data={usersData} columns={columns} />
     </>)
 }
 
