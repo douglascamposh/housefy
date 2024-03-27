@@ -19,17 +19,20 @@ const Page = () => {
 
   const columns = [
     {
-      Header: 'Nombre',
-      accessor: 'roleName',
+      accessorKey:'roleName',
+     header: 'Nombre',
+      
     },
     {
-      Header: 'Usuarios',
-      accessor: 'id'
+    accessorKey: 'id',
+    header: 'Usuarios',
+     
     },
     {
-      Header: 'Acciones',
-      accessor: 'actions',
-      Cell: ({ row }) =>
+     accessorKey: 'actions',
+     header: 'Acciones',
+      
+     cell: ({ row }) =>
       (
         <>
           <button

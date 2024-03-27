@@ -1,28 +1,29 @@
-'use client'
 import React from "react";
 import { useGetUsersQuery } from "@/redux/services/usersApi";
 import InfoTable from "@/components/InfoTable";
 import Spinner from "../Spinner";
+import { columnHelper } from '@tanstack/react-table';
+
 const Users = () => {
   const { data: usersData, isLoading, error } = useGetUsersQuery();
-
+  
   const columns = [
     {
-      Header: 'Nombre',
-      accessor: 'name',
+      accessorKey: 'name',
+      header: 'Nombre',
     },
     {
-      Header: 'Apellido',
-      accessor: 'lastName'
+      accessorKey: 'lastName',
+      header: 'Apellido',
     },
     {
-      Header: 'Correo electrónico ',
-      accessor: 'email'
+      accessorKey:'email',
+      header: 'Correo electrónico',
     },
     {
-      Header: 'Función asignada',
-      accessor: 'funcion',
-      Cell: ({ row }) => {
+      accessorFn: 'funcion',
+      header: 'Función asignada',
+      cell: ({ row }) => {
         let roles = row.original.roles.join(", ");
         return (
           <div className="flex gap-2 items-center">
@@ -30,8 +31,9 @@ const Users = () => {
           </div>
         );
       },
-    }
+    },
   ];
+  
 
   if (isLoading) return <Spinner />
   if (error) {
@@ -42,7 +44,7 @@ const Users = () => {
   return (
     <>
       <h1 className="text-3xl font-semibold text-center">Lista de Usuarios</h1>
-      <InfoTable data={usersData} columns={columns} />
+      <InfoTable data={usersData} columns={columns}/>
     </>)
 }
 
